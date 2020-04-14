@@ -3,7 +3,7 @@ export default [
     name: 'Matt',
     quote: `This is the second time I've worked with Ahmed! He's extremely friendly and knowledgeable with chatbots.
     I'm sure I will work with him again next project I have
-    `,
+    `
   },
   {
     name: 'Lori',
