@@ -1,29 +1,27 @@
 export default [
   {
-    name: 'Craig',
-    quote: `It's no exaggeration to say that I
-  wouldn't currently have a job in development without this site. So thanks for
-  ruining my life, Ahmed.`,
+    name: 'Matt',
+    quote: `This is the second time I've worked with Ahmed! He's extremely friendly and knowledgeable with chatbots.
+    I'm sure I will work with him again next project I have
+    `,
   },
   {
     name: 'Lori',
-    quote: `Not to get too dramatic, but I find your site to be an unspeakably beautiful
-  lifeboat in an overwhelming sea of technical jargon and shite.`,
+    quote: `I had a phenomenal experience working with Ahmed! He is very hardworking & understood the project scope quickly. He is knowledgeable in chatbots, especially within Chatfuel. Fantastic job! I will be working with him again very soon`,
   },
   {
-    name: 'Evan',
-    quote: `You taught me more than any class could have and it took me a fraction of the time because of how clearly you write and teach.`,
+    name: 'Lora',
+    quote: `It was great working with Ahmad, he always do the work as expected. If you need help in chatbots, Ahmad is the go-to engineer. We will work with him in future.`,
   },
   {
     name: 'Zuzana',
-    quote: `I keep coming back to your website and I appreciate it more and more every time. The way you explain things just make sense!`,
+    quote: `Ahmed is excellent with communication and bot building.miztio Ive been terrible with my communication in following up and he comes through astking me questions on the layout i would like etc. Bot building is an art with flo, optimization etc. And i can honestly say I trust Ahmeds judgement
+    `,
   },
   {
     name: 'P.P.',
-    quote: `You are the best tutor I have ever seen in my life. This tutorial is an excellent example of simplicity, clear explanations and detailed examples. I love every bit of your work. Never stop teaching, please.`,
+    quote: `Thank you for the great work you did. Very technical and loves to solve challenges.
+    `,
   },
-  {
-    name: 'Antony',
-    quote: 'Just wanted to thank you for your awesome tutorials. Glad you found your niche, teaching valuable skills to so many folks out there, instead of preparing fine meals for a select few.'
-  }
+  
 ]
