@@ -5,14 +5,12 @@ import { graphql, Link } from 'gatsby'
 import Layout from '../layout'
 import PostListing from '../components/PostListing'
 import ProjectListing from '../components/ProjectListing'
-import SimpleListing from '../components/SimpleListing'
 import SEO from '../components/SEO'
 import config from '../../data/SiteConfig'
 import projects from '../../data/projects'
 import speaking from '../../data/speaking'
-import podcasts from '../../data/podcasts'
 import quotes from '../../data/quotes'
-import tania from '../../content/images/profile.jpg'
+import ahmed from '../../content/images/profile.jpg'
 
 export default class Index extends Component {
   render() {
@@ -28,36 +26,23 @@ export default class Index extends Component {
         <div className="container">
           <div className="lead">
             <div className="elevator">
-              <h1>{`Hey, I'm Tania 👋`} </h1>
+              <h1>{`Hi,I'm Ahmed 👋`} </h1>
               <p>
-                {`I'm a full stack software developer creating `}
-                <a href="https://github.com/taniarascia" target="_blank" rel="noopener noreferrer">
-                  open source
-                </a>{' '}
-                projects and <Link to="/blog">writing</Link> about modern JavaScript, Node.js, and
-                development.
+                {`I'm a full stack software engineer`}
+              {' with 3 years of experience with Node.js. I do believe that anyone can master how to write better code, But ideas and passion cannot be gained that easy, based on my co-workers my strengths is the ability to produce ideas and passion. My forever favorite quote: DO IT WITH PASSION OR NOT AT ALL. '}
               </p>
               <div className="social-buttons">
                 <GitHubButton
-                  href="https://github.com/taniarascia"
+                  href="https://github.com/ahmadIbrahiim"
                   data-size="large"
                   data-show-count="true"
                 >
-                  taniarascia
+                  AhmadIbrahiim
                 </GitHubButton>
               </div>
             </div>
             <div className="newsletter-section">
-              <img src={tania} className="newsletter-avatar" alt="Tania" />
-              <div>
-                <h3>Email Newsletter</h3>
-                <p>
-                  I write tutorials. Get an update when something new comes out by signing up below!
-                </p>
-                <a className="button" href="https://taniarascia.substack.com">
-                  Subscribe
-                </a>
-              </div>
+              <img src={ahmed} className="newsletter-avatar" alt="Ahmed" />
             </div>
           </div>
         </div>
@@ -65,7 +50,7 @@ export default class Index extends Component {
         <div className="container front-page">
           <section className="section">
             <h2>
-              Latest Articles
+              Latest Blogs
               <Link to="/blog" className="view-all">
                 View all
               </Link>
@@ -73,30 +58,13 @@ export default class Index extends Component {
             <PostListing simple postEdges={latestPostEdges} />
           </section>
 
+     
           <section className="section">
-            <h2>
-              Most Popular
-              <Link to="/categories/popular" className="view-all">
-                View all
-              </Link>
-            </h2>
-            <PostListing simple postEdges={popularPostEdges} />
-          </section>
-
-          <section className="section">
-            <h2>Open Source Projects</h2>
+            <h2>My Recent Projects 🤪</h2>
             <ProjectListing projects={projects} />
           </section>
 
-          <section className="section">
-            <h2>Interviews</h2>
-            <SimpleListing simple data={podcasts} />
-          </section>
-
-          <section className="section">
-            <h2>Talks</h2>
-            <SimpleListing simple data={speaking} />
-          </section>
+  
         </div>
         <div className="gradient-section">
           <div className="container">

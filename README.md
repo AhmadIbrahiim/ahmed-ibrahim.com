@@ -1,8 +1,8 @@
-# taniarascia.com
+# ahmed-ibrahim.com
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Netlify Status](https://api.netlify.com/api/v1/badges/0a51d0e9-f611-4dd8-887f-fc1889e68540/deploy-status)](https://app.netlify.com/sites/tania/deploys)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Netlify Status](https://api.netlify.com/api/v1/badges/0a51d0e9-f611-4dd8-887f-fc1889e68540/deploy-status)](https://app.netlify.com/sites/Ahmed/deploys)
 
-Tania's personal website running on Gatsby, React, and Node.js.
+Ahmed's personal website running on Gatsby, React, and Node.js.
 
 ## Note
 
@@ -16,8 +16,8 @@ The [Gatsby Advanced Starter](https://github.com/vagr9k/gatsby-advanced-starter/
 - Tags and categories
 - Night mode
 - DOS mode (404)
-- Code theme (starring [New Moon](https://taniarascia.github.io/new-moon))
-- Sass (starring [Primitive](https://taniarascia.github.io/primitive))
+- Code theme (starring [New Moon](https://Ahmedrascia.github.io/new-moon))
+- Sass (starring [Primitive](https://Ahmedrascia.github.io/primitive))
 
 ## Contributing
 
@@ -31,9 +31,9 @@ If you see any typos or formatting errors in a post, or any other issue that nee
 
 ## Author
 
-- [Tania Rascia](https://www.taniarascia.com)
+- [Ahmed Ibrahim](https://www.ahmed-ibrahim.com)
 
-<a href="https://patreon.com/taniarascia"><img src="https://img.shields.io/endpoint.svg?url=https://shieldsio-patreon.herokuapp.com/taniarascia&style=for-the-badge" alt="Patreon donate button" /> </a>
+<a href="https://patreon.com/Ahmedrascia"><img src="https://img.shields.io/endpoint.svg?url=https://shieldsio-patreon.herokuapp.com/Ahmedrascia&style=for-the-badge" alt="Patreon donate button" /> </a>
 
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F1GNP8)
 

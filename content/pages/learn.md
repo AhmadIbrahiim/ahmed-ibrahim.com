@@ -127,7 +127,7 @@ This is not everything I know, but a good amount of the things I've documented s
 - [x] [Vue.js](/getting-started-with-vue)
 - [x] [React](/getting-started-with-react/)
   - [x] [Hooks API](/crud-app-in-react-with-hooks/)
-  - [x] [Context API](https://www.taniarascia.com/using-context-api-in-react/)
+  - [x] [Context API](https://www.ahmed-ibrahim.com/using-context-api-in-react/)
   - [x] [Content Editable](/content-editable-elements-in-javascript-react/)
 - [x] [Redux](redux-react-guide)
 - [x] [jQuery](/how-to-use-jquery-a-javascript-library/)

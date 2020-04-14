@@ -3,7 +3,7 @@ export default [
     name: 'Craig',
     quote: `It's no exaggeration to say that I
   wouldn't currently have a job in development without this site. So thanks for
-  ruining my life, Tania.`,
+  ruining my life, Ahmed.`,
   },
   {
     name: 'Lori',
