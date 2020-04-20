@@ -33,7 +33,7 @@ export default class PostTemplate extends Component {
     const githubLink = editOnGithub(post)
     const twitterShare = `http://twitter.com/share?text=${encodeURIComponent(post.title)}&url=${
       config.siteUrl
-    }/${post.slug}/&via=Ahmedrascia`
+    }/${post.slug}/&via=Ahmed_ibrahhim`
 
     return (
       <Layout>
