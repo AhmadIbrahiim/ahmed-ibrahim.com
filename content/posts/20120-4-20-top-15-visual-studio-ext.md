@@ -2,7 +2,7 @@
 date: 2020-04-20
 title: 'Top 15 Visual studio code extensions for Full Stack Developer'
 template: post
-thumbnail: '../thumbnails/vsextension.jpg'
+thumbnail: '../thumbnails/vsc.png'
 slug: top-15-visual-studio-code-for-full-stack-developer
 categories:
   - Tools
