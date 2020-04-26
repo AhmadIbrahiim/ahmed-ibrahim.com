@@ -6,7 +6,7 @@ thumbnail: '../thumbnails/vsc.png'
 slug: top-15-visual-studio-code-for-full-stack-developer
 categories:
   - Tools
-  - Popular
+  - Developer Tools
 tags:
   - Visual studio
   - Extensions

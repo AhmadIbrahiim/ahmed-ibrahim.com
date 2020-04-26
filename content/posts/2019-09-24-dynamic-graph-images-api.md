@@ -2,11 +2,11 @@
 date: 2019-09-24
 title: 'Dynamic Open Graph Image API 👻'
 template: post
-thumbnail: '../thumbnails/node.png'
+thumbnail: '../thumbnails/dom.png'
 slug: dynamic-graph-images-api
 categories:
   - Tools
-  - New
+  - Og Images
 tags:
   - graph-api
   - og images

@@ -6,7 +6,6 @@ thumbnail: '../thumbnails/git.png'
 slug: download-the-source-code-of-anywebsite
 categories:
   - Tools
-  - Popular
 tags:
   - git
   - version control
