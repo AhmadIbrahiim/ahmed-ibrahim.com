@@ -1,10 +1,10 @@
 ---
 date: 2020-09-27
-title: 'Relation Database transactions (ACID)'
+title: 'Relational Database transactions (ACID)'
 template: post
 thumbnail: '../thumbnails/sql.png'
 seoImage: '../thumbnails/ACID-DB.png'
-slug: database-transaction-acid-in-dbms
+slug: relational-database-transaction-acid-in-dbms
 categories:
   - Database
 tags:
