@@ -14,7 +14,7 @@ tags:
   - SQL
   - postgreSQL
 ---
-## What is Database transaction?
+## What is the Database transaction?
  A _transaction_ is a single logical unit of work which accesses and possibly modifies the contents of a database. Transactions access data using read and write operations.
 
  All types of database access operation which are held between the beginning and end transaction statements are considered as a single logical transaction. During the transaction the database is inconsistent. Only once the database is committed the state is changed from one consistent state to another.
