@@ -2,7 +2,8 @@
 date: 2020-09-27
 title: 'Relation Database transactions (ACID)'
 template: post
-thumbnail: '../thumbnails/sql.png'
+thumbnail: '../thumbnails/bash.png'
+image: '../thumbnails/ACID-DB.png'
 slug: database-transaction-acid-in-dbms
 categories:
   - Database
