@@ -40,6 +40,7 @@ It means that either the entire transaction logic got executed successfully at o
  - **Commit**: The changes made to database are visible.
 > Atomicity is also known as the ‘All or nothing rule’.
 
+--------------
 #Consistency 
 Ensures that you guarantee that all data will be consistent. All data will be valid according to all defined rules, including any constraints, cascades, and triggers that have been applied on the database.
 
@@ -52,14 +53,19 @@ then amount has been deducted from X but not added to Y.
 
 This results in an inconsistent database state. Therefore, the transaction must be executed in entirety in order to ensure correctness of database state.
  ```
-
+--------------
 #Isolation
 Guarantees that multiple transactions can be executed concurrently without causing inconsistency of database state. Transactions occurs independently without interference. The changes occurring with any transaction will not be visible to any any other transaction until it has been committed (Saved).
 > This property ensures that the execution of transactions concurrently will result in a state that is equivalent to a state achieved these were executed serially in some order.
-
+--------------
 #Durability
 Durability means that, once a transaction is committed, it will remain in the system – even if there’s a system crash immediately following the transaction. Any changes from the transaction must be stored permanently. If the system tells the user that the transaction has succeeded, the transaction must have, in fact, succeeded.
 
---
+The **_ACID_** properties of a DBMS allow safe sharing of data. Without these ACID properties, everyday occurrences such using computer systems to buy products would be difficult and the potential for inaccuracy would be huge. Imagine more than one person trying to buy the same size and color of a sweater at the same time -- a regular occurrence. The ACID properties make it possible for the merchant to keep these sweater purchasing transactions from overlapping each other -- saving the merchant from erroneous inventory and account balances.
 
-The **ACID** properties, in totality, provide a mechanism to ensure correctness and consistency of a database in a way such that each transaction is a group of operations that acts a single unit, produces consistent results, acts in isolation from other operations and updates that it makes are durably stored.
+--------------
+
+I think now, We've covered a little more details about ACID, In the next article. I'll try to cover more about states of transactions. 🔥
+
+Peace ✌️
+
