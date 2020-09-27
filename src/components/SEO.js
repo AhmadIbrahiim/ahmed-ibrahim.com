@@ -11,12 +11,14 @@ export default class SEO extends Component {
     let description
     let image = ''
     let postURL
-
     if (postSEO) {
       const postMeta = postNode.frontmatter
       title = postMeta.title
       description = postMeta.description ? postMeta.description : postNode.excerpt
-      if (postMeta.thumbnail) {
+      if  (postMeta.seoImage) {
+        image = postMeta.seoImage.childImageSharp.fluid.src
+      }
+      else if  (postMeta.thumbnail) {
         image = postMeta.thumbnail.childImageSharp.fixed.src
       }
       postURL = urljoin(config.siteUrl, replacePath(postPath))

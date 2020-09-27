@@ -100,10 +100,18 @@ export const pageQuery = graphql`
         categories
         tags
         template
+        seoImage {
+          childImageSharp {
+            fluid(quality: 100) {
+              ...GatsbyImageSharpFluid
+            }
+          }
+        }
       }
       fields {
         slug
         date
+        
       }
     }
   }
