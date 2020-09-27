@@ -14,9 +14,9 @@ export default class UserInfo extends Component {
             </div>
             <div>
               <p>
-                I’m Ahmed Ibrahim. I believe that is passion can make do anything. If you want to reach me email me 🖥️
+                I'm Ahmed Ibrahim, Software Engineer with +3 years of experience. My forever quote <i>Do it with passion or not at all</i>. <br></br>If you want to reach me, Drop me an email  🖥️
                 <strong>
-                 Me@ahmed-ibrahim.com
+                 me@ahmed-ibrahim.com
                 </strong>
               </p>
 
