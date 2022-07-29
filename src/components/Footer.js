@@ -9,7 +9,7 @@ export default class Footer extends Component {
     return (
       <footer className="footer container">
         <div>
-          <a href="https://twitter.com/ahmed_ibrahim" target="_blank" rel="noopener noreferrer">
+          <a href="https://twitter.com/ahmed_ibrahhim" target="_blank" rel="noopener noreferrer">
             Twitter
           </a>
     
