@@ -9,7 +9,7 @@ const config = {
   dateFromFormat: 'YYYY-MM-DD',
   dateFormat: 'MMMM Do, YYYY',
   siteDescription:
-    'I\'m a full stack software engineer with 3 years of experience with Node.js. I do believe that anyone can master how to write better code, But ideas and passion cannot be gained that easy, based on my co-workers my strengths is the ability to produce ideas and passion. My forever favorite quote: DO IT WITH PASSION OR NOT AT ALL.',
+    'I\'m a full stack software engineer with 5 years of experience with Node.js. I do believe that anyone can master how to write better code, But ideas and passion cannot be gained that easy, based on my co-workers my strengths is the ability to produce ideas and passion. My forever favorite quote: DO IT WITH PASSION OR NOT AT ALL.',
   siteRss: '/rss.xml',
   googleAnalyticsID: 'UA-42068444-1',
   postDefaultCategoryID: 'Tech',
