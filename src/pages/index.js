@@ -58,13 +58,13 @@ export default class Index extends Component {
             <PostListing simple postEdges={latestPostEdges} />
           </section>
 
-     
+
           <section className="section">
             <h2>My Recent Projects 🤪</h2>
             <ProjectListing projects={projects} />
           </section>
 
-  
+
         </div>
         <div className="gradient-section">
           <div className="container">

@@ -1,3 +1,5 @@
+$main_bg_color:radial-gradient(circle at 20% 20%, #003e4fab 25%, #082f14 100%);
+
 #main-content {
   margin-top: 55px;
   padding: 40px 0 0;
@@ -779,7 +781,7 @@ blockquote {
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
   padding: 4rem 0;
-  background: radial-gradient(circle at 20% 20%, #5183f5 25%, #4640ff 100%);
+  background: $main_bg_color;
 
   h2 {
     color: white;
@@ -853,7 +855,7 @@ blockquote {
   margin: 1.5rem;
 
   .note-container {
-    background: radial-gradient(circle at 20% 20%, #5183f5 25%, #4640ff 100%);
+    background: $main_bg_color;
     box-shadow: 0.5rem 1.25rem 1.75rem 0 rgba(100, 110, 140, 0.4);
     color: rgba(255, 255, 255, 0.9);
     border-radius: $border-radius;
@@ -1188,7 +1190,7 @@ button[disabled] {
   margin: 2rem 0;
   padding: 1.5rem;
   text-align: center;
-  background: radial-gradient(circle at 20% 20%, #5183f5 25%, #4640ff 100%);
+  background: $main_bg_color;
   box-shadow: 0.5rem 1.25rem 1.75rem 0 rgba(100, 110, 140, 0.4);
   color: rgba(255, 255, 255, 0.9);
 

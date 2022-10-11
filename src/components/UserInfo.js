@@ -19,7 +19,7 @@ export default class UserInfo extends Component {
                 </strong>
               </p>
 
-           
+
             </div>
           </div>
         </div>
