@@ -851,6 +851,14 @@ blockquote {
   }
 }
 
+[id*="image-center"] {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  margin-top: 10px !important;
+}
+
 .note {
   margin: 1.5rem;
 
