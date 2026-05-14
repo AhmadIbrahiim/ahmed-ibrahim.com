@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <!-- frame -->
+  <rect width="600" height="600" fill="#fff"/>
+  <rect x="3" y="3" width="594" height="594" fill="none" stroke="#000" stroke-width="6"/>
+
+  <!-- top kicker bar -->
+  <rect x="3" y="3" width="594" height="50" fill="#000"/>
+  <text x="24" y="36" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="6" fill="#BFFF00">// VOICE AI · LIVEKIT</text>
+
+  <!-- giant AMD -->
+  <text x="300" y="252" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="180" font-weight="900" letter-spacing="-4" fill="#000">AMD<tspan fill="#BFFF00">.</tspan></text>
+
+  <!-- subtitle -->
+  <text x="300" y="298" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="4" fill="#000">ANSWERING MACHINE DETECTION</text>
+
+  <!-- three classification outcomes as rectangular chips -->
+  <g transform="translate(45, 350)">
+    <rect width="160" height="56" fill="#000"/>
+    <text x="80" y="37" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="3" fill="#BFFF00">HUMAN</text>
+  </g>
+  <g transform="translate(220, 350)">
+    <rect width="160" height="56" fill="#fff" stroke="#000" stroke-width="3"/>
+    <text x="80" y="37" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="2" fill="#000">VOICEMAIL</text>
+  </g>
+  <g transform="translate(395, 350)">
+    <rect width="160" height="56" fill="#fff" stroke="#000" stroke-width="3"/>
+    <text x="80" y="37" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="3" fill="#000">IVR</text>
+  </g>
+
+  <!-- footer rule + info -->
+  <line x1="45" y1="450" x2="555" y2="450" stroke="#000" stroke-width="2"/>
+  <text x="45" y="498" font-family="Courier, monospace" font-size="16" font-weight="700" fill="#000">LiveKit Agents 1.5.9</text>
+  <text x="45" y="524" font-family="Courier, monospace" font-size="14" fill="#666">released May 13, 2026</text>
+
+  <!-- corner mark -->
+  <text x="555" y="524" text-anchor="end" font-family="Courier, monospace" font-size="12" font-weight="700" letter-spacing="3" fill="#666">// 01</text>
+</svg>

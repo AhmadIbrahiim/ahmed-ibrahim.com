@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 660" font-family="'JetBrains Mono', ui-monospace, monospace">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#000"/>
+    </marker>
+  </defs>
+
+  <!-- frame -->
+  <rect x="1" y="1" width="938" height="658" fill="#fff" stroke="#000" stroke-width="2"/>
+
+  <!-- header label -->
+  <text x="22" y="36" font-size="11" font-weight="700" letter-spacing="2" fill="#666">## AMD STATE MACHINE</text>
+  <line x1="22" y1="48" x2="918" y2="48" stroke="#000" stroke-width="1"/>
+
+  <!-- CONNECTED node -->
+  <g transform="translate(390, 70)">
+    <rect width="160" height="44" fill="#fff" stroke="#000" stroke-width="2"/>
+    <text x="80" y="28" text-anchor="middle" font-size="14" font-weight="700">CONNECTED</text>
+  </g>
+  <line x1="470" y1="114" x2="470" y2="146" stroke="#000" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- AMD_PENDING decision -->
+  <g transform="translate(345, 152)">
+    <rect width="250" height="58" fill="#000" stroke="#000" stroke-width="2"/>
+    <text x="125" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#BFFF00">AMD_PENDING</text>
+    <text x="125" y="46" text-anchor="middle" font-size="10" letter-spacing="1" fill="#fff">CLASSIFY WITHIN 3.0s</text>
+  </g>
+
+  <!-- 5 branch arrows fanning out -->
+  <line x1="470" y1="210" x2="470" y2="244" stroke="#000" stroke-width="2"/>
+  <line x1="170" y1="244" x2="770" y2="244" stroke="#000" stroke-width="2"/>
+
+  <!-- branch 1: human -->
+  <g>
+    <line x1="170" y1="244" x2="170" y2="280" stroke="#000" stroke-width="2" marker-end="url(#arr)"/>
+    <text x="170" y="262" text-anchor="middle" font-size="10" fill="#666">human · conf&gt;0.7</text>
+    <rect x="90" y="286" width="160" height="56" fill="#BFFF00" stroke="#000" stroke-width="2"/>
+    <text x="170" y="312" text-anchor="middle" font-size="13" font-weight="700">HUMAN</text>
+    <text x="170" y="328" text-anchor="middle" font-size="11" font-weight="600">CONVERSATION</text>
+    <text x="170" y="360" text-anchor="middle" font-size="10" fill="#666">first word &lt; 200ms</text>
+  </g>
+
+  <!-- branch 2: voicemail -->
+  <g>
+    <line x1="320" y1="244" x2="320" y2="280" stroke="#000" stroke-width="2" marker-end="url(#arr)"/>
+    <text x="320" y="262" text-anchor="middle" font-size="10" fill="#666">voicemail</text>
+    <rect x="260" y="286" width="120" height="44" fill="#fff" stroke="#000" stroke-width="2"/>
+    <text x="320" y="312" text-anchor="middle" font-size="12" font-weight="700">WAIT_FOR_BEEP</text>
+    <line x1="320" y1="330" x2="320" y2="360" stroke="#000" stroke-width="2" marker-end="url(#arr)"/>
+    <rect x="260" y="366" width="120" height="44" fill="#fff" stroke="#000" stroke-width="2"/>
+    <text x="320" y="392" text-anchor="middle" font-size="12" font-weight="700">LEAVE_MESSAGE</text>
+    <line x1="320" y1="410" x2="320" y2="440" stroke="#000" stroke-width="2" marker-end="url(#arr)"/>
+    <rect x="280" y="446" width="80" height="32" fill="#000" stroke="#000" stroke-width="2"/>
+    <text x="320" y="466" text-anchor="middle" font-size="11" font-weight="700" fill="#BFFF00">HANGUP</text>
+  </g>
+
+  <!-- branch 3: ivr -->
+  <g>
+    <line x1="470" y1="244" x2="470" y2="280" stroke="#000" stroke-width="2" marker-end="url(#arr)"/>
+    <text x="470" y="262" text-anchor="middle" font-size="10" fill="#666">ivr</text>
+    <rect x="395" y="286" width="150" height="56" fill="#fff" stroke="#000" stroke-width="2"/>
+    <text x="470" y="312" text-anchor="middle" font-size="13" font-weight="700">NAVIGATE_IVR</text>
+    <text x="470" y="328" text-anchor="middle" font-size="11" font-weight="600">DTMF SUB-MACHINE</text>
+    <text x="470" y="360" text-anchor="middle" font-size="10" fill="#666">tones, not speech</text>
+  </g>
+
+  <!-- branch 4: uncertain -->
+  <g>
+    <line x1="620" y1="244" x2="620" y2="280" stroke="#000" stroke-width="2" marker-end="url(#arr)"/>
+    <text x="620" y="262" text-anchor="middle" font-size="10" fill="#666">conf &lt; 0.7</text>
+    <rect x="555" y="286" width="130" height="44" fill="#fff" stroke="#000" stroke-width="2"/>
+    <text x="620" y="312" text-anchor="middle" font-size="12" font-weight="700">UNCERTAIN_PROBE</text>
+    <line x1="620" y1="330" x2="620" y2="370" stroke="#000" stroke-width="2" marker-end="url(#arr)"/>
+    <text x="620" y="350" text-anchor="middle" font-size="9" fill="#666">"Hi, can you hear me?"</text>
+    <rect x="555" y="376" width="130" height="44" fill="#fff" stroke="#000" stroke-width="2"/>
+    <text x="620" y="402" text-anchor="middle" font-size="12" font-weight="700">RECLASSIFY</text>
+    <text x="620" y="448" text-anchor="middle" font-size="10" fill="#666">recovers ~60% of</text>
+    <text x="620" y="462" text-anchor="middle" font-size="10" fill="#666">low-confidence calls</text>
+  </g>
+
+  <!-- branch 5: timeout -->
+  <g>
+    <line x1="770" y1="244" x2="770" y2="280" stroke="#000" stroke-width="2" marker-end="url(#arr)"/>
+    <text x="770" y="262" text-anchor="middle" font-size="10" fill="#666">timeout</text>
+    <rect x="700" y="286" width="140" height="56" fill="#fff" stroke="#000" stroke-width="2"/>
+    <text x="770" y="312" text-anchor="middle" font-size="13" font-weight="700">HANGUP_RETRY</text>
+    <text x="770" y="328" text-anchor="middle" font-size="11" font-weight="600">EXPONENTIAL BACKOFF</text>
+  </g>
+
+  <!-- bottom legend -->
+  <line x1="22" y1="540" x2="918" y2="540" stroke="#000" stroke-width="1"/>
+  <text x="22" y="568" font-size="11" font-weight="700" letter-spacing="2" fill="#666">## LEGEND</text>
+
+  <rect x="22" y="585" width="22" height="22" fill="#BFFF00" stroke="#000" stroke-width="2"/>
+  <text x="56" y="601" font-size="11" fill="#000">happy path</text>
+
+  <rect x="170" y="585" width="22" height="22" fill="#fff" stroke="#000" stroke-width="2"/>
+  <text x="204" y="601" font-size="11" fill="#000">intermediate state</text>
+
+  <rect x="370" y="585" width="22" height="22" fill="#000" stroke="#000" stroke-width="2"/>
+  <text x="404" y="601" font-size="11" fill="#000">decision / terminal</text>
+
+  <text x="570" y="601" font-size="11" fill="#666">conditions in mono, transitions follow arrows</text>
+</svg>
