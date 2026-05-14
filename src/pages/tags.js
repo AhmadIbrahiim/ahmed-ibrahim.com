@@ -1,40 +1,53 @@
-import React, { Component } from 'react'
-import { Helmet } from 'react-helmet'
+import React from 'react'
 import { Link, graphql } from 'gatsby'
 import kebabCase from 'lodash.kebabcase'
 import Layout from '../layout'
 import SEO from '../components/SEO'
 import config from '../../data/SiteConfig'
 
-export default class TagsPage extends Component {
-  render() {
-    const { group } = this.props.data.allMarkdownRemark
+export default function TagsPage({ data }) {
+  const { group } = data.allMarkdownRemark
 
-    return (
-      <Layout>
-        <SEO />
-        <Helmet title={`Tags – ${config.siteTitle}`} />
-        <div className="container">
-          <h1>Tags</h1>
-          <div className="tag-container">
-            {group.map(tag => (
-              <Link to={`/tags/${kebabCase(tag.fieldValue)}`}>
-                <span key={tag.fieldValue}>
-                  {tag.fieldValue} <strong className="count">{tag.totalCount}</strong>
-                </span>
-              </Link>
-            ))}
-          </div>
+  return (
+    <Layout>
+      <div className="page-shell">
+        <div className="label">Index</div>
+        <h1>Tags.</h1>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {group.map(tag => (
+            <Link
+              to={`/tags/${kebabCase(tag.fieldValue)}/`}
+              key={tag.fieldValue}
+              style={{
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: 11,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                border: '1.5px solid #000',
+                padding: '6px 10px',
+                color: '#000',
+                fontWeight: 600,
+                textDecoration: 'none',
+              }}
+            >
+              {tag.fieldValue}{' '}
+              <span style={{ color: '#666' }}>({tag.totalCount})</span>
+            </Link>
+          ))}
         </div>
-      </Layout>
-    )
-  }
+      </div>
+    </Layout>
+  )
+}
+
+export function Head() {
+  return <SEO title={`Tags – ${config.siteTitle}`} />
 }
 
 export const pageQuery = graphql`
   query TagsQuery {
     allMarkdownRemark(limit: 2000) {
-      group(field: frontmatter___tags) {
+      group(field: { frontmatter: { tags: SELECT } }) {
         fieldValue
         totalCount
       }

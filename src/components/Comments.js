@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import moment from 'moment'
 import config from '../../data/SiteConfig'
+import { formatRelativeDate } from '../utils/global'
 
 export default class Comments extends Component {
   constructor(props) {
@@ -153,21 +153,21 @@ export default class Comments extends Component {
             .map((comment, i) => {
               let child
               if (comment.id) {
-                child = comments.find(c => comment.id == c.parent_comment_id)
+                child = comments.find(c => comment.id === c.parent_comment_id)
               }
 
               return (
                 <div className="comment" key={i} data-id={i}>
                   <header>
                     <h2>{comment.name}</h2>
-                    <div className="comment-date">{moment(comment.date).fromNow()}</div>
+                    <div className="comment-date">{formatRelativeDate(comment.date)}</div>
                   </header>
                   <p>{comment.text}</p>
                   {child && (
                     <div className="comment reply">
                       <header>
                         <h2>{child.name}</h2>
-                        <div className="comment-date">{moment(child.date).fromNow()}</div>
+                        <div className="comment-date">{formatRelativeDate(child.date)}</div>
                       </header>
                       <p>{child.text}</p>
                     </div>

@@ -1,29 +1,23 @@
-import React, { Component } from 'react'
-import Ahmed from '../../content/images/profile.jpg'
+import React from 'react'
+import Ahmed from '../../content/images/profile-small.jpg'
 
-
-export default class UserInfo extends Component {
-  render() {
-    return (
-      <aside className="note">
-        <div className="container note-container">
-          <div className="flex-author">
-            <div className="flex-avatar">
-              <img className="avatar" src={Ahmed} alt="Ahmed Ibrahim" />
-            </div>
-            <div>
-              <p>
-                I'm Ahmed Ibrahim, a Software Engineer with +5 years of experience. My forever quote is <i>Do it with passion or not at all</i>. <br></br>If you want to reach me, Drop me an email  🖥️ {" "}
-                <strong>
-                  me@ahmed-ibrahim.com
-                </strong>
-              </p>
-
-
-            </div>
-          </div>
-        </div>
-      </aside>
-    )
-  }
+export default function UserInfo() {
+  return (
+    <aside className="user-info">
+      <div className="user-info-photo">
+        <img src={Ahmed} alt="Ahmed Ibrahim" />
+      </div>
+      <div className="user-info-body">
+        <div className="user-info-label">Written by</div>
+        <p>
+          <strong>Ahmed Ibrahim</strong> — Senior Software Engineer at Goodcall,
+          building voice AI &amp; LLM systems.
+        </p>
+        <p>
+          Reach me at{' '}
+          <a href="mailto:me@ahmed-ibrahim.com">me@ahmed-ibrahim.com</a>.
+        </p>
+      </div>
+    </aside>
+  )
 }

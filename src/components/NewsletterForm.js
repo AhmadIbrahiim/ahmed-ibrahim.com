@@ -1,17 +1,16 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-export default class NewsletterForm extends Component {
-  render() {
-    return (
-      <div className="centered-iframe">
-        <iframe
-          width="480"
-          height="150"
-          src="https://Ahmedrascia.substack.com/embed"
-          frameborder="0"
-          scrolling="no"
-        ></iframe>
-      </div>
-    )
-  }
+export default function NewsletterForm() {
+  return (
+    <div className="centered-iframe">
+      <iframe
+        width="480"
+        height="150"
+        src="https://Ahmedrascia.substack.com/embed"
+        frameBorder="0"
+        scrolling="no"
+        title="Newsletter signup"
+      />
+    </div>
+  )
 }

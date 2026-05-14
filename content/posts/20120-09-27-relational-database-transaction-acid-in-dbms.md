@@ -45,7 +45,7 @@ It means that either the entire transaction logic got executed successfully at o
 #Consistency 
 Ensures that you guarantee that all data will be consistent. All data will be valid according to all defined rules, including any constraints, cascades, and triggers that have been applied on the database.
 
-```example
+```text
 Consider the following transaction T consisting of T1 and T2: Transfer of 100 from account X to account Y.
 
 If the transaction fails after completion of T1 but before completion of T2.( say, after write(X) but before write(Y)), 
@@ -69,4 +69,3 @@ The **_ACID_** properties of a DBMS allow safe sharing of data. Without these AC
 I think now, We've covered a little more details about ACID, In the next article. I'll try to cover more about states of transactions. 🔥
 
 Peace ✌️
-

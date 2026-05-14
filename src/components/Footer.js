@@ -1,44 +1,60 @@
-import React, { Component } from 'react'
-import { Link } from 'gatsby'
-import netlify from '../../content/images/netlify.png'
-import gatsby from '../../content/thumbnails/gatsby.png'
-import github from '../../content/images/github.png'
+import React from 'react'
 
-export default class Footer extends Component {
-  render() {
-    return (
-      <footer className="footer container">
+export default function Footer() {
+  return (
+    <footer className="footer">
+      <div className="footer-top">
+        <div className="footer-prompt">echo &quot;say hi&quot;</div>
+        <h2 className="footer-name">
+          LET&apos;S
+          <br />
+          TALK<span className="punkt">.</span>
+        </h2>
+        <a className="footer-cta" href="mailto:me@ahmed-ibrahim.com">
+          me@ahmed-ibrahim.com
+        </a>
+      </div>
+      <div className="footer-bottom">
         <div>
-          <a href="https://twitter.com/ahmed_ibrahhim" target="_blank" rel="noopener noreferrer">
-            Twitter
-          </a>
-    
-          <Link to="/contact">Contact me</Link>
-          <a href="https://www.ahmed-ibrahim.com/rss.xml" target="_blank" rel="noopener noreferrer">
-            RSS
-          </a>
-        </div>
-        <div>
-          <a href="https://github.com/AhmadIbrahiim" title="Open-source on GitHub">
-            <img
-              src={github}
+          <span className="h">Around</span>
+          <div className="row">
+            <a
+              href="https://github.com/AhmadIbrahiim"
               target="_blank"
               rel="noopener noreferrer"
-              className="footer-img"
-              alt="GitHub"
-            />
-          </a>
-          <a href="https://www.gatsbyjs.org/" title="Built with Gatsby">
-            <img
-              src={gatsby}
+            >
+              GitHub
+            </a>
+            <a
+              href="https://twitter.com/ahmed_ibrahhim"
               target="_blank"
               rel="noopener noreferrer"
-              className="footer-img"
-              alt="GitHub"
-            />
-          </a>
+            >
+              Twitter
+            </a>
+            <a href="https://www.linkedin.com/in/ahmedibrahhim" target="_blank" rel="noopener noreferrer">
+              LinkedIn
+            </a>
+            <a
+              href="https://www.ahmed-ibrahim.com/rss.xml"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              RSS
+            </a>
+          </div>
         </div>
-      </footer>
-    )
-  }
+        <div>
+          <span className="h">Built with</span>
+          <span className="muted">Gatsby · React · Sass</span>
+          <span className="muted">0 cookies · 0 trackers</span>
+        </div>
+        <div>
+          <span className="h">Colophon</span>
+          <span className="muted">© 2026 Ahmed Ibrahim</span>
+          <span className="muted">Seattle, WA</span>
+        </div>
+      </div>
+    </footer>
+  )
 }

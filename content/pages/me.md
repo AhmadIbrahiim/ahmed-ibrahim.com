@@ -4,19 +4,35 @@ slug: me
 template: page
 ---
 
-I’m Ahmed Ibrahim, a full stack software engineer, Software Engineer [at] **Maxiom app** | Founder of 04 Egypt 
+Ahmed Ibrahim Alazp  
+Senior Software Engineer | Voice AI & LLM Systems  
+[me@ahmed-ibrahim.com](mailto:me@ahmed-ibrahim.com) | Seattle, WA  
+[GitHub](https://github.com/ahmadibrahiim) | LinkedIn
 
- I have been developing applications for around 5 years. Most of my experience lies in full-stack development Scraping/Automation and server administration.
+> Building human-quality Voice AI systems for real business phone calls.
 
- >TL;DR I do everything from app analysis, architecture design, development, testing & bug fixes, scripts & automation, deploy and getting the project ready for production.
+Over the last 5+ years, I have shipped across three generations of conversational AI (rule-based -> Dialogflow -> LLM), with hands-on depth in real-time audio, speech pipelines, LLM orchestration, and production infrastructure on GCP.
 
-### Tools & Experience ⚡️
-|  Backend | Front-End | Automation | Cloud |
-|--|--|--|--|
-| Node.js   | React   | Puppeteer | AWS  |
-| Ruby on Rails (RoR)   | Ember.js | Selenium | DO |
-| C#    | Vue.js  | - | Azure |
-| PHP  |  -  | - |  |
+### At a Glance
 
+- **10+ years** shipping software across backend, frontend, and infrastructure.
+- **5+ years** focused on Voice AI and conversational systems.
+- **Core strengths**: latency, reliability, and production readiness.
 
+### Current Focus
 
+**Goodcall (Remote) - Senior Software Engineer (Sep 2024 - Present)**
+
+- Building Goodcall's 4th-generation LLM-first voice agent for SMB phone automation, with the engineering team.
+- Building real-time voice infrastructure (LiveKit/WebRTC) and a production speech pipeline (ASR -> LLM -> TTS).
+- Integrating GPT-4 and Gemini with routing and fallback to balance quality, latency, and cost.
+
+### Tech Stack
+
+Node.js, TypeScript, Python, React, WebRTC, LiveKit, Dialogflow, GPT-4, Gemini, GCP, Terraform
+
+### Open To
+
+Senior IC roles where I can own real-time AI systems end-to-end (voice, agent orchestration, and production infra).
+
+If you want my full CV, contact me and I can share it directly.

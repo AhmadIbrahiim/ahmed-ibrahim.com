@@ -1,41 +1,53 @@
-import React, { Component } from 'react'
-import { Helmet } from 'react-helmet'
+import React from 'react'
 import { Link, graphql } from 'gatsby'
 import kebabCase from 'lodash.kebabcase'
 import Layout from '../layout'
 import SEO from '../components/SEO'
 import config from '../../data/SiteConfig'
 
-export default class CategoriesPage extends Component {
-  render() {
-    const { data } = this.props
-    const { group } = data.allMarkdownRemark
+export default function CategoriesPage({ data }) {
+  const { group } = data.allMarkdownRemark
 
-    return (
-      <Layout>
-        <SEO />
-        <Helmet title={`Categories – ${config.siteTitle}`} />
-        <div className="container">
-          <h1>Categories</h1>
-          <div className="tag-container">
-            {group.map(category => (
-              <Link to={`/categories/${kebabCase(category.fieldValue)}`} key={category.fieldValue}>
-                <span key={category.fieldValue}>
-                  {category.fieldValue} <strong className="count">{category.totalCount}</strong>
-                </span>
-              </Link>
-            ))}
-          </div>
+  return (
+    <Layout>
+      <div className="page-shell">
+        <div className="label">Index</div>
+        <h1>Categories.</h1>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {group.map(category => (
+            <Link
+              to={`/categories/${kebabCase(category.fieldValue)}/`}
+              key={category.fieldValue}
+              style={{
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: 11,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                border: '1.5px solid #000',
+                padding: '6px 10px',
+                color: '#000',
+                fontWeight: 600,
+                textDecoration: 'none',
+              }}
+            >
+              {category.fieldValue}{' '}
+              <span style={{ color: '#666' }}>({category.totalCount})</span>
+            </Link>
+          ))}
         </div>
-      </Layout>
-    )
-  }
+      </div>
+    </Layout>
+  )
+}
+
+export function Head() {
+  return <SEO title={`Categories – ${config.siteTitle}`} />
 }
 
 export const pageQuery = graphql`
   query CategoriesQuery {
     allMarkdownRemark(limit: 2000) {
-      group(field: frontmatter___categories) {
+      group(field: { frontmatter: { categories: SELECT } }) {
         fieldValue
         totalCount
       }

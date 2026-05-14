@@ -1,193 +1,97 @@
 ---
-title: Learning in Public
+title: Ahmed Ibrahim - CV
 slug: learn
 template: page
 ---
 
-There's a lot I want to learn, and a lot I've learned and documented. Here's where I list both.
+Ahmed Ibrahim Alazp  
+Senior Software Engineer | Voice AI & LLM Systems  
+[me@ahmed-ibrahim.com](mailto:me@ahmed-ibrahim.com) | (206) 535-4401 | Seattle, WA  
+[GitHub](https://github.com/ahmadibrahiim) | LinkedIn
 
-## To Learn
+## Profile
 
-My current focus is **Computer Science** fundamentals and all things **JavaScript**. (They stay here until I write about it.)
+Senior Software Engineer who has spent 5+ years building Voice AI agents that answer real business phone calls at scale. Core engineer on Goodcall's 4th-generation voice agent: an LLM-powered system handling thousands of live calls daily for hundreds of US businesses. Built through three generations of conversational AI (rule-based -> Dialogflow -> LLM), with end-to-end depth across real-time audio pipelines, speech processing, LLM orchestration, and production infrastructure on GCP. 10+ years of shipping software, with a bias toward complex systems that need to work in real time.
 
-### JavaScript
+## Work Experience
 
-#### Concepts
+### Goodcall (Remote)
+**Senior Software Engineer** | Sep 2024 - Present
 
-- [ ] Promises, Async/Await, Microtasks, and the Event Loop
-- [ ] Bitwise Operators
+- Drove architecture and development of Goodcall's 4th-generation Voice AI agent — a ground-up LLM-first rebuild, alongside the engineering team.
+- Engineered real-time voice infrastructure on LiveKit/WebRTC with sub-second response latency across thousands of daily calls and 99.9%+ uptime.
+- Built LLM orchestration integrating GPT-4 and Gemini with model routing, streaming token delivery, and automatic fallback.
+- Designed the speech pipeline (ASR -> LLM -> TTS) with barge-in detection, silence handling, and context windowing for natural conversations.
+- Drove voice stack decisions from telephony integration to prompt engineering for a product serving hundreds of US businesses.
 
-#### Document Object Model (DOM) and Web APIs
+**Full Stack Engineer** | Mar 2021 - Sep 2024
 
-- [ ] Scrolling
-- [ ] Drag and Drop
-- [ ] WebSockets
-- [ ] File Handling
+- Evolved the AI agent across two generations: Dialogflow-based Gen 2 to hybrid NLU + early LLM Gen 3.
+- Improved call resolution accuracy and expanded supported business categories.
 
-### Databases/APIs
+### Maxiom Technology (Remote)
+**Software Engineer** | Aug 2019 - Feb 2021
 
-- [ ] GraphQL
-- [ ] NoSQL (MongoDB, Firebase)
-- [x] Swagger - UI, Codegen, Docs
+- Built software automation tools with Ruby on Rails, Node.js, React, Ember.js, and Redis.
+- Created and maintained REST APIs in Rails, including Amazon API integrations.
+- Built and managed Electron + Node.js + PubSub applications.
+- Automated delivery with GitLab CI/CD, CircleCI, and Jenkins.
 
-### Tools/Frameworks/Concepts
+### 04 Egypt (Cairo, Egypt)
+**Co-Founder & Software Engineer** | Mar 2018 - Aug 2019
 
-- [x] Webpack
-- [x] VueX
+- Built and designed core architecture for Plot.ai, a Slack-like AI platform for organizational insights.
+- Developed core features with Node.js, Python, AWS Sentiment Analysis, and Elasticsearch.
+- Performed load and stress testing using JMeter.
+- Led a team of 7 engineers across DevOps, QA, and development.
 
-### Networking
+### Chatbotsa (Cairo, Egypt)
+**Software Engineer** | Mar 2017 - Mar 2018
 
-- [ ] Sockets
+- Built and integrated bots for Messenger, Slack, and Telegram.
+- Built structured bot models with Node.js, Python, MongoDB, and MySQL.
+- Applied NLP/NLU with Wit.ai and Rasa to improve conversational quality.
+- Built and launched Estasharah, a doctor/patient consultation marketplace with 20k+ consultations, 350k+ users, and 700+ verified doctors.
 
-### Computer Science
+### 04 Technologies (UAE, Remote)
+**Software Engineer** | Sep 2016 - Mar 2017
 
-#### Algorithms
+- Built and integrated bots for Messenger, Slack, and Telegram.
+- Built structured bot models with Node.js, Python, MongoDB, and MySQL.
+- Applied NLP/NLU with Wit.ai and Rasa to improve conversational interactions.
 
-- [x] **Complexity** (Big O notation)
-  - [x] Size complexity
-  - [x] Time complexity
-- [ ] **Sorting**
-  - [ ] Bubble
-  - [ ] Insertion
-  - [ ] Selection
-  - [ ] Merge
-  - [ ] Heap
-  - [ ] Quick
-- [ ] **Searching**
-  - [ ] Binary search
-- [ ] Pattern matching
-- [ ] Recursion
+## Personal Projects
 
-#### Data Structures
+- **Ahmed-ibrahim.com**: Personal blog for technical writing and development challenges.
+- **3lagnb.com**: Local transportation guide serving 500k+ users and millions of monthly sessions.
+- **Mogrib.com**: Arabic Q&A experience-sharing platform.
+- **Imageiry.com**: Dynamic Open Graph image generation API for Twitter, Facebook, and Slack.
+- **Blood Bot**: Messenger bot for nearby blood donation requests; nominated by Facebook as a top-20 chatbot in MENA (2018).
+- **Webloader**: Open-source website asset downloader with 200+ GitHub stars, built with cURL, Express, and Socket.io.
 
-- [ ] Lists
-  - [ ] Arrays
-  - [ ] Linked lists
-    - [ ] Singly linked lists
-    - [ ] Doubly linked lists
-- [ ] Stack
-- [ ] Queue
-- [ ] Hash tables
-- [ ] Trees
-  - [ ] Binary tree
-  - [ ] Segment tree
-- [ ] Heap
-- [ ] Graph
+## Education
 
-## Learned
+**Bachelor of Computer Science (GPA 3.12)**  
+Higher Institute of Computer Science, Cairo, Egypt | 2014 - 2018
 
-This is not everything I know, but a good amount of the things I've documented since I started this site.
+## Highlights & Accolades
 
-### JavaScript
+- Interview with Alghad TV (AI-assisted blood donation project)
+- Interview with Nile News TV (AI-assisted blood donation project)
+- Interview with Ten TV (AI-assisted blood donation project)
+- News coverage for blood donation AI project
+- Speaker at ICT Conference for Women in Upper Egypt
+- Speaker at Egypt.Future for college students
+- Facebook Developer Challenge finalist across MENA
+- 2nd place in Bedaya programming competition
+- 2nd place across Egypt in Egypt IoT competition
 
-#### Concepts
+## References
 
-- [x] [Syntax and Code Structure](/understanding-syntax-and-code-structure-in-javascript)
-- [x] [Comments](/how-to-write-comments-in-javascript)
-- [x] [Datatypes](/javascript-day-one)
-- [x] [Strings](/how-to-work-with-strings-in-javascript)
-- [x] [Strings (cont.)](/how-to-index-split-and-manipulate-strings-in-javascript)
-- [x] [Variables, Scope and Hoisting](/understanding-variables-scope-hoisting-in-javascript)
-- [x] [Math](/how-to-do-math-in-javascript-with-operators)
-- [x] [Arrays](/understanding-arrays-in-javascript)
-- [x] [Array Methods - Mutator](/how-to-use-array-methods-in-javascript-mutator-methods)
-- [x] [Array Methods - Accessor](/how-to-use-array-methods-in-javascript-accessor-methods)
-- [x] [Array Methods - Iteration](/how-to-use-array-methods-in-javascript-iteration-methods)
-- [x] [Objects](/understanding-objects-in-javascript)
-- [x] [Object Methods](/how-to-use-object-methods-in-javascript)
-- [x] [Date and Time](/understanding-date-and-time-in-javascript)
-- [x] [Conditional Statements and Logic](/how-to-write-conditional-statements-in-javascript)
-- [x] [Switch](/how-to-use-the-switch-statement-in-javascript)
-- [x] [While and Do While Loops](/while-do-while-loops-javascript)
-- [x] [For Loops](/how-to-construct-for-loops-in-javascript)
-- [x] [Functions](/how-to-define-functions-in-javascript)
-- [x] [Prototypes and Inheritance](/understanding-prototypes-and-inheritance-in-javascript)
-- [x] [Classes](/understanding-classes-in-javascript)
-- [x] [ES6](/es6-syntax-and-feature-overview/)
-- [x] [Buffers](/bits-bytes-bases-and-a-hex-dump-javascript/)
-- [x] [MVC - Model View Controller](/javascript-mvc-todo-app)
-- [x] [Bind, Call, Apply and `this`](/this-bind-call-apply-javascript/)
-- [x] [Map and Set](/understanding-map-and-set-javascript)
-- [x] [Generators](/understanding-generators-in-javascript)
-- [x] [Default Parameters](/default-parameters-javascriptt)
+- Antonio Chagoury — Founder & CEO at Maxiom Technology
+- Vince Knight — Product Owner at landlordlane.com
+- Dr. Ahmed AlFalasi — Entrepreneur, intrapreneur, and angel investor
+- Rashed Khalfan — Angel investor & Co-Founder of ZeroFour Technologies FZCO
+- Eslam M. Youssef — Founder and CEO of Chatbotsa
 
-#### Document Object Model (DOM)
-
-- [x] [The DOM](/introduction-to-the-dom)
-- [x] [DOM Tree and Nodes](/understanding-the-dom-tree-and-nodes)
-- [x] [Accessing the DOM](/how-to-access-elements-in-the-dom)
-- [x] [Traversing the DOM](/how-to-traverse-the-dom)
-- [x] [Changing the DOM](/how-to-make-changes-to-the-dom)
-- [x] [Events](/understanding-events-in-javascript)
-- [x] [Local and Session Storage](/how-to-use-local-storage-with-javascript/)
-- [x] [Security and Authentication: Cookies, Local Storage](/full-stack-cookies-localstorage-react-express/)
-
-#### Frameworks/Libraries
-
-- [x] [Vue.js](/getting-started-with-vue)
-- [x] [React](/getting-started-with-react/)
-  - [x] [Hooks API](/crud-app-in-react-with-hooks/)
-  - [x] [Context API](https://www.ahmed-ibrahim.com/using-context-api-in-react/)
-  - [x] [Content Editable](/content-editable-elements-in-javascript-react/)
-- [x] [Redux](redux-react-guide)
-- [x] [jQuery](/how-to-use-jquery-a-javascript-library/)
-
-#### Databases/APIs
-
-- [x] [SQL](/overview-of-sql-commands-and-pdo-operations/)
-- [x] [Production Node.js, Express REST API with PostgreSQL + Deploying to Heroku](/node-express-postgresql-heroku)
-
-### DevOps, Automation, Testing
-
-- [x] [AWS S3, EC2, RDS, Route 53](/getting-started-with-aws-setting-up-a-virtual-server/)
-- [x] [Vagrant/VirtualBox](/what-are-vagrant-and-virtualbox-and-how-do-i-use-them/)
-- [x] [Docker and creating a CI/CD pipeline, JWT client side handling](/continuous-integration-pipeline-docker)
-- [x] [JavaScript Unit Tests with Jest or Mocha](/unit-testing-in-javascript/)
-
-### CSS
-
-- [x] [CSS](/overview-of-css-concepts/)
-  - [x] [CSS Syntax](/overview-of-css-concepts/#css-syntax)
-  - [x] [CSS Selectors](/overview-of-css-concepts/#css-selectors)
-  - [x] [CSS Specificity](/overview-of-css-concepts/#css-specificity)
-  - [x] [CSS Properties](/overview-of-css-concepts/#css-properties)
-  - [x] [CSS Spacing Out](/overview-of-css-concepts/#spacing-out-padding-and-margins)
-  - [x] [CSS Box Model](/overview-of-css-concepts/#box-model)
-  - [x] [CSS Shorthand Properties](/overview-of-css-concepts/#shorthand-properties)
-  - [x] [CSS Layouts: Display](/overview-of-css-concepts/#layouts-display)
-  - [x] [CSS Layouts: Positioning](/overview-of-css-concepts/#layouts-positioning)
-  - [x] [CSS Layouts: Flex](/overview-of-css-concepts/#layouts-flex)
-- [x] [CSS Responsive (Media Queries, Breakpoints)](/you-dont-need-a-framework/)
-- [x] [CSS Shapes](https://tympanus.net/codrops/2018/11/29/an-introduction-to-css-shapes/)
-- [x] [Sass/SCSS](/learn-sass-now/)
-- [x] [Bootstrap](/what-is-bootstrap-and-how-do-i-use-it/)
-
-### Tools/Frameworks/Concepts
-
-- [x] **Git**
-  - [x] [Push, Pull, Commit](/getting-started-with-git/)
-  - [x] **Merge, Rebase, Branch, Stash, Pull Request**
-- [x] [Mac Development](/setting-up-a-brand-new-mac-for-development/)
-- [x] [Command Line](/how-to-use-the-command-line-for-apple-macos-and-linux/)
-- [x] [Grunt](/getting-started-with-grunt-and-sass/)
-- [x] [Gulp](/getting-started-with-gulp/)
-- [x] [Node.js Ecosystem](/how-to-install-and-use-node-js-and-npm-mac-and-windows/)
-- [x] [Express](https://code.tutsplus.com/tutorials/code-your-first-api-with-nodejs-and-express-set-up-the-server--cms-31698)
-- [x] [LAMP Environment](/local-environment/)
-- [x] [Apache/Virtual Hosts](/setting-up-virtual-hosts/)
-- [x] [JSON](/how-to-use-json-data-with-php-or-javascript/)
-- [x] [REST API](/how-to-connect-to-an-api-with-javascript/)
-- [x] [SSL/TLS](/https-ssl-tls-certificate-how-to/)
-- [x] [Static Site Generators](/make-a-static-website-with-jekyll/)
-- [x] [Bash](/how-to-create-and-use-bash-scripts/)
-- [x] [Object-Oriented Paradigm](/object-oriented-pattern-javascript-php-classes/)
-
-### PHP
-
-- [x] [Authentication, Routing, Sessions (via Laconia MVC)](https://laconia.dev)
-- [x] [CRUD: Creating and Reading](/create-a-simple-database-app-connecting-to-mysql-with-php/)
-- [x] [CRUD: Updating and Deleting](/create-a-simple-crud-database-app-php-update-delete/)
-- [x] [File Uploads](/how-to-upload-files-to-a-server-with-plain-javascript-and-php/)
-- [x] [WordPress Basics](/developing-a-wordpress-theme-from-scratch/)
-- [x] [WordPress Intermediate](/wordpress-from-scratch-part-two/)
-- [x] [WordPress Custom Fields](/wordpress-part-three-custom-fields-and-metaboxes/)
+Contacts upon request.

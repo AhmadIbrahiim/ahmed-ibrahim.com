@@ -1,7 +1,10 @@
+@use 'sass:color';
+@use '../base/globals' as *;
+
 $background: #202020;
 $foreground: #b3b9c5;
 $accent: #303030;
-$dark-border: darken($background, 3%);
+$dark-border: color.adjust($background, $lightness: -3%);
 $dark-primary: $tag;
 
 .dark {
@@ -14,7 +17,7 @@ $dark-primary: $tag;
     &:hover,
     &:active,
     &:focus {
-      color: darken($dark-primary, 15%);
+      color: color.adjust($dark-primary, $lightness: -15%);
       background: transparent;
     }
   }
@@ -30,7 +33,7 @@ $dark-primary: $tag;
         background: transparent !important;
 
         &:hover {
-          color: darken($dark-primary, 15%);
+          color: color.adjust($dark-primary, $lightness: -15%);
         }
       }
       &.patreon:not(.button):not(.anchor):not(.gatsby-resp-image-link) {
@@ -39,7 +42,7 @@ $dark-primary: $tag;
         &:hover,
         &:focus,
         &:active {
-          background: darken(#f96854, 10%) !important;
+          background: color.adjust(#f96854, $lightness: -10%) !important;
           color: white !important;
         }
       }
@@ -50,7 +53,7 @@ $dark-primary: $tag;
     h2 {
       a.view-all {
         background: rgba(0, 0, 0, 0.2);
-        color: darken($foreground, 10%);
+        color: color.adjust($foreground, $lightness: -10%);
         &:hover,
         &:focus {
           background: black;
@@ -67,14 +70,14 @@ $dark-primary: $tag;
       padding: 1px 2px;
 
       &:hover {
-        background: darken($dark-primary, 10%);
+        background: color.adjust($dark-primary, $lightness: -10%);
         color: white;
         border-radius: 4px;
       }
 
       &:active,
       &:focus {
-        background: darken($dark-primary, 10%);
+        background: color.adjust($dark-primary, $lightness: -10%);
         color: white;
         border-radius: 4px;
       }
@@ -101,12 +104,12 @@ $dark-primary: $tag;
     border-color: $background;
 
     &.scroll {
-      background: darken($background, 5%);
-      border-color: darken($background, 5%);
+      background: color.adjust($background, $lightness: -5%);
+      border-color: color.adjust($background, $lightness: -5%);
     }
 
     .brand a {
-      color: lighten($foreground, 5%);
+      color: color.adjust($foreground, $lightness: 5%);
 
       &:hover {
         color: #eee;
@@ -114,7 +117,7 @@ $dark-primary: $tag;
     }
 
     .links a {
-      color: darken($foreground, 20%);
+      color: color.adjust($foreground, $lightness: -20%);
 
       &:hover,
       &.active {
@@ -168,7 +171,7 @@ $dark-primary: $tag;
       border-bottom-color: $dark-border;
 
       h2 {
-        color: lighten($comment, 10%);
+        color: color.adjust($comment, $lightness: 10%);
       }
 
       &:hover {
@@ -212,7 +215,7 @@ $dark-primary: $tag;
       .each {
         border-bottom: 1px solid $dark-border;
         h2 {
-          color: lighten($comment, 10%);
+          color: color.adjust($comment, $lightness: 10%);
         }
 
         &:hover {
@@ -269,20 +272,20 @@ $dark-primary: $tag;
   }
 
   th {
-    border-bottom: 2px solid darken($background, 5%);
+    border-bottom: 2px solid color.adjust($background, $lightness: -5%);
   }
 
   // Extra border above footer
   tfoot th {
-    border-top: 2px solid darken($background, 8%);
+    border-top: 2px solid color.adjust($background, $lightness: -8%);
   }
 
   td {
-    border-bottom: 2px solid darken($background, 8%);
+    border-bottom: 2px solid color.adjust($background, $lightness: -8%);
   }
 
   tbody tr:nth-child(even) {
-    background-color: lighten($background, 5%);
+    background-color: color.adjust($background, $lightness: 5%);
   }
 
   pre code {
@@ -296,9 +299,9 @@ $dark-primary: $tag;
 
   .instruction-manuals {
     > a {
-      background: lighten($background, 4%);
+      background: color.adjust($background, $lightness: 4%);
       &:hover {
-        background: lighten($background, 8%);
+        background: color.adjust($background, $lightness: 8%);
       }
     }
   }
@@ -312,11 +315,11 @@ $dark-primary: $tag;
     }
 
     a {
-      color: lighten($yellow, 25%) !important;
+      color: color.adjust($yellow, $lightness: 25%) !important;
       border-bottom: $yellow !important;
 
       &:hover {
-        color: darken($yellow, 15%) !important;
+        color: color.adjust($yellow, $lightness: -15%) !important;
         background: #111 !important;
       }
     }
@@ -345,10 +348,10 @@ $dark-primary: $tag;
     }
 
     a {
-      color: darken($foreground, 20%);
+      color: color.adjust($foreground, $lightness: -20%);
 
       &:hover {
-        color: lighten($foreground, 10%);
+        color: color.adjust($foreground, $lightness: 10%);
       }
     }
   }
@@ -371,7 +374,7 @@ $dark-primary: $tag;
   #{$buttons} {
     color: white;
     border: 2px solid transparent;
-    background: darken($dark-primary, 30%) !important;
+    background: color.adjust($dark-primary, $lightness: -30%) !important;
 
     &:disabled {
       cursor: default;
@@ -383,7 +386,7 @@ $dark-primary: $tag;
     &:focus,
     &:active {
       border: 2px solid transparent;
-      background: darken($dark-primary, 20%) !important;
+      background: color.adjust($dark-primary, $lightness: -20%) !important;
       color: white;
     }
   }
@@ -441,7 +444,7 @@ $dark-primary: $tag;
       &:focus,
       &:active {
         background: #080808 !important;
-        color: lighten($dark-primary, 10%) !important;
+        color: color.adjust($dark-primary, $lightness: 10%) !important;
       }
     }
   }
@@ -464,7 +467,7 @@ $dark-primary: $tag;
 
       &:hover {
         background: #111;
-        color: lighten($dark-primary, 10%);
+        color: color.adjust($dark-primary, $lightness: 10%);
       }
     }
   }
@@ -474,7 +477,7 @@ $dark-primary: $tag;
   }
 
   .comments .comment header h2 {
-    color: lighten($foreground, 12%);
+    color: color.adjust($foreground, $lightness: 12%);
   }
 
   .comments .comment.reply {
@@ -483,7 +486,7 @@ $dark-primary: $tag;
   }
 
   mark {
-    background: darken($dark-primary, 20%);
+    background: color.adjust($dark-primary, $lightness: -20%);
     color: white;
   }
 

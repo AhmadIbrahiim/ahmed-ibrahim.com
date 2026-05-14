@@ -1,67 +1,44 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Link } from 'gatsby'
-import Img from 'gatsby-image'
-import moment from 'moment'
+import { GatsbyImage, getImage } from 'gatsby-plugin-image'
 
-import { formatDate } from '../utils/global'
+const formatDate = iso => {
+  if (!iso) return ''
+  return new Date(iso).toLocaleDateString('en-US', {
+    month: 'short',
+    year: 'numeric',
+  })
+}
 
-export default class PostListing extends Component {
-  getPostList() {
-    const { postEdges } = this.props
-    const postList = postEdges.map(postEdge => {
-      return {
-        path: postEdge.node.fields.slug,
-        tags: postEdge.node.frontmatter.tags,
-        thumbnail: postEdge.node.frontmatter.thumbnail,
-        title: postEdge.node.frontmatter.title,
-        date: postEdge.node.fields.date,
-        excerpt: postEdge.node.excerpt,
-        timeToRead: postEdge.node.timeToRead,
-        categories: postEdge.node.frontmatter.categories,
-      }
-    })
-    return postList
-  }
+const initialsFor = title =>
+  title
+    .split(/\s+/)
+    .map(w => w[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
 
-  render() {
-    const { simple } = this.props
-    const postList = this.getPostList()
-
-    return (
-      <section className={`posts ${simple ? 'simple' : ''}`}>
-        {postList.map(post => {
-          let thumbnail
-          if (post.thumbnail) {
-            thumbnail = post.thumbnail.childImageSharp.fixed
-          }
-
-          const popular = post.categories.includes('Popular')
-          const date = formatDate(post.date)
-          const newest = moment(post.date) > moment().subtract(1, 'months')
-
-          return (
-            <Link to={post.path} key={post.title}>
-              <div className="each">
-                {thumbnail ? <Img fixed={thumbnail} /> : <div />}
-                <div className="each-list-item">
-                  <h2>{post.title}</h2>
-                  {!simple && <div className="datetime">{date}</div>}
-                </div>
-                {newest && (
-                  <div className="alert">
-                    <div className="new">New!</div>
-                  </div>
-                )}
-                {popular && !simple && !newest && (
-                  <div className="alert">
-                    <div className="popular">Popular</div>
-                  </div>
-                )}
-              </div>
-            </Link>
-          )
-        })}
-      </section>
-    )
-  }
+export default function PostListing({ postEdges }) {
+  return (
+    <ul className="posts-list">
+      {postEdges.map(({ node }) => {
+        const thumb = getImage(node.frontmatter.thumbnail)
+        const title = node.frontmatter.title
+        return (
+          <li key={node.fields.slug}>
+            {thumb ? (
+              <GatsbyImage image={thumb} alt="" />
+            ) : (
+              <span className="thumb-fallback" aria-hidden="true">
+                {initialsFor(title)}
+              </span>
+            )}
+            <Link to={node.fields.slug}>{title}</Link>
+            <span className="date">{formatDate(node.fields.date)}</span>
+          </li>
+        )
+      })}
+    </ul>
+  )
 }

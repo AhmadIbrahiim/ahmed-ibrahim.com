@@ -1,52 +1,45 @@
-import React, { Component } from 'react'
-import Helmet from 'react-helmet'
-import ThemeContext from '../context/ThemeContext'
+import React, { useEffect } from 'react'
+import { Link } from 'gatsby'
 import Layout from '../layout'
 import SEO from '../components/SEO'
 import config from '../../data/SiteConfig'
+import { useTheme } from '../context/ThemeContext'
 
-export default class NotFoundPage extends Component {
-  static contextType = ThemeContext
+export default function NotFoundPage() {
+  const { setFound, setNotFound } = useTheme()
 
-  componentDidMount() {
-    const { setNotFound } = this.context
-
+  useEffect(() => {
     setNotFound()
-  }
+    return () => {
+      setFound()
+    }
+  }, [setFound, setNotFound])
 
-  componentWillUnmount() {
-    const { setFound } = this.context
+  return (
+    <Layout>
+      <div className="page-shell">
+        <div className="label">Error</div>
+        <h1>404.</h1>
+        <p
+          style={{
+            fontFamily: 'JetBrains Mono, monospace',
+            color: '#1a1a1a',
+            fontSize: 14,
+            lineHeight: 1.7,
+            maxWidth: 540,
+          }}
+        >
+          The page you&apos;re looking for doesn&apos;t exist — it may have been moved,
+          renamed, or never existed in the first place.
+        </p>
+        <Link to="/" className="btn" style={{ marginTop: 18 }}>
+          ← Back home
+        </Link>
+      </div>
+    </Layout>
+  )
+}
 
-    setFound()
-  }
-
-  render() {
-    return (
-      <Layout>
-        <Helmet title={`Page not found – ${config.siteTitle}`} />
-        <SEO />
-        <div className="container">
-          <div className="text-center">
-            <h1>404</h1>
-          </div>
-          <p>
-            A fatal exception 0E has occurred at <span className="Ahmed">0x74616e6961</span> in 404:
-            page not found.
-          </p>
-          <div className="list">
-            <p>
-              <span className="bullet">*</span> Click any link to terminate the current application.
-            </p>
-            <p>
-              <span className="bullet">*</span> Press ALT + F4 again to restart your browser. You
-              will lose any unsaved information in all tabs.
-            </p>
-          </div>
-          <p className="text-right">
-            Click any link to continue<span className="blink">&#9608;</span>
-          </p>
-        </div>
-      </Layout>
-    )
-  }
+export function Head() {
+  return <SEO title={`404 – ${config.siteTitle}`} />
 }

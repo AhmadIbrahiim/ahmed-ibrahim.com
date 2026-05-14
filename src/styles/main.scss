@@ -1,27 +1,8 @@
-/*! Primitive
-  by Ahmed Ibrahim */
- 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+/*! Design system v1
+ *  ahmed-ibrahim.com — brutalist editorial × terminal voice
+ *  Source: DESIGN.md
+ */
 
-// Configuration
-@import 'base/variables';
-@import 'base/mixins';
-
-// Reset
-@import 'base/reset';
-
-// Components
-@import 'components/scaffolding';
-@import 'components/helpers';
-@import 'components/buttons';
-@import 'components/forms';
-@import 'components/tables';
-@import 'components/navigation';
-@import 'components/layout';
-@import 'components/new-moon';
-
-// Themes
-
-@import 'themes/dark';
-@import 'themes/404';
+@use 'base/reset';
+@use 'components/layout';
+@use 'components/new-moon';

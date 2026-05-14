@@ -1,20 +1,31 @@
-import React, { Component } from 'react'
+import React from 'react'
 import kebabCase from 'lodash.kebabcase'
 import { Link } from 'gatsby'
 
-export default class PostTags extends Component {
-  render() {
-    const { tags, size } = this.props
+export default function PostTags({ tags }) {
+  if (!tags || tags.length === 0) return null
 
-    return (
-      <div className="tag-container">
-        {tags &&
-          tags.map(tag => (
-            <Link key={tag} style={{ textDecoration: 'none' }} to={`/tags/${kebabCase(tag)}/`}>
-              <span className={size}>{tag}</span>
-            </Link>
-          ))}
-      </div>
-    )
-  }
+  return (
+    <div className="post-tags" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 14 }}>
+      {tags.map(tag => (
+        <Link
+          key={tag}
+          to={`/tags/${kebabCase(tag)}/`}
+          style={{
+            fontFamily: 'JetBrains Mono, monospace',
+            fontSize: 10,
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+            border: '1.5px solid #000',
+            padding: '4px 8px',
+            color: '#000',
+            fontWeight: 600,
+            textDecoration: 'none',
+          }}
+        >
+          {tag}
+        </Link>
+      ))}
+    </div>
+  )
 }

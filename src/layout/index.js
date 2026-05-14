@@ -1,40 +1,27 @@
-import React, { Component } from 'react'
-import Helmet from 'react-helmet'
-import ThemeContext from '../context/ThemeContext'
+import React from 'react'
 import Navigation from '../components/Navigation'
 import Footer from '../components/Footer'
 import config from '../../data/SiteConfig'
-import favicon from '../images/favicon.png'
+import { useTheme } from '../context/ThemeContext'
 import '../styles/main.scss'
 
-export default class MainLayout extends Component {
-  static contextType = ThemeContext
+export default function MainLayout({ children, hideChrome = false }) {
+  const { dark, notFound } = useTheme()
+  let themeClass = ''
 
-  render() {
-    const { dark, notFound } = this.context
-    const { children } = this.props
-    let themeClass = ''
-    
-    if (dark && !notFound) {
-      themeClass = 'dark'
-    } else if (notFound) {
-      themeClass = 'not-found'
-    }
-
-    return (
-      <>
-        <Helmet
-          bodyAttributes={{
-            class: `theme ${themeClass}`,
-          }}
-        >
-          <meta name="description" content={config.siteDescription} />
-          <link rel="shortcut icon" type="image/png" href={favicon} />
-        </Helmet>
-        <Navigation menuLinks={config.menuLinks} />
-        <main id="main-content">{children}</main>
-        <Footer />
-      </>
-    )
+  if (notFound) {
+    themeClass = 'not-found'
+  } else if (dark) {
+    themeClass = 'dark'
   }
+
+  return (
+    <div className={`theme${themeClass ? ` ${themeClass}` : ''}`}>
+      <div className="shell">
+        {!hideChrome && <Navigation menuLinks={config.menuLinks} />}
+        <main id="main-content">{children}</main>
+        {!hideChrome && <Footer />}
+      </div>
+    </div>
+  )
 }

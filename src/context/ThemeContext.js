@@ -1,67 +1,52 @@
-import React, { Component } from 'react'
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 const defaultState = {
   dark: false,
   notFound: false,
   toggleDark: () => {},
+  setNotFound: () => {},
+  setFound: () => {},
 }
 
-const ThemeContext = React.createContext(defaultState)
+const ThemeContext = createContext(defaultState)
 
-class ThemeProvider extends Component {
-  state = {
-    dark: false,
-    notFound: false,
-  }
-
-  componentDidMount() {
-    const lsDark = JSON.parse(localStorage.getItem('dark'))
-
-    if (lsDark) {
-      this.setState({ dark: lsDark })
+function ThemeProvider({ children }) {
+  const [dark, setDark] = useState(() => {
+    if (typeof window === 'undefined') {
+      return false
     }
-  }
 
-  componentDidUpdate(prevState) {
-    const { dark } = this.state
+    const storedTheme = window.localStorage.getItem('dark')
+    return storedTheme ? JSON.parse(storedTheme) : false
+  })
+  const [notFound, setNotFound] = useState(false)
 
-    if (prevState.dark !== dark) {
-      localStorage.setItem('dark', JSON.stringify(dark))
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
     }
-  }
 
-  toggleDark = () => {
-    this.setState(prevState => ({ dark: !prevState.dark }))
-  }
+    window.localStorage.setItem('dark', JSON.stringify(dark))
+  }, [dark])
 
-  setNotFound = () => {
-    this.setState({ notFound: true })
-  }
+  const value = useMemo(
+    () => ({
+      dark,
+      notFound,
+      toggleDark: () => setDark(currentDark => !currentDark),
+      setNotFound: () => setNotFound(true),
+      setFound: () => setNotFound(false),
+    }),
+    [dark, notFound]
+  )
 
-  setFound = () => {
-    this.setState({ notFound: false })
-  }
-
-  render() {
-    const { children } = this.props
-    const { dark, notFound } = this.state
-
-    return (
-      <ThemeContext.Provider
-        value={{
-          dark,
-          notFound,
-          setFound: this.setFound,
-          setNotFound: this.setNotFound,
-          toggleDark: this.toggleDark,
-        }}
-      >
-        {children}
-      </ThemeContext.Provider>
-    )
-  }
+  return (
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  )
 }
+
+const useTheme = () => useContext(ThemeContext)
 
 export default ThemeContext
 
-export { ThemeProvider }
+export { ThemeProvider, useTheme }

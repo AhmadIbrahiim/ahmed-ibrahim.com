@@ -1,21 +1,30 @@
-const urljoin = require('url-join')
 const config = require('./data/SiteConfig')
+
+const joinUrl = (...parts) =>
+  parts
+    .filter(Boolean)
+    .map((part, index) =>
+      index === 0 ? part.replace(/\/+$/g, '') : part.replace(/^\/+|\/+$/g, '')
+    )
+    .join('/')
+
+const siteUrl = joinUrl(config.siteUrl, config.pathPrefix)
 
 module.exports = {
   pathPrefix: config.pathPrefix === '' ? '/' : config.pathPrefix,
   siteMetadata: {
-    siteUrl: urljoin(config.siteUrl, config.pathPrefix),
+    siteUrl,
     rssMetadata: {
-      site_url: urljoin(config.siteUrl, config.pathPrefix),
-      feed_url: urljoin(config.siteUrl, config.pathPrefix, config.siteRss),
+      site_url: siteUrl,
+      feed_url: joinUrl(siteUrl, config.siteRss),
       title: config.siteTitle,
       description: config.siteDescription,
-      image_url: `${urljoin(config.siteUrl, config.pathPrefix)}/logos/logo-48.png`,
+      image_url: joinUrl(siteUrl, '/logos/logo-48.png'),
     },
   },
   plugins: [
+    'gatsby-plugin-image',
     'gatsby-plugin-sass',
-    'gatsby-plugin-react-helmet',
     {
       resolve: `gatsby-plugin-netlify`,
       options: {
@@ -64,9 +73,13 @@ module.exports = {
       },
     },
     {
-      resolve: 'gatsby-plugin-google-analytics',
+      resolve: 'gatsby-plugin-google-gtag',
       options: {
-        trackingId: config.googleAnalyticsID,
+        trackingIds: config.googleTagId ? [config.googleTagId] : [],
+        pluginConfig: {
+          head: false,
+          respectDNT: true,
+        },
       },
     },
     {
@@ -148,7 +161,7 @@ module.exports = {
             {
               allMarkdownRemark(
                 limit: 1000,
-                sort: { order: DESC, fields: [fields___date] },
+                sort: { fields: { date: DESC } },
                 filter: { frontmatter: { template: { eq: "post" } } }
               ) {
                 edges {

@@ -1,37 +1,34 @@
-import React, { Component } from 'react'
-import Helmet from 'react-helmet'
+import React from 'react'
 import { graphql } from 'gatsby'
 import Layout from '../layout'
 import PostListing from '../components/PostListing'
+import SEO from '../components/SEO'
 import config from '../../data/SiteConfig'
 
-export default class TagTemplate extends Component {
-  render() {
-    const { tag } = this.props.pageContext
-    const postEdges = this.props.data.allMarkdownRemark.edges
+export default function TagTemplate({ data, pageContext }) {
+  const { tag } = pageContext
+  const postEdges = data.allMarkdownRemark.edges
 
-    return (
-      <Layout>
-        <Helmet title={`Posts tagged as "${tag}" – ${config.siteTitle}`} />
-        <div className="container">
-          <h1>
-            Posts tagged as{' '}
-            <u>
-              <strong>{tag}</strong>
-            </u>
-          </h1>
-          <PostListing postEdges={postEdges} />
-        </div>
-      </Layout>
-    )
-  }
+  return (
+    <Layout>
+      <div className="page-shell">
+        <div className="label">Tag</div>
+        <h1>{tag}.</h1>
+        <PostListing postEdges={postEdges} />
+      </div>
+    </Layout>
+  )
+}
+
+export function Head({ pageContext }) {
+  return <SEO title={`Posts tagged "${pageContext.tag}" – ${config.siteTitle}`} />
 }
 
 export const pageQuery = graphql`
   query TagPage($tag: String) {
     allMarkdownRemark(
       limit: 1000
-      sort: { fields: [fields___date], order: DESC }
+      sort: { fields: { date: DESC } }
       filter: { frontmatter: { tags: { in: [$tag] } } }
     ) {
       totalCount
@@ -49,9 +46,7 @@ export const pageQuery = graphql`
             categories
             thumbnail {
               childImageSharp {
-                fixed(width: 150, height: 150) {
-                  ...GatsbyImageSharpFixed
-                }
+                gatsbyImageData(width: 50, height: 50, layout: FIXED, placeholder: BLURRED)
               }
             }
             date
