@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 - `npm run develop` — start the Gatsby dev server (prefer this over `npm run dev`, which shells out to Yarn).
-- `npm run build` — production build into `public/`. Netlify deploys from this; `netlify.toml` overrides locally with `yarn run build`.
+- `npm run build` — production build into `public/`. This is what gets uploaded to Cloudflare Pages (see Deploys).
 - `npm run serve` — serve the built `public/` directory.
 - `npm run clean` — remove `public/` and `.cache/`. Run this when Gatsby's GraphQL schema or `gatsby-node.js` page generation gets out of sync.
 - `npm run lint:js` / `npm run lint:md` / `npm run format:js` — ESLint (Airbnb + Prettier), remark on `content/posts/`, Prettier write.
@@ -53,4 +53,17 @@ This is the core piece of the build to understand:
 
 ### Deploys
 
-Netlify (primary, see `netlify.toml`) builds from `master`. `build:gh` is the GitHub Pages fallback path and uses `--prefix-paths` — only meaningful if `data/SiteConfig.js` has a non-empty `pathPrefix`.
+**Cloudflare Pages** (primary). Project `ahmed-ibrahim` on the ahmed.ibrrahhim@gmail.com Cloudflare account, serving `ahmed-ibrahim.com` + `www` (both CNAME → `ahmed-ibrahim.pages.dev`, proxied; DNS zone is on the same account). Moved off Vercel in Sep 2026 after the Vercel project was paused.
+
+It's a **direct-upload** project — no Git integration, so pushing to `master` does **not** deploy. To ship:
+
+```sh
+npm run build && npx wrangler pages deploy public --project-name ahmed-ibrahim --branch master
+```
+
+- `--branch master` makes it a production deploy; any other branch name gives a preview URL.
+- Wrangler must be logged in (`npx wrangler whoami`; if not, the user runs `! npx wrangler login`).
+- Don't pass `--force` and don't run `wrangler deploy` / `wrangler init`: newer wrangler tries to redirect Pages commands into a Workers setup that writes `wrangler.jsonc` and edits `package.json`/`.gitignore`. If a `wrangler.jsonc` shows up, delete it — its presence breaks `pages deploy`.
+- `.nvmrc` pins Node 22.
+
+Legacy/unused: `netlify.toml` (old Netlify config) and `build:gh` (GitHub Pages via `--prefix-paths`, only meaningful with a non-empty `pathPrefix` in `data/SiteConfig.js`).
