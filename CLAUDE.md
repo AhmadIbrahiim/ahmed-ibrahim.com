@@ -65,5 +65,6 @@ npm run build && npx wrangler pages deploy public --project-name ahmed-ibrahim -
 - Wrangler must be logged in (`npx wrangler whoami`; if not, the user runs `! npx wrangler login`).
 - Don't pass `--force` and don't run `wrangler deploy` / `wrangler init`: newer wrangler tries to redirect Pages commands into a Workers setup that writes `wrangler.jsonc` and edits `package.json`/`.gitignore`. If a `wrangler.jsonc` shows up, delete it — its presence breaks `pages deploy`.
 - `.nvmrc` pins Node 22.
+- DNS: wrangler's OAuth login only gets `zone:read`, and the Cloudflare MCP plugin token can't write DNS or Pages. DNS changes need the dashboard or a user-provided API token with Zone:DNS:Edit.
 
 Legacy/unused: `netlify.toml` (old Netlify config) and `build:gh` (GitHub Pages via `--prefix-paths`, only meaningful with a non-empty `pathPrefix` in `data/SiteConfig.js`).
