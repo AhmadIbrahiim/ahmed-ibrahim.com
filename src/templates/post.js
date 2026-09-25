@@ -1,25 +1,26 @@
-import React from 'react'
-import { graphql, Link } from 'gatsby'
-import kebabCase from 'lodash.kebabcase'
-import Layout from '../layout'
-import SEO from '../components/SEO'
-import config from '../../data/SiteConfig'
-import { editOnGithub, formatDate } from '../utils/global'
-import ahmed from '../../content/images/profile-small.jpg'
+import React from "react";
+import { graphql, Link } from "gatsby";
+import kebabCase from "lodash.kebabcase";
+import Layout from "../layout";
+import SEO from "../components/SEO";
+import config from "../../data/SiteConfig";
+import { editOnGithub, formatDate } from "../utils/global";
+import ahmed from "../../content/images/profile-small.jpg";
 
 export default function PostTemplate({ data }) {
-  const postNode = data.markdownRemark
-  const post = postNode.frontmatter
-  const date = formatDate(post.date)
-  const githubLink = editOnGithub(post)
-  const twitterShare = `https://twitter.com/share?text=${encodeURIComponent(post.title)}&url=${
-    config.siteUrl
-  }/${post.slug}/&via=Ahmed_ibrahhim`
-  const category = post.categories && post.categories[0]
+  const postNode = data.markdownRemark;
+  const post = postNode.frontmatter;
+  const date = formatDate(post.date);
+  const githubLink = editOnGithub(postNode.parent.relativePath);
+  const twitterShare = `https://twitter.com/share?text=${encodeURIComponent(
+    post.title
+  )}&url=${config.siteUrl}/${post.slug}/&via=Ahmed_ibrahhim`;
+  const category = post.categories && post.categories[0];
 
   return (
     <Layout>
-      <article className="post-shell">
+      <article className="post-shell" id="article-top">
+        <div className="reading-progress" aria-hidden="true" />
         <Link className="back" to="/blog">
           All writing
         </Link>
@@ -58,7 +59,7 @@ export default function PostTemplate({ data }) {
             Article
             {category && (
               <>
-                {' · '}
+                {" · "}
                 <span className="post-kicker-cat">{category}</span>
               </>
             )}
@@ -69,7 +70,9 @@ export default function PostTemplate({ data }) {
             {postNode.timeToRead && (
               <>
                 <span className="sep">·</span>
-                <span className="post-meta-primary">{postNode.timeToRead} min read</span>
+                <span className="post-meta-primary">
+                  {postNode.timeToRead} min read
+                </span>
               </>
             )}
             <span className="sep">·</span>
@@ -83,28 +86,40 @@ export default function PostTemplate({ data }) {
           </div>
         </header>
 
-        <div className="post-body" dangerouslySetInnerHTML={{ __html: postNode.html }} />
+        <div
+          className="post-body"
+          dangerouslySetInnerHTML={{ __html: postNode.html }}
+        />
 
         <footer className="post-footer">
           <div className="post-tags-row">
             {post.tags &&
               post.tags.map(tag => (
-                <Link key={tag} className="post-tag" to={`/tags/${kebabCase(tag)}/`}>
+                <Link
+                  key={tag}
+                  className="post-tag"
+                  to={`/tags/${kebabCase(tag)}/`}
+                >
                   {tag}
                 </Link>
               ))}
           </div>
-          <Link className="more-cta" to="/blog">
-            More writing
-          </Link>
+          <div className="post-footer-links">
+            <Link className="more-cta" to="/blog/">
+              More writing
+            </Link>
+            <a className="quiet-link" href="#article-top">
+              Back to top ↑
+            </a>
+          </div>
         </footer>
       </article>
     </Layout>
-  )
+  );
 }
 
 export function Head({ data, pageContext }) {
-  const { title } = data.markdownRemark.frontmatter
+  const { title } = data.markdownRemark.frontmatter;
 
   return (
     <SEO
@@ -113,20 +128,30 @@ export function Head({ data, pageContext }) {
       postPath={pageContext.slug}
       postSEO
     />
-  )
+  );
 }
 
 export const pageQuery = graphql`
   query BlogPostBySlug($slug: String!) {
     markdownRemark(fields: { slug: { eq: $slug } }) {
       html
+      parent {
+        ... on File {
+          relativePath
+        }
+      }
       timeToRead
       excerpt
       frontmatter {
         title
         thumbnail {
           childImageSharp {
-            gatsbyImageData(width: 150, height: 150, layout: FIXED, placeholder: BLURRED)
+            gatsbyImageData(
+              width: 150
+              height: 150
+              layout: FIXED
+              placeholder: BLURRED
+            )
           }
         }
         slug
@@ -146,4 +171,4 @@ export const pageQuery = graphql`
       }
     }
   }
-`
+`;

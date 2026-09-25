@@ -1,52 +1,47 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from "react";
 
-const defaultState = {
-  dark: false,
-  notFound: false,
-  toggleDark: () => {},
-  setNotFound: () => {},
-  setFound: () => {},
-}
-
-const ThemeContext = createContext(defaultState)
+const ThemeContext = createContext({ dark: false, toggleDark: () => {} });
 
 function ThemeProvider({ children }) {
-  const [dark, setDark] = useState(() => {
-    if (typeof window === 'undefined') {
-      return false
-    }
-
-    const storedTheme = window.localStorage.getItem('dark')
-    return storedTheme ? JSON.parse(storedTheme) : false
-  })
-  const [notFound, setNotFound] = useState(false)
-
+  const [dark, setDark] = useState(false);
   useEffect(() => {
-    if (typeof window === 'undefined') {
-      return
+    try {
+      const stored = window.localStorage.getItem("dark");
+      setDark(
+        stored === null
+          ? window.matchMedia("(prefers-color-scheme: dark)").matches
+          : stored === "true"
+      );
+    } catch {
+      // Storage can be unavailable; the theme toggle still works for this visit.
     }
-
-    window.localStorage.setItem('dark', JSON.stringify(dark))
-  }, [dark])
-
+  }, []);
   const value = useMemo(
     () => ({
       dark,
-      notFound,
-      toggleDark: () => setDark(currentDark => !currentDark),
-      setNotFound: () => setNotFound(true),
-      setFound: () => setNotFound(false),
+      toggleDark: () => {
+        const next = !dark;
+        setDark(next);
+        try {
+          window.localStorage.setItem("dark", String(next));
+        } catch {
+          // Persistence is optional, changing the theme is not.
+        }
+      }
     }),
-    [dark, notFound]
-  )
-
+    [dark]
+  );
   return (
     <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
-  )
+  );
 }
 
-const useTheme = () => useContext(ThemeContext)
-
-export default ThemeContext
-
-export { ThemeProvider, useTheme }
+const useTheme = () => useContext(ThemeContext);
+export default ThemeContext;
+export { ThemeProvider, useTheme };

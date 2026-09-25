@@ -1,242 +1,206 @@
-import React from 'react'
-import { graphql, Link } from 'gatsby'
-import { GatsbyImage, getImage } from 'gatsby-plugin-image'
-import Layout from '../layout'
-import SEO from '../components/SEO'
-import config from '../../data/SiteConfig'
-import projects from '../../data/projects'
-import ahmed from '../../content/images/profile.jpg'
-
-const PROJECT_META = {
-  '3lagnb.com': '500K users',
-  'Imageiry.com': 'OG API',
-  'Blood Bot': 'MENA top-20',
-  'Mogrib.com': 'Arabic Q&A',
-}
-
-function fmtDate(iso) {
-  if (!iso) return ''
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
-}
-
-function initialsFor(title) {
-  return title
-    .split(/\s+/)
-    .map(w => w[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join('')
-    .toUpperCase()
-}
+import React from "react";
+import { graphql, Link } from "gatsby";
+import Layout from "../layout";
+import SEO from "../components/SEO";
+import PostListing from "../components/PostListing";
+import {
+  Avatar,
+  PixelPose,
+  VoiceSignal,
+  VoicePipeline
+} from "../components/Voice";
+import config from "../../data/SiteConfig";
+import projects from "../../data/projects";
 
 export default function IndexPage({ data }) {
-  const edges = data.latest.edges
-  const featured = edges[0]?.node
-  const rest = edges.slice(1, 5).map(e => e.node)
-
+  const [featured, ...rest] = data.latest.edges;
   return (
     <Layout>
       <header className="hero">
-        <div className="photo">
-          <img src={ahmed} alt="Ahmed Ibrahim" />
+        <span className="eyebrow hero-eyebrow">
+          Software engineer · Voice AI
+        </span>
+        <h1 aria-label="Hi, I’m Ahmed. I build voice AI.">
+          Hi, I’m{" "}
+          <Link
+            className="hello-avatar"
+            to="/me/"
+            aria-label="A little about Ahmed"
+          >
+            <Avatar bubble />
+          </Link>{" "}
+          Ahmed.
+          <br />I build{" "}
+          <span className="voice-word">
+            voice AI
+            <svg
+              viewBox="0 0 400 16"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path d="M2 11 Q190 -2 398 9" />
+            </svg>
+          </span>
+          .
+        </h1>
+        <p className="hero-description">
+          Real-time conversations. Thoughtful engineering.
+          <br className="desktop-break" /> The systems that make it all feel
+          human.
+        </p>
+        <div className="hero-links">
+          <a className="text-link" href="#work">
+            Explore my work <span aria-hidden="true">↗</span>
+          </a>
+          <Link className="quiet-link" to="/blog/">
+            Read my writing
+          </Link>
         </div>
-        <div className="text">
-          <div className="kicker">
-            Senior Software Engineer · Voice AI &amp; LLM · Seattle
-          </div>
-          <h1 className="giant">
-            AHMED
-            <br />
-            IBRAHIM<span className="punkt">.</span>
-          </h1>
-          <p className="role">
-            I build <strong>human-quality Voice AI</strong> systems for real
-            business phone calls. Currently building Goodcall&apos;s
-            4th-generation LLM voice agent with the team — real-time speech
-            pipelines, model orchestration, and production infrastructure on GCP.
-          </p>
-          <div className="hero-stack">
-            <span className="l">Stack</span>
-            <span>Node.js</span> · <span>TypeScript</span> · <span>Python</span>{' '}
-            · <span>WebRTC</span> · <span>LiveKit</span> · <span>GPT-4</span> ·{' '}
-            <span>Gemini</span> · <span>GCP</span> · <span>PostgreSQL</span>
-          </div>
-        </div>
+        <VoiceSignal />
+        <span className="hero-aside">
+          Mostly listening.
+          <br />
+          Always building.
+        </span>
       </header>
-
-      <section className="grid">
-        <div className="cell full" id="now">
-          <div className="cell-head">
-            <div className="cell-label">Now</div>
-            <span className="status-pill">
-              <span className="dot" aria-hidden="true" />
-              Available
-            </span>
+      <section
+        className="home-section current-work"
+        id="work"
+        aria-labelledby="work-title"
+      >
+        <div className="section-heading with-pixel">
+          <div className="section-identity">
+            <PixelPose pose="listening" />
+            <span className="eyebrow">01 / Currently building</span>
           </div>
-          <div className="now-content">
-            <h3>Building Goodcall&apos;s 4th-gen voice agent.</h3>
-            <p>
-              An LLM-first rebuild. Real-time voice on LiveKit/WebRTC, ASR → LLM
-              → TTS pipeline, GPT-4 and Gemini with routing and fallback.
-              Thousands of calls per day across hundreds of US businesses. 10+
-              years shipping software, the last 5 in voice AI.
-            </p>
-            <a className="open" href="mailto:me@ahmed-ibrahim.com">
-              Open to senior IC roles
-            </a>
-          </div>
+          <span className="small-note">With the team at Goodcall</span>
         </div>
-      </section>
-
-      {featured && (
-        <article className="article-row">
-          <div className="ar-grid">
-            <div className="ar-meta">
-              {(() => {
-                const ftThumb = getImage(featured.frontmatter.thumbnail)
-                return ftThumb ? (
-                  <GatsbyImage
-                    image={ftThumb}
-                    alt=""
-                    imgClassName="ar-thumb"
-                    style={{
-                      width: 56,
-                      height: 56,
-                      border: '1.5px solid #000',
-                      marginBottom: 18,
-                    }}
-                  />
-                ) : (
-                  <span className="ar-thumb-fallback" aria-hidden="true">
-                    {initialsFor(featured.frontmatter.title)}
-                  </span>
-                )
-              })()}
-              <div className="lab">Latest essay</div>
-              <h2>{featured.frontmatter.title}</h2>
-              <div className="info">
-                <span className="info-item">
-                  <span className="v">{fmtDate(featured.fields.date)}</span>
-                </span>
-                {featured.timeToRead && (
-                  <span className="info-item">
-                    <span className="v">{featured.timeToRead} min</span>
-                  </span>
-                )}
-                {featured.frontmatter.categories && featured.frontmatter.categories[0] && (
-                  <span className="info-item">
-                    <span className="v">
-                      {featured.frontmatter.categories[0]}
-                    </span>
-                  </span>
-                )}
-              </div>
-              <Link className="read" to={featured.fields.slug}>
-                Read full
-              </Link>
-            </div>
-            <div className="ar-body">
-              <p>{featured.excerpt}</p>
-            </div>
-          </div>
-        </article>
-      )}
-
-      <section className="grid">
-        <div className="cell full" id="writing">
-          <div className="cell-head">
-            <div className="cell-label">More writing</div>
-            <Link className="view-all" to="/blog">
-              View all →
+        <div className="work-feature">
+          <div>
+            <h2 id="work-title">
+              Voice agents.
+              <br />
+              Out in the real world.
+            </h2>
+            <p>
+              I work on Goodcall’s fourth-generation voice agent: real-time
+              speech pipelines, model orchestration, and the infrastructure
+              behind every conversation.
+            </p>
+            <p className="stack-note">
+              LiveKit / WebRTC / TypeScript / Python / GCP
+            </p>
+            <Link className="text-link" to="/me/">
+              The story so far <span aria-hidden="true">↗</span>
             </Link>
           </div>
-          <p className="cell-lede">
-            Notes from production — <em>voice AI</em>, TypeScript, databases,
-            and the occasional Node deep-dive.
-          </p>
-          <div className="writing-grid">
-            {rest.map((node, idx) => {
-              const thumb = getImage(node.frontmatter.thumbnail)
-              const title = node.frontmatter.title
-              const category =
-                node.frontmatter.categories && node.frontmatter.categories[0]
-              const num = String(idx + 1).padStart(2, '0')
-              return (
-                <Link
-                  className="wpost"
-                  to={node.fields.slug}
-                  key={node.fields.slug}
-                >
-                  <span className="n" aria-hidden="true">
-                    {num}
-                  </span>
-                  {thumb ? (
-                    <GatsbyImage image={thumb} alt="" />
-                  ) : (
-                    <span className="thumb-fallback" aria-hidden="true">
-                      {initialsFor(title)}
-                    </span>
-                  )}
-                  <div className="body">
-                    <span className="title">{title}</span>
-                    {category && <span className="tag">{category}</span>}
-                  </div>
-                  <span className="date">{fmtDate(node.fields.date)}</span>
-                </Link>
-              )
-            })}
-          </div>
+          <VoicePipeline />
         </div>
       </section>
-
-      <section className="grid">
-        <div className="cell full" id="work">
-          <div className="cell-head">
-            <div className="cell-label">Work</div>
-            <a
-              className="view-all"
-              href="https://github.com/AhmadIbrahiim"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              GitHub →
+      <section className="home-section" aria-labelledby="projects-title">
+        <div className="section-heading with-pixel">
+          <div className="section-identity">
+            <PixelPose pose="building" />
+            <h2 className="eyebrow" id="projects-title">
+              02 / Other things I’ve built
+            </h2>
+          </div>
+          <a className="quiet-link" href="https://github.com/AhmadIbrahiim">
+            More on GitHub ↗
+          </a>
+        </div>
+        <div className="project-list">
+          {projects.map((project, index) => (
+            <a className="project-row" key={project.title} href={project.path}>
+              <span className="project-number mono">0{index + 1}</span>
+              <h3>{project.title.replace(".com", "")}</h3>
+              <p>{project.description}</p>
+              <span className="row-arrow" aria-hidden="true">
+                ↗
+              </span>
             </a>
+          ))}
+        </div>
+      </section>
+      <section
+        className="home-section"
+        id="writing"
+        aria-labelledby="writing-title"
+      >
+        <div className="section-heading with-pixel">
+          <div className="section-identity">
+            <PixelPose pose="writing" />
+            <h2 className="eyebrow" id="writing-title">
+              03 / Notes from the work
+            </h2>
           </div>
-          <div className="work-grid">
-            {projects.map(project => (
-              <a
-                className="wrow"
-                key={project.title}
-                href={project.path}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <div className="body">
-                  <span className="name">{project.title}</span>
-                  {project.description && (
-                    <span className="blurb">{project.description}</span>
-                  )}
-                </div>
-                <span className="m">
-                  {PROJECT_META[project.title] || 'Visit'}
-                </span>
-              </a>
-            ))}
+          <Link className="quiet-link" to="/blog/">
+            All writing ↗
+          </Link>
+        </div>
+        {featured && (
+          <Link className="featured-essay" to={featured.node.fields.slug}>
+            <span className="eyebrow">Latest essay</span>
+            <h3>
+              {featured.node.frontmatter.title}
+              <span className="row-arrow" aria-hidden="true">
+                {" "}
+                ↗
+              </span>
+            </h3>
+            <p>{featured.node.excerpt}</p>
+            <span className="small-note">
+              {featured.node.timeToRead} min read ·{" "}
+              {featured.node.frontmatter.categories?.[0]}
+            </span>
+          </Link>
+        )}
+        <PostListing postEdges={rest.slice(0, 3)} />
+      </section>
+      <section
+        className="home-section home-about"
+        aria-labelledby="about-title"
+      >
+        <div>
+          <div className="section-identity">
+            <PixelPose pose="waving" />
+            <span className="eyebrow">04 / The person behind the pixels</span>
           </div>
+          <h2 id="about-title">
+            A little
+            <br /> about me.
+          </h2>
+          <Link className="quiet-link" to="/me/">
+            Meet Ahmed ↗
+          </Link>
+        </div>
+        <div>
+          <p>
+            I’m a software engineer who likes making complex systems useful. My
+            work spans voice AI, real-time media, and production infrastructure.
+          </p>
+          <p>
+            I’ve built things that help people find their way around Cairo,
+            connect with blood donors, and have better conversations with
+            software.
+          </p>
+          <p className="small-note">
+            I write about what I learn along the way.
+          </p>
         </div>
       </section>
     </Layout>
-  )
+  );
 }
 
 export function Head() {
-  return <SEO title={`${config.siteTitle} – Senior Software Engineer · Voice AI`} />
+  return <SEO title={`${config.siteTitle} – Voice AI & real-time systems`} />;
 }
 
 export const pageQuery = graphql`
   query IndexQuery {
     latest: allMarkdownRemark(
-      limit: 5
+      limit: 4
       sort: { fields: { date: DESC } }
       filter: { frontmatter: { template: { eq: "post" } } }
     ) {
@@ -246,22 +210,15 @@ export const pageQuery = graphql`
             slug
             date
           }
-          excerpt(pruneLength: 240)
+          excerpt(pruneLength: 200)
           timeToRead
           frontmatter {
             title
-            tags
             categories
-            thumbnail {
-              childImageSharp {
-                gatsbyImageData(width: 60, height: 60, layout: FIXED, placeholder: BLURRED)
-              }
-            }
             date
-            template
           }
         }
       }
     }
   }
-`
+`;

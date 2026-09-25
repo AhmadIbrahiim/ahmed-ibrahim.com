@@ -1,92 +1,83 @@
-import React, { useState } from 'react'
-import { graphql, Link } from 'gatsby'
-import kebabCase from 'lodash.kebabcase'
+import React, { useState } from "react";
+import { graphql, Link } from "gatsby";
+import kebabCase from "lodash.kebabcase";
 
-import Layout from '../layout'
-import PostListing from '../components/PostListing'
-import SEO from '../components/SEO'
-import config from '../../data/SiteConfig'
+import Layout from "../layout";
+import PostListing from "../components/PostListing";
+import SEO from "../components/SEO";
+import { PixelPose } from "../components/Voice";
+import config from "../../data/SiteConfig";
 
 export default function BlogPage({ data }) {
-  const [searchTerm, setSearchTerm] = useState('')
-  const posts = data.posts.edges
-  const categories = data.categories.group
+  const [searchTerm, setSearchTerm] = useState("");
+  const posts = data.posts.edges;
+  const categories = data.categories.group;
   const filteredPosts = posts.filter(({ node }) =>
-    node.frontmatter.title.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+    node.frontmatter.title
+      .toLowerCase()
+      .includes(searchTerm.trim().toLowerCase())
+  );
 
   return (
     <Layout>
       <div className="page-shell">
-        <div className="label">All writing</div>
-        <h1>Writing.</h1>
-        <div
-          style={{
-            display: 'flex',
-            gap: 8,
-            flexWrap: 'wrap',
-            marginBottom: 18,
-          }}
-        >
+        <div className="page-heading">
+          <div>
+            <div className="label">All writing</div>
+            <h1>Writing.</h1>
+          </div>
+          <PixelPose pose="writing" />
+        </div>
+        <p className="page-lede">
+          Notes from production. Voice AI, TypeScript, and the things I learn by
+          building.
+        </p>
+        <div className="topic-links">
           {categories.map(category => (
             <Link
               to={`/categories/${kebabCase(category.fieldValue)}/`}
               key={category.fieldValue}
-              style={{
-                fontFamily: 'JetBrains Mono, monospace',
-                fontSize: 10.5,
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                border: '1.5px solid #000',
-                padding: '5px 9px',
-                color: '#000',
-                fontWeight: 600,
-                textDecoration: 'none',
-              }}
             >
-              {category.fieldValue}{' '}
-              <span style={{ color: '#666' }}>({category.totalCount})</span>
+              {category.fieldValue} <span>({category.totalCount})</span>
             </Link>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 14, alignItems: 'baseline', marginBottom: 18 }}>
+        <div className="search-row">
+          <label htmlFor="writing-search">Find something to read</label>
           <input
-            type="text"
+            id="writing-search"
+            type="search"
             name="searchTerm"
             value={searchTerm}
-            placeholder="Filter posts…"
+            placeholder="Search article titles…"
             onChange={event => setSearchTerm(event.target.value)}
-            style={{
-              flex: 1,
-              padding: '10px 14px',
-              fontFamily: 'JetBrains Mono, monospace',
-              fontSize: 13,
-              border: '1.5px solid #000',
-              background: '#fff',
-              color: '#000',
-              outline: 'none',
-            }}
           />
-          <span
-            style={{
-              fontFamily: 'JetBrains Mono, monospace',
-              fontSize: 11,
-              color: '#666',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-            }}
-          >
-            {filteredPosts.length} posts
+          <span className="small-note" role="status">
+            {filteredPosts.length}{" "}
+            {filteredPosts.length === 1 ? "article" : "articles"}
           </span>
         </div>
+        {filteredPosts.length === 0 && (
+          <p className="empty-state">
+            No titles match “{searchTerm}”. Try a different word, or{" "}
+            <button
+              type="button"
+              className="inline-button"
+              onClick={() => setSearchTerm("")}
+            >
+              clear the search
+            </button>
+            .
+          </p>
+        )}
         <PostListing postEdges={filteredPosts} />
       </div>
     </Layout>
-  )
+  );
 }
 
 export function Head() {
-  return <SEO title={`Writing – ${config.siteTitle}`} />
+  return <SEO postPath="/blog/" title={`Writing – ${config.siteTitle}`} />;
 }
 
 export const pageQuery = graphql`
@@ -110,7 +101,12 @@ export const pageQuery = graphql`
             categories
             thumbnail {
               childImageSharp {
-                gatsbyImageData(width: 50, height: 50, layout: FIXED, placeholder: BLURRED)
+                gatsbyImageData(
+                  width: 50
+                  height: 50
+                  layout: FIXED
+                  placeholder: BLURRED
+                )
               }
             }
             date
@@ -126,4 +122,4 @@ export const pageQuery = graphql`
       }
     }
   }
-`
+`;

@@ -1,20 +1,19 @@
 ---
-title: Contact
+title: Say hello.
 slug: contact
 template: page
 ---
 
-My name is Ahmed and I am a backend engineer. I have been developing applications for around 5 years. Most of my experience lies in full-stack development scripting/scraping/automation and server administration. I have worked with Javascript/NodeJS C#, PHP,  Electron, Puppeteer, Selinum, React, Vue, Ember, and a little bit of Go and Python.
+Have a voice AI problem, a project in mind, or something you want to compare notes on? I’d love to hear about it.
 
+The best way to reach me is [me@ahmed-ibrahim.com](mailto:me@ahmed-ibrahim.com).
 
-If you have any comments, ideas, critiques, or you just want to say hi, don't hesitate to send me an email at [me@ahmed-ibrahim.com](mailto:me@ahmed-ibrahim.com)!
+### Elsewhere
 
-### Around the web
+- [LinkedIn ↗](https://www.linkedin.com/in/ahmedibrahhim/)
+- [GitHub ↗](https://github.com/AhmadIbrahiim)
+- [Twitter ↗](https://twitter.com/ahmed_ibrahhim)
 
-- **Email**: [me@ahmed-ibrahim.com](mailto:hello@ahmed-ibrahim)
-- **GitHub**: [Ahmed Ibrahim](https://github.com/ahmadibrahiim)
-- **Twitter**: [Ahmed Ibrahim](https://twitter.com/ahmed_ibrahhim)
+### What I work on
 
-<div class="crypto">
-
-</div>
+Voice AI, real-time speech, model orchestration, and the production systems behind them. You can [explore my work](/#work), [read my writing](/blog/), or [get to know me](/me/).

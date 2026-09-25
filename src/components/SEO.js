@@ -1,95 +1,98 @@
-import React from 'react'
-import { getSrc } from 'gatsby-plugin-image'
-import config from '../../data/SiteConfig'
-import favicon from '../images/favicon.png'
+import React from "react";
+import { getSrc } from "gatsby-plugin-image";
+import config from "../../data/SiteConfig";
+import favicon from "../images/favicon.png";
 
-const replacePath = path => (path === '/' ? path : path.replace(/\/$/, ''))
+const replacePath = path => (path === "/" ? path : path.replace(/\/$/, ""));
 const joinUrl = (...parts) =>
   parts
     .filter(Boolean)
     .map((part, index) =>
-      index === 0 ? part.replace(/\/+$/g, '') : part.replace(/^\/+|\/+$/g, '')
+      index === 0 ? part.replace(/\/+$/g, "") : part.replace(/^\/+|\/+$/g, "")
     )
-    .join('/')
+    .join("/");
 
 const getImageSource = imageNode => {
   if (!imageNode) {
-    return ''
+    return "";
   }
 
   return (
     getSrc(imageNode) ||
     imageNode.childImageSharp?.gatsbyImageData?.images?.fallback?.src ||
     imageNode.publicURL ||
-    ''
-  )
-}
+    ""
+  );
+};
 
 export default function SEO({
   description: providedDescription,
   postNode,
-  postPath = '/',
+  postPath = "/",
   postSEO = false,
-  title: providedTitle,
+  title: providedTitle
 }) {
-  const siteURL = joinUrl(config.siteUrl, config.pathPrefix)
-  const pageURL = postSEO ? joinUrl(config.siteUrl, replacePath(postPath)) : siteURL
-  const pageTitle = providedTitle || config.siteTitle
-  let description = providedDescription || config.siteDescription
-  let image = config.siteLogo
+  const siteURL = joinUrl(config.siteUrl, config.pathPrefix);
+  const pageURL = joinUrl(config.siteUrl, replacePath(postPath));
+  const pageTitle = providedTitle || config.siteTitle;
+  let description = providedDescription || config.siteDescription;
+  let image = config.siteLogo;
 
   if (postSEO && postNode) {
-    const postMeta = postNode.frontmatter
+    const postMeta = postNode.frontmatter;
 
-    description = providedDescription || postMeta.description || postNode.excerpt
+    description =
+      providedDescription || postMeta.description || postNode.excerpt;
     image =
       getImageSource(postMeta.seoImage) ||
       getImageSource(postMeta.thumbnail) ||
-      config.siteLogo
+      config.siteLogo;
   }
 
-  const absoluteImage = image.startsWith('http') ? image : joinUrl(config.siteUrl, image)
+  const absoluteImage = image.startsWith("http")
+    ? image
+    : joinUrl(config.siteUrl, image);
   const schemaOrgJSONLD = [
     {
-      '@context': 'http://schema.org',
-      '@type': 'WebSite',
-      alternateName: config.siteTitleAlt || '',
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      alternateName: config.siteTitleAlt || "",
       name: config.siteTitle,
-      url: siteURL,
-    },
-  ]
+      url: siteURL
+    }
+  ];
 
   if (postSEO) {
     schemaOrgJSONLD.push(
       {
-        '@context': 'http://schema.org',
-        '@type': 'BreadcrumbList',
+        "@context": "http://schema.org",
+        "@type": "BreadcrumbList",
         itemListElement: [
           {
-            '@type': 'ListItem',
+            "@type": "ListItem",
             item: {
-              '@id': pageURL,
+              "@id": pageURL,
               image: absoluteImage,
-              name: pageTitle,
+              name: pageTitle
             },
-            position: 1,
-          },
-        ],
+            position: 1
+          }
+        ]
       },
       {
-        '@context': 'http://schema.org',
-        '@type': 'BlogPosting',
-        alternateName: config.siteTitleAlt || '',
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        alternateName: config.siteTitleAlt || "",
         description,
         headline: pageTitle,
         image: {
-          '@type': 'ImageObject',
-          url: absoluteImage,
+          "@type": "ImageObject",
+          url: absoluteImage
         },
         name: pageTitle,
-        url: pageURL,
+        url: pageURL
       }
-    )
+    );
   }
 
   return (
@@ -97,12 +100,17 @@ export default function SEO({
       <html lang="en" />
       <title>{pageTitle}</title>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossOrigin="anonymous"
+      />
       <link
         rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
       />
       <link rel="icon" type="image/png" href={favicon} />
+      <link rel="canonical" href={pageURL} />
       <meta name="description" content={description} />
       <meta name="image" content={absoluteImage} />
       <meta property="og:url" content={pageURL} />
@@ -115,7 +123,9 @@ export default function SEO({
       <meta name="twitter:title" content={pageTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={absoluteImage} />
-      <script type="application/ld+json">{JSON.stringify(schemaOrgJSONLD)}</script>
+      <script type="application/ld+json">
+        {JSON.stringify(schemaOrgJSONLD)}
+      </script>
     </>
-  )
+  );
 }
