@@ -62,6 +62,20 @@ export default function IndexPage({ data }) {
           <br />
           Always building.
         </span>
+        <dl className="experience-strip">
+          <div>
+            <dt>Software since 2016</dt>
+            <dd>From chatbots to full-stack products.</dd>
+          </div>
+          <div>
+            <dt>Voice AI since 2021</dt>
+            <dd>Three generations of agents at Goodcall.</dd>
+          </div>
+          <div>
+            <dt>From audio to answer</dt>
+            <dd>Speech, models, and production systems.</dd>
+          </div>
+        </dl>
       </header>
       <section
         className="home-section current-work"
@@ -96,6 +110,33 @@ export default function IndexPage({ data }) {
           </div>
           <VoicePipeline />
         </div>
+        <div className="work-depth">
+          <div>
+            <span className="mono">01 / THE CONVERSATION</span>
+            <h3>Knowing when to listen.</h3>
+            <p>
+              Turn-taking, interruptions, and real-time audio. The small timing
+              decisions that make a phone conversation feel natural.
+            </p>
+          </div>
+          <div>
+            <span className="mono">02 / THE INTELLIGENCE</span>
+            <h3>The right next step.</h3>
+            <p>
+              Context, tool calls, model routing, and fallback. Connecting what
+              someone says to something the agent can actually do.
+            </p>
+          </div>
+          <div>
+            <span className="mono">03 / THE SYSTEM</span>
+            <h3>Built for real calls.</h3>
+            <p>
+              The infrastructure around the agent: services, data, and
+              deployment. Keeping the whole conversation working beyond the
+              demo.
+            </p>
+          </div>
+        </div>
       </section>
       <section className="home-section" aria-labelledby="projects-title">
         <div className="section-heading with-pixel">
@@ -113,7 +154,10 @@ export default function IndexPage({ data }) {
           {projects.map((project, index) => (
             <a className="project-row" key={project.title} href={project.path}>
               <span className="project-number mono">0{index + 1}</span>
-              <h3>{project.title.replace(".com", "")}</h3>
+              <div className="project-title">
+                <h3>{project.title.replace(".com", "")}</h3>
+                <span className="project-kind mono">{project.kind}</span>
+              </div>
               <p>{project.description}</p>
               <span className="row-arrow" aria-hidden="true">
                 ↗
@@ -185,7 +229,9 @@ export default function IndexPage({ data }) {
             software.
           </p>
           <p className="small-note">
-            I write about what I learn along the way.
+            I started with chatbots, co-founded a software company in Cairo, and
+            moved into voice AI. I still like working across the whole
+            product—from the first interaction to the systems behind it.
           </p>
         </div>
       </section>

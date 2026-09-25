@@ -13,16 +13,15 @@ assert.match(home, /aria-controls="pipeline-detail"/, 'Pipeline controls must ta
 assert.match(home, /id="main-content"/, 'Skip link must have a target')
 assert.ok(fs.statSync(path.join(output, 'images/ahmed-pixel.png')).size > 0, 'Portrait must be shipped')
 for (const pose of ['listening', 'building', 'writing', 'waving', 'contact']) {
-  const asset = `images/ahmed-${pose}-sprite.png`
+  const asset = `images/ahmed-${pose}.png`
   const png = fs.readFileSync(path.join(output, asset))
   assert.equal(png.toString('hex', 0, 8), '89504e470d0a1a0a', `Invalid PNG: ${pose}`)
-  assert.equal(png.readUInt32BE(16), png.readUInt32BE(20), `Sprite sheet must be square: ${pose}`)
-  assert.equal(png.readUInt32BE(16) % 2, 0, `Sprite cells must have equal dimensions: ${pose}`)
-  assert.ok(home.includes(asset), `Sprite sheet is not rendered: ${pose}`)
+  assert.ok(home.includes(asset), `Static portrait is not rendered: ${pose}`)
   assert.ok(home.includes(`pixel-pose--${pose}`), `Homepage pose missing: ${pose}`)
 }
 assert.ok(!home.includes('data-playing="true"'), 'Characters must remain still until interaction')
-assert.match(home, /aria-label="Say hello to pixel Ahmed"/, 'Pixel pose needs an accessible animation button')
+assert.ok(!home.includes('-sprite.png'), 'Portraits must use static images')
+assert.ok(!home.includes('pose-replay'), 'Portrait replay controls must be removed')
 
 let articles = 0
 for (const name of fs.readdirSync(path.join(root, 'content/posts'))) {

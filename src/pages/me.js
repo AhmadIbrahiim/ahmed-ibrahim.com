@@ -1,17 +1,10 @@
 import React from "react";
+import { Link } from "gatsby";
 import Layout from "../layout";
 import SEO from "../components/SEO";
 import { PixelPose } from "../components/Voice";
 import config from "../../data/SiteConfig";
 import ahmed from "../../content/images/profile.jpg";
-
-const LAST_UPDATED = "May 14, 2026";
-
-const TLDR = [
-  { k: "Where", v: "Seattle, WA" },
-  { k: "Role", v: "Senior SWE · Voice AI @ Goodcall" },
-  { k: "Open to", v: "Senior IC roles" }
-];
 
 const TIMELINE = [
   {
@@ -98,137 +91,209 @@ const INTERESTS = [
 export default function MePage() {
   return (
     <Layout>
-      <article className="about">
-        <header className="about-hero">
-          <div className="about-photo">
-            <img src={ahmed} alt="Ahmed Ibrahim" />
-            <PixelPose pose="waving" />
-          </div>
-          <div className="about-intro">
-            <div className="about-kicker">
-              <span>About · Living document</span>
-              <span className="last-updated">Updated {LAST_UPDATED}</span>
-            </div>
+      <article className="profile">
+        <header className="profile-hero">
+          <div className="profile-intro">
+            <span className="eyebrow">A little more about me</span>
             <h1>
-              The person
+              Engineer.
               <br />
-              behind the pixels<span className="punkt">.</span>
+              Builder.
+              <br />
+              <span>Still curious.</span>
             </h1>
-            <p className="about-tagline">
-              I build human-quality Voice AI systems for real business phone
-              calls. Ten years of software, the last five in voice.
+            <p className="profile-lede">
+              I’m Ahmed. I build software that helps people get things
+              done—these days, through a conversation.
             </p>
+            <p>
+              My work has taken me from chatbots and a startup in Cairo to
+              real-time Voice AI at Goodcall. I like understanding how the whole
+              thing works, then making it useful.
+            </p>
+            <div className="profile-links">
+              <a className="text-link" href={`mailto:${config.userEmail}`}>
+                Let’s talk <span aria-hidden="true">↗</span>
+              </a>
+              <a
+                className="quiet-link"
+                href="https://www.linkedin.com/in/ahmedibrahhim/"
+              >
+                LinkedIn ↗
+              </a>
+            </div>
           </div>
+          <figure className="profile-portrait">
+            <img
+              src={ahmed}
+              width="768"
+              height="1024"
+              alt="Ahmed Ibrahim smiling outdoors"
+            />
+            <figcaption>
+              <span>Ahmed, away from the terminal.</span>
+              <PixelPose pose="waving" />
+            </figcaption>
+          </figure>
         </header>
 
-        <div className="about-tldr">
-          {TLDR.map(({ k, v }) => (
-            <div key={k}>
-              <span className="k">{k}</span>
-              <span className="v">{v}</span>
-            </div>
-          ))}
-        </div>
+        <nav className="profile-index" aria-label="On this page">
+          <a href="#story">
+            <span>01</span> The story
+          </a>
+          <a href="#experience">
+            <span>02</span> The work
+          </a>
+          <a href="#toolkit">
+            <span>03</span> The tools
+          </a>
+          <a href="#beyond">
+            <span>04</span> Beyond work
+          </a>
+        </nav>
 
-        <section className="about-section about-now">
-          <div className="cell-head">
-            <div className="cell-label">Now</div>
-            <span className="status-pill">
-              <span className="dot" aria-hidden="true" />
-              Available
-            </span>
+        <section
+          className="profile-section"
+          id="story"
+          aria-labelledby="story-heading"
+        >
+          <div className="profile-section-label">
+            <span className="eyebrow">01 / The story</span>
+            <PixelPose pose="listening" />
           </div>
-          <p className="section-lede">
-            What I&apos;m actively building, right now. Updates as work changes.
-          </p>
-          <div className="now-card">
-            <div className="body">
-              <h3>Building Goodcall&apos;s 4th-gen voice agent.</h3>
+          <div className="profile-body">
+            <h2 id="story-heading">
+              From chat windows
+              <br />
+              to real conversations.
+            </h2>
+            <p className="profile-lede">
+              I’ve been building software since 2016. Conversation has been a
+              thread through most of it.
+            </p>
+            <div className="profile-story-columns">
               <p>
-                An LLM-first rebuild. Real-time voice on LiveKit/WebRTC, ASR →
-                LLM → TTS pipeline. GPT-4 + Gemini orchestration with model
-                routing and automatic fallback. Hundreds of US businesses,
-                thousands of calls per day at 99.9%+ uptime.
+                I started building bots for Messenger, Slack, and Telegram. At
+                Chatbotsa, I worked on a doctor–patient marketplace. Later, I
+                co-founded 04 Egypt and led a team building Plot.ai, a platform
+                for organizational insights.
+              </p>
+              <p>
+                Full-stack work at Maxiom took me across APIs, integrations, and
+                desktop apps. In 2021, I joined Goodcall. Since then, I’ve
+                helped its voice agent evolve from Dialogflow through hybrid
+                systems to an LLM-first generation.
               </p>
             </div>
-            <span className="badge">Since Sep 2024</span>
+            <div className="profile-now">
+              <span className="eyebrow">Where that brings me today</span>
+              <h3>Voice AI, out in the real world.</h3>
+              <p>
+                At Goodcall, I work on the fourth-generation voice agent:
+                real-time audio with LiveKit and WebRTC, model orchestration,
+                and the infrastructure behind business phone calls.
+              </p>
+              <Link className="quiet-link" to="/#work">
+                Explore what I’m building ↗
+              </Link>
+            </div>
           </div>
         </section>
 
-        <section className="about-section">
-          <div className="cell-head">
-            <div className="cell-label">Previously</div>
-            <span className="view-all">{TIMELINE.length} roles</span>
+        <section
+          className="profile-section"
+          id="experience"
+          aria-labelledby="experience-heading"
+        >
+          <div className="profile-section-label">
+            <span className="eyebrow">02 / The work</span>
+            <span className="mono">2016 — today</span>
           </div>
-          <p className="section-lede">
-            A condensed timeline. Reverse-chronological. Full CV on request.
-          </p>
-          <div className="timeline">
-            {TIMELINE.map(entry => (
-              <div className="t-entry" key={entry.role + entry.period}>
-                <div className="t-period">{entry.period}</div>
-                <div>
-                  <div className="t-role">{entry.role}</div>
-                  <span className="t-company">{entry.company}</span>
-                  <p className="t-note">{entry.note}</p>
+          <div className="profile-body">
+            <h2 id="experience-heading">A few chapters in.</h2>
+            <p className="profile-section-intro">
+              Startups, full-stack products, and the last several years in
+              voice. Open a chapter for the details.
+            </p>
+            <div className="profile-career">
+              {TIMELINE.map((entry, index) => (
+                <details key={entry.role + entry.period} open={index === 0}>
+                  <summary>
+                    <span className="profile-period mono">{entry.period}</span>
+                    <span className="profile-position">
+                      <strong>{entry.company.split(" · ")[0]}</strong>
+                      <span>{entry.role}</span>
+                    </span>
+                    <span className="profile-expand" aria-hidden="true" />
+                  </summary>
+                  <p>{entry.note}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section
+          className="profile-section"
+          id="toolkit"
+          aria-labelledby="toolkit-heading"
+        >
+          <div className="profile-section-label">
+            <span className="eyebrow">03 / The tools</span>
+            <PixelPose pose="building" />
+          </div>
+          <div className="profile-body">
+            <h2 id="toolkit-heading">Across the whole stack.</h2>
+            <p className="profile-section-intro">
+              The conversation is what you hear. These are some of the pieces
+              underneath it.
+            </p>
+            <dl className="profile-toolkit">
+              {STACK.map(group => (
+                <div key={group.label}>
+                  <dt>{group.label}</dt>
+                  <dd>{group.items}</dd>
                 </div>
-              </div>
-            ))}
+              ))}
+            </dl>
           </div>
         </section>
 
-        <section className="about-section">
-          <div className="cell-head">
-            <div className="cell-label">Stack</div>
+        <section
+          className="profile-section"
+          id="beyond"
+          aria-labelledby="beyond-heading"
+        >
+          <div className="profile-section-label">
+            <span className="eyebrow">04 / Beyond work</span>
+            <PixelPose pose="writing" />
           </div>
-          <p className="section-lede">
-            What I reach for. Not exhaustive — these are the tools I actively
-            ship with.
-          </p>
-          <div className="stack-row">
-            {STACK.map(group => (
-              <div className="stack-group" key={group.label}>
-                <span className="sg-label">{group.label}</span>
-                <span className="sg-list">{group.items}</span>
+          <div className="profile-body">
+            <h2 id="beyond-heading">A few other sides of me.</h2>
+            <p className="profile-section-intro">
+              Side projects, community, and things that keep me thinking.
+            </p>
+            <ul className="profile-highlights">
+              {ACCOLADES.slice(1).map(line => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+            <div className="profile-shelf">
+              <h3>On my shelf &amp; in my headphones.</h3>
+              <div className="profile-interests">
+                {INTERESTS.map(item => (
+                  <div key={item.label}>
+                    <span className="eyebrow">{item.label}</span>
+                    <h4>{item.title}</h4>
+                    <p>{item.by === "/talks" ? "QCon" : item.by}</p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            <Link className="quiet-link" to="/blog/">
+              Notes from what I’m learning ↗
+            </Link>
           </div>
-        </section>
-
-        <section className="about-section">
-          <div className="cell-head">
-            <div className="cell-label">In my queue</div>
-          </div>
-          <p className="section-lede">
-            From my reading, watching, and listening list.
-          </p>
-          <div className="interests-grid">
-            {INTERESTS.map(item => (
-              <div key={item.label}>
-                <span className="i-label">{item.label}</span>
-                <h4 className="i-title">{item.title}</h4>
-                <p className="i-by">{item.by}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="about-section">
-          <div className="cell-head">
-            <div className="cell-label">Highlights</div>
-          </div>
-          <p className="section-lede">
-            Things I&apos;ve shipped, talks I&apos;ve given, and a couple of
-            wins worth keeping on the page.
-          </p>
-          <ol className="accolades-list">
-            {ACCOLADES.map((line, i) => (
-              <li key={line}>
-                <span className="a-num">{String(i + 1).padStart(2, "0")}</span>
-                <span>{line}</span>
-              </li>
-            ))}
-          </ol>
         </section>
       </article>
     </Layout>

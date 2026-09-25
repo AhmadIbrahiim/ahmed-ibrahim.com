@@ -4,6 +4,10 @@
 
 Simple, clean, personal. Warm white, charcoal type, and restrained orange voice details. The pixel portrait is drawn from Ahmed’s own photos; keep natural adult proportions and thin navy glasses. No oversized mascot, photo mosaic, gradients, or dashboard styling.
 
+The homepage keeps the personal tagline as a small, tilted two-line side note on wide screens. An experience strip, three short Voice AI focus areas, project categories and descriptions, and a fuller personal introduction add substance without adding decorative panels. Experience details come from the existing About page.
+
+The About page uses a large real portrait and an editorial introduction, then four anchored chapters: story, work, tools, and beyond work. Career entries use native details/summary elements, with the latest role open initially. Keep the original career facts and personal interests; all pixel illustrations remain static.
+
 ## System
 
 - `src/styles/components/layout.scss` owns layout, responsive rules, motion, and light/dark tokens.
@@ -19,7 +23,7 @@ The introduction enters in a short stagger. Its underline draws once. The wavefo
 
 Use native CSS and React state; no animation dependency is needed. Keep interactions keyboard accessible, with visible focus styles. Articles remain readable without client JavaScript. The theme preference is optional local storage and must not prevent rendering when storage is unavailable.
 
-Five small pixel portraits connect Ahmed to each subject: headset for Voice AI, laptop for projects, notebook for writing, a wave for About, and an envelope for Contact. Keep these secondary to the text. Each uses a four-frame, 2×2 sprite sheet: hands, eyes, or props change within the character. CSS selects whole frames without interpolation or whole-character tilts. The hero uses the original still portrait. Section characters play two short cycles on hover, focus, or tap; repeated taps replay them. They remain still otherwise and respect reduced motion.
+Five static pixel portraits connect Ahmed to each subject: headset for Voice AI, laptop for projects, notebook for writing, a wave for About, and an envelope for Contact. These are decorative images, not interactive controls. Do not animate faces, hands, props, portraits, or their speech bubbles.
 
 ## Content and validation
 

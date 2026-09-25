@@ -17,41 +17,18 @@ export function Avatar({ bubble = false }) {
   );
 }
 
-const poseDetails = {
-  listening: { label: "Animate Ahmed listening", note: "All ears." },
-  building: { label: "Animate Ahmed at his laptop", note: "One more idea." },
-  writing: { label: "Animate Ahmed writing", note: "Noted." },
-  waving: { label: "Say hello to pixel Ahmed", note: "Hey there!" },
-  contact: { label: "Animate Ahmed with an envelope", note: "Say hello!" }
-};
-
 export function PixelPose({ pose = "waving" }) {
-  const [replay, setReplay] = useState(0);
   return (
-    <button
-      type="button"
-      className={`pixel-pose pixel-pose--${pose}`}
-      aria-label={poseDetails[pose].label}
-      onClick={() => setReplay(current => current + 1)}
-    >
-      <span
-        key={replay}
-        className={replay ? "pose-replay" : "pose-rest"}
-        aria-hidden="true"
-      >
-        <span className="pose-sprite">
-          <img
-            src={`/images/ahmed-${pose}-sprite.png`}
-            width="192"
-            height="192"
-            alt=""
-            loading="lazy"
-            decoding="async"
-          />
-        </span>
-        <span className="pose-note">{poseDetails[pose].note}</span>
-      </span>
-    </button>
+    <span className={`pixel-pose pixel-pose--${pose}`} aria-hidden="true">
+      <img
+        src={`/images/ahmed-${pose}.png`}
+        width="96"
+        height="96"
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+    </span>
   );
 }
 
