@@ -49,6 +49,14 @@ Rules when editing them:
 - The greeting examples set spirit and length; the model writes a fresh line each time.
 - After any prompt change run `uv run pytest` and `lk agent simulate text --scenarios scenarios.yaml`. The judge sometimes reads an example list as a strict list, so write "any of them is fine" where that is intended.
 
+## Where the knowledge comes from
+
+`./deploy.sh` rebuilds it on every deploy from three places: the site's markdown (`content/`), a live pull of Ahmed's latest public GitHub repos (the GitHub API, no key needed; a few noisy repos are skipped in `SKIP_REPOS`), and `knowledge-src/linkedin.md`, a small hand-kept file of public LinkedIn facts (LinkedIn cannot be fetched reliably). All of it goes through the same filter that removes the platform name and vendor names and strips emoji.
+
+## Inference credits
+
+The free plan includes only $2.50 of inference credit in total (about 50 minutes of conversation by LiveKit's own estimate; the full-site prompt makes each turn heavier). When it runs out, the model refuses every request with a 429 quota error and the assistant goes silent; the site then shows the "isn't available right now" message with Ahmed's email. Running simulations or `uv run pytest` spends the same credit, so use them sparingly. Fixes: upgrade the plan, or point the agent at another model provider with its own key (the key goes in `.env.local` and `lk agent update-secrets`, never in the repo).
+
 ## Voice and emotion
 
 Cartesia `sonic-3.6` through LiveKit Inference, stock male voice "Leo" (`0834f3df-e650-4766-a20c-5a93a43aa6e3`). Emotion comes from expressive mode: the model tags its own replies with emotion, pacing and breaths, LiveKit renders them and strips them from the transcript. Tuning is the `expressive` option in `src/agent.py`.
@@ -125,3 +133,4 @@ Add a row for every `lk agent deploy`.
 | 2026-10-01 | `5GYmHdrXwUBi` | us-east | Salesperson persona with light humour, new greeting and goodbye, rules repeated after the knowledge block, deferrals always include the email. Six scenarios (two new: sales, no prices) and the navigate test pass. |
 | 2026-10-01 | `XXn8CePyLDCF` | us-east | Persona is now Ahmed's personal AI assistant (talks about him, not the website). Greeting examples and scenarios updated. |
 | 2026-10-01 | `QLPnW5KemV6D` | us-east | Never names the platform; asked how it is built it pitches a build and gives the email. Knowledge rewritten to drop the name. Seven scenarios pass. |
+| 2026-10-01 | `GMEjqER8Qmhh` | us-east | Knowledge now includes LinkedIn highlights and live GitHub projects; prompt focuses on his work and expertise; natural spoken email ("dash"). Deployed without running the scenarios (inference credit was exhausted). |

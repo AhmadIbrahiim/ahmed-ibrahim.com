@@ -13,8 +13,9 @@ const DOCK_INSET = 52; // distance from the viewport edge to the dock's centre
 const PHONE = 600;
 
 const CHIPS = [
-  "Show me his voice AI work",
-  "What has he written?",
+  "What does Ahmed build?",
+  "Show me his open-source work",
+  "How does he approach voice agents?",
   "How do I reach him?"
 ];
 
@@ -27,6 +28,9 @@ const STATUS = {
   speaking: "Speaking"
 };
 
+// Failures where the visitor should also get a way to reach Ahmed without the assistant.
+const FAILURES = ["error", "busy", "timeout", "unavailable", "dropped"];
+
 const ENDINGS = {
   ended: "That was fun. Tap the Aura to talk again.",
   error: "I couldn't connect just now. Please try again in a moment.",
@@ -34,6 +38,7 @@ const ENDINGS = {
   offline: "You seem to be offline. Check your connection, then try again.",
   dropped: "The connection dropped. Tap Talk to me to start again.",
   timeout: "The assistant didn't answer this time. Please try again in a moment.",
+  unavailable: "The assistant isn't available right now.",
   "no-mic": "I couldn't find a microphone. Plug one in or check your settings, then try again.",
   "mic-blocked":
     "I need your microphone to hear you. Allow it in your browser, then try again."
@@ -64,11 +69,12 @@ function Conversation({ variant, view, onClose }) {
     onSound
   } = view;
   const live = phase === "live";
+  const typing = live && agentState === "thinking";
   const logEl = useRef(null);
   useEffect(() => {
     const el = logEl.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [messages]);
+  }, [messages, typing]);
 
   let status = "";
   if (live) {
@@ -102,13 +108,26 @@ function Conversation({ variant, view, onClose }) {
           {ENDINGS[phase]}
         </p>
       )}
-      {shown.length > 0 && (
+      {!live && FAILURES.includes(phase) && (
+        <p className="agent-ending">
+          Or email Ahmed directly:{" "}
+          <a href="mailto:me@ahmed-ibrahim.com">me@ahmed-ibrahim.com</a>
+        </p>
+      )}
+      {(shown.length > 0 || typing) && (
         <ol className="agent-log" aria-label="Conversation captions" ref={logEl}>
           {shown.map(m => (
             <li key={m.id} className={`agent-msg agent-msg--${m.role}`}>
               {m.text}
             </li>
           ))}
+          {typing && (
+            <li className="agent-msg agent-msg--agent agent-typing" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </li>
+          )}
         </ol>
       )}
       {showChips && (
@@ -169,22 +188,35 @@ export default function AgentDock() {
   const [messages, setMessages] = useState([]);
   const [mode, setMode] = useState("dock"); // hero | dock
   const [phone, setPhone] = useState(false);
+  const [hintOff, setHintOff] = useState(false); // visitor dismissed the docked hint
 
   const levelRef = useRef(0);
   const session = useRef(null);
   const dockEl = useRef(null);
   const heroEl = useRef(null);
+  const hintEl = useRef(null);
+  const dockHintEl = useRef(null);
   const pose = useRef({ cx: 0, cy: 0, box: DOCK_BOX });
   const voiceMode = phone && open && phase !== "off"; // phones: full-screen voice mode
   const voiceRef = useRef(false);
   voiceRef.current = voiceMode;
 
-  useEffect(() => setMounted(true), []);
-
-  // A class on <html> lets the page's own arrow and caption step aside once talking starts.
   useEffect(() => {
-    document.documentElement.classList.toggle("agent-active", phase !== "off");
-  }, [phase]);
+    setMounted(true);
+    try {
+      setHintOff(window.localStorage.getItem("agentHintOff") === "1");
+    } catch {
+      // Storage can be blocked; the hint then simply shows again next visit.
+    }
+  }, []);
+  const dismissHint = () => {
+    setHintOff(true);
+    try {
+      window.localStorage.setItem("agentHintOff", "1");
+    } catch {
+      // Not persisted; that is fine.
+    }
+  };
 
   // --- placement: hero slot -> corner dock, driven by scroll -------------------------------
   const applyHeroPanel = useCallback(() => {
@@ -209,7 +241,8 @@ export default function AgentDock() {
       next = { cx: vw / 2, cy: Math.max(box * 0.8, vh * 0.24), box };
     } else if (slot) {
       const r = slot.getBoundingClientRect();
-      const box = Math.min(HERO_MAX, r.width * 0.62, r.height * 0.7);
+      // Smaller on narrow screens so the hint bubble fits inside the slot.
+      const box = Math.min(vw <= 900 ? 170 : HERO_MAX, r.width * 0.62, r.height * 0.7);
       const hx = r.left + r.width / 2;
       const hy = r.top + r.height * 0.44;
       next = {
@@ -219,6 +252,21 @@ export default function AgentDock() {
       };
     }
     pose.current = next;
+    const hint = hintEl.current;
+    if (hint) {
+      // The arrow and caption ride along with the Aura and are gone by the time it docks.
+      const o = Math.max(0, Math.min(1, 1 - e * 2.5));
+      hint.style.setProperty("--k", String(next.box / HERO_MAX));
+      hint.style.opacity = String(o);
+      hint.style.visibility = o < 0.02 ? "hidden" : "visible";
+    }
+    const dockHint = dockHintEl.current;
+    if (dockHint) {
+      // Once docked, the hint comes back in its own spot: bubble beside the Aura, arrow pointing at it.
+      const o = Math.max(0, Math.min(1, (e - 0.6) * 2.5));
+      dockHint.style.opacity = String(o);
+      dockHint.style.visibility = o < 0.02 ? "hidden" : "visible";
+    }
     const el = dockEl.current;
     if (el) {
       el.style.width = `${next.box}px`;
@@ -334,15 +382,6 @@ export default function AgentDock() {
     else start();
   }, [phase, start]);
 
-  // Latest handler for the hero caption ("Click to talk to me").
-  const activateRef = useRef(activate);
-  activateRef.current = activate;
-  useEffect(() => {
-    const onOpen = () => activateRef.current();
-    window.addEventListener("agent:open", onOpen);
-    return () => window.removeEventListener("agent:open", onOpen);
-  }, []);
-
   useEffect(() => {
     const onKey = e => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
@@ -394,6 +433,40 @@ export default function AgentDock() {
       {voiceMode && <div className="agent-scrim" />}
       <div className="agent-dock" ref={dockEl}>
         <Aura state={auraState} levelRef={levelRef} dark={dark} />
+        {phase === "off" && (
+          <div className="agent-hint" ref={hintEl}>
+            <svg className="agent-arrow" viewBox="0 0 360 360" aria-hidden="true">
+              <path d="M296 290 C 326 266, 312 244, 268 232 M268 232 l10.2 9.6 M268 232 l13.6 -3" />
+            </svg>
+            <button type="button" className="agent-caption" onClick={activate}>
+              <strong>Ask me about Ahmed&rsquo;s voice AI work</strong>
+              <small>Click to talk to me</small>
+            </button>
+          </div>
+        )}
+        {phase === "off" && !hintOff && (
+          <div className="agent-hint-dock" ref={dockHintEl}>
+            <svg className="agent-hint-dock__arrow" viewBox="0 0 72 72" aria-hidden="true">
+              <path d="M6 18 C 26 8, 50 18, 63 40 M63 40 l-0.5 -11 M63 40 l-9.4 -5.8" />
+            </svg>
+            <div className="agent-hint-dock__card">
+              <button type="button" className="agent-caption" onClick={activate}>
+                <strong>Ask me about Ahmed&rsquo;s voice AI work</strong>
+                <small>Click to talk to me</small>
+              </button>
+              <button
+                type="button"
+                className="agent-hint-dock__x"
+                onClick={dismissHint}
+                aria-label="Dismiss this hint"
+              >
+                <svg className="agent-ico" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
         <button
           type="button"
           className="agent-dock__btn"

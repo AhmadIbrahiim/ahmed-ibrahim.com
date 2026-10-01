@@ -70,7 +70,7 @@ scenarios:
       Connects the problem to a real part of Ahmed's background, such as
       real-time voice with LiveKit, latency or turn taking, without inventing
       details. Is friendly and may be lightly funny. Never says the word LiveKit even though the founder did. Gives his email once, spoken
-      as "me at ahmed hyphen ibrahim dot com", when the founder asks how to get in
+      as "me at ahmed dash ibrahim dot com", when the founder asks how to get in
       touch. Does not state a price. Replies are short and conversational, with
       no lists.
     tags:
@@ -100,7 +100,7 @@ scenarios:
     agent_expectations: >
       Never says the word LiveKit and never names any platform, vendor or model
       it runs on, even when pressed. Says Ahmed builds production voice agents and
-      can build one for them, and gives his email as "me at ahmed hyphen ibrahim dot
+      can build one for them, and gives his email as "me at ahmed dash ibrahim dot
       com". Stays friendly, may be lightly funny, and states no price.
     tags:
       feature: no-platform-name

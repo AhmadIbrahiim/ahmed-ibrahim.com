@@ -5,12 +5,28 @@ in content/ stays the single source of truth.
 """
 
 import json
+import os
 import re
+import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = Path(__file__).resolve().parents[1] / "knowledge" / "site.md"
 ROUTES = OUT.with_name("routes.json")
+LINKEDIN = Path(__file__).resolve().parents[1] / "knowledge-src" / "linkedin.md"
+GITHUB_USER = "AhmadIbrahiim"
+# Public repos that say little about his expertise (personal alert bots, empty templates, profile
+# repo). The site repo is described by hand below because it contains this assistant.
+SKIP_REPOS = {
+    "ahmadibrahiim",
+    "sylndr-alert",
+    "vf-premium-numbers-alert",
+    "react-router-starter-template",
+    "ahmed-ibrahim.com",
+    "Alexa-Cairo-Quran-Radio-24-7",
+    "Jumia-one-task",
+    "linkedin-scraper-update",
+}
 
 # Pages that are not markdown files. Keep in sync with data/SiteConfig.js menuLinks.
 FIXED_ROUTES = [
@@ -36,7 +52,10 @@ HIDDEN = [
     (r", LiveKit,", ","),
     (r"LiveKit's", "the framework's"),
     (r"(?i)livekit", "the voice framework"),
+    (r"(?i)cartesia( sonic)?[ \d.]*(tts)?", "a modern text-to-speech engine "),
 ]
+
+EMOJI = re.compile("[\U0001f000-\U0001ffff\u2600-\u27bf\ufe0f]")
 
 # The agent must never read out private contact details, even ones on a public page.
 PHONE = re.compile(r"\(?\b\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b")
@@ -54,7 +73,7 @@ def parse(path: Path) -> tuple[dict, str]:
 def hide(text: str) -> str:
     for pattern, repl in HIDDEN:
         text = re.sub(pattern, repl, text)
-    return text
+    return re.sub(r" {2,}", " ", EMOJI.sub("", text)).strip()
 
 
 def clean(body: str) -> str:
@@ -78,6 +97,60 @@ def section(path: Path, kind: str) -> str:
     return f"## {kind}: {title} (site path /{slug}/{date})\n\n{clean(body)}\n"
 
 
+def github_section() -> str:
+    """Latest open-source work, straight from GitHub so it never goes stale."""
+    req = urllib.request.Request(
+        f"https://api.github.com/users/{GITHUB_USER}/repos?per_page=100&sort=pushed&type=owner",
+        headers={
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "site-assistant-sync",
+        },
+    )
+    token = os.environ.get("GITHUB_TOKEN")
+    if token:
+        req.add_header("Authorization", f"Bearer {token}")
+    try:
+        with urllib.request.urlopen(req, timeout=20) as res:
+            repos = json.load(res)
+    except (
+        Exception
+    ) as e:  # offline or rate limited: the rest of the knowledge still ships
+        print(f"warning: GitHub not fetched ({e})")
+        return ""
+    picked = [
+        r
+        for r in repos
+        if not r["fork"]
+        and not r["archived"]
+        and r.get("description")
+        and r["name"] not in SKIP_REPOS
+    ][:8]
+    lines = [
+        "## Open source: Ahmed's latest projects on GitHub (github.com/AhmadIbrahiim, newest first)",
+        "",
+        "His personal site, ahmed-ibrahim.com, is open source too, and that includes this AI assistant. Anyone can read how it is built.",
+        "",
+    ]
+    for r in picked:
+        stars = r["stargazers_count"]
+        meta = ", ".join(
+            x
+            for x in [
+                r.get("language"),
+                f"{stars:,} stars" if stars >= 5 else None,
+                f"last updated {r['pushed_at'][:7]}",
+            ]
+            if x
+        )
+        desc = hide(r["description"])
+        if desc.lower().startswith(r["name"].lower() + ":"):
+            desc = desc[
+                len(r["name"]) + 1 :
+            ].strip()  # the name is already in front of it
+        lines.append(f"- {r['name']} ({meta}): {desc}")
+    return "\n".join(lines) + "\n"
+
+
 def main() -> None:
     pages = sorted((ROOT / "content/pages").glob("*.md"))
     posts = sorted((ROOT / "content/posts").glob("*.md"), reverse=True)
@@ -86,7 +159,11 @@ def main() -> None:
         f"- {path}  {title}" for path, title in routes
     )
     parts = [sitemap + "\n"]
-    parts += [section(p, "Page") for p in pages] + [section(p, "Post") for p in posts]
+    parts += [section(p, "Page") for p in pages]
+    if LINKEDIN.exists():
+        parts.append(hide(LINKEDIN.read_text(encoding="utf-8")) + "\n")
+    parts.append(github_section())
+    parts += [section(p, "Post") for p in posts]
     OUT.parent.mkdir(exist_ok=True)
     OUT.write_text("\n".join(parts), encoding="utf-8")
     ROUTES.write_text(json.dumps([r[0] for r in routes], indent=2), encoding="utf-8")
@@ -95,7 +172,8 @@ def main() -> None:
     leaks = [
         ln
         for ln in text.splitlines()
-        if "livekit" in ln.lower() and not ln.startswith(("##", "- /"))
+        if ("livekit" in ln.lower() or "cartesia" in ln.lower())
+        and not ln.startswith(("##", "- /"))
     ]
     assert not leaks, f"platform name leaked: {leaks[:1]}"
     print(f"{OUT.relative_to(ROOT)}: {len(routes)} routes, {len(text):,} characters")

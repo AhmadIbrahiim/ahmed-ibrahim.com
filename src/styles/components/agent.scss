@@ -7,6 +7,7 @@
   --a-line: #e3e2df;
   --a-soft: #f7f6f3;
   --a-accent: #bc4019;
+  --a-orange: #ed5d30;
   font-family: 'DM Sans', sans-serif;
   font-size: 15px;
   line-height: 1.45;
@@ -19,23 +20,39 @@
   --a-line: #383b40;
   --a-soft: #222529;
   --a-accent: #ff966d;
+  --a-orange: #ff966d;
 }
 
 // --- the Aura ---------------------------------------------------------------------------
 .aura { position: relative; display: block; width: 100%; height: 100%; }
-.aura canvas { position: absolute; left: -50%; top: -50%; width: 200%; height: 200%; pointer-events: none; }
+.aura canvas { position: absolute; left: -50%; top: -50%; width: 200%; height: 200%; pointer-events: none; transform: translateY(-3%); } // the glow's measured centre sits ~3% low
 .aura.aura-fallback::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffb27a, #bc4019 60%, #5b1a2e); }
 
 .agent-dock { position: fixed; left: 0; top: 0; z-index: 40; width: 56px; height: 56px; pointer-events: none; will-change: transform; }
 .agent-dock__btn { position: absolute; inset: -14%; border: 0; border-radius: 50%; background: transparent; pointer-events: auto; cursor: pointer; }
 .agent-dock__btn:focus-visible { outline: 2px solid var(--a-accent); outline-offset: 2px; }
 
-// --- hero slot (static page content) ----------------------------------------------------
-.agent-slot { position: absolute; top: 32px; right: 0; width: 360px; height: 360px; }
-.agent-arrow { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--orange); stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
-.agent-caption { position: absolute; right: 0; bottom: 6px; border: 0; background: none; padding: 0 0 8px; color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 500; transform: rotate(-3deg); }
-.agent-caption::after { content: ''; display: block; margin-top: 4px; height: 2px; border-radius: 2px; background: var(--orange); transform: rotate(1deg); }
-.agent-caption:hover { color: var(--accent); }
+// --- hero slot and the arrow + caption that travel with the Aura ---------------------------
+// The slot only marks where the Aura starts: the free space beside the headline, so the Aura sits
+// in the middle of it.
+.agent-slot { position: absolute; top: 72px; left: 53%; right: 0; height: 400px; pointer-events: none; }
+
+// Designed on a 360px square whose point (180, 158) is the Aura's centre, then scaled with it.
+.agent-hint { position: absolute; left: calc(50% - 180px); top: calc(50% - 158px); width: 360px; height: 360px; transform-origin: 180px 158px; transform: scale(var(--k, 1)); pointer-events: none; }
+.agent-arrow { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--a-orange); stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+.agent-caption { position: absolute; right: 0; bottom: 0; width: 216px; padding: 11px 14px 12px; border: 1px solid var(--a-line); border-radius: 18px 18px 6px 18px; background: var(--a-paper); color: var(--a-ink); text-align: left; font: 15px/1.3 'DM Sans', sans-serif; box-shadow: 0 8px 24px rgba(0, 0, 0, .08); transform: rotate(-1.5deg); pointer-events: auto; transition: border-color .15s, box-shadow .15s; }
+.agent-caption strong { display: block; font-weight: 500; letter-spacing: -.01em; }
+.agent-caption small { display: block; margin-top: 4px; color: var(--a-accent); font: 500 11px/1.2 'IBM Plex Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
+.agent-caption:hover { border-color: var(--a-accent); box-shadow: 0 10px 28px rgba(0, 0, 0, .12); }
+
+// The same hint once the Aura is docked: bubble to its left, arrow curving down onto it.
+.agent-hint-dock { position: absolute; left: 0; top: 0; width: 56px; height: 56px; opacity: 0; visibility: hidden; pointer-events: none; }
+.agent-hint-dock__arrow { position: absolute; left: -72px; top: -8px; width: 72px; height: 72px; fill: none; stroke: var(--a-orange); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.agent-hint-dock__card { position: absolute; right: calc(100% + 70px); top: -10px; width: 190px; pointer-events: none; }
+.agent-hint-dock .agent-caption { position: relative; inset: auto; left: auto; right: auto; top: auto; bottom: auto; width: 100%; font-size: 14px; text-align: left; border-radius: 16px 16px 6px 16px; transform: rotate(-1deg); }
+.agent-hint-dock .agent-caption::before { display: none; }
+.agent-hint-dock__x { position: absolute; top: -9px; left: -9px; display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 1px solid var(--a-line); border-radius: 50%; background: var(--a-paper); color: var(--a-muted); pointer-events: auto; }
+.agent-hint-dock__x:hover { border-color: var(--a-accent); color: var(--a-ink); }
 
 // --- conversation -----------------------------------------------------------------------
 // Shared by the in-hero panel and the docked card (and the phone bottom sheet).
@@ -51,10 +68,19 @@
 .agent-dot--muted, .agent-dot.is-off { background: var(--a-muted); animation: none; }
 @keyframes agent-pulse { 50% { opacity: .35; } }
 .agent-ending { margin: 10px 0 0; color: var(--a-ink); }
+.agent-ending a { color: var(--a-accent); text-underline-offset: 3px; }
 .agent-log { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; max-height: 260px; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: smooth; }
-.agent-msg { max-width: 92%; padding: 9px 13px; border-radius: 16px; text-align: left; animation: agent-rise .25s ease-out; }
-.agent-msg--agent { background: var(--a-soft); border-bottom-left-radius: 5px; justify-self: start; }
-.agent-msg--user { background: var(--a-ink); color: var(--a-paper); border-bottom-right-radius: 5px; justify-self: end; }
+.agent-msg { position: relative; max-width: 88%; padding: 9px 14px; border-radius: 18px; text-align: left; animation: agent-rise .25s ease-out; }
+.agent-msg::after { content: ''; position: absolute; bottom: 0; width: 11px; height: 11px; background: inherit; }
+.agent-msg--agent { background: var(--a-soft); border-bottom-left-radius: 4px; justify-self: start; margin-left: 5px; }
+.agent-msg--agent::after { left: -5px; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+.agent-msg--user { background: var(--a-ink); color: var(--a-paper); border-bottom-right-radius: 4px; justify-self: end; margin-right: 5px; }
+.agent-msg--user::after { right: -5px; clip-path: polygon(0 0, 0 100%, 100% 100%); }
+.agent-typing { display: flex; gap: 4px; padding: 13px 14px; }
+.agent-typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--a-muted); animation: agent-bounce 1.1s ease-in-out infinite; }
+.agent-typing i:nth-child(2) { animation-delay: .15s; }
+.agent-typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes agent-bounce { 0%, 60%, 100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-4px); opacity: 1; } }
 @keyframes agent-rise { from { opacity: 0; transform: translateY(6px); } }
 .agent-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .agent-chips button { border: 1px solid var(--a-line); background: transparent; color: var(--a-ink); border-radius: 999px; padding: 6px 12px; font-size: 13px; transition: border-color .15s, background-color .15s; }
@@ -98,17 +124,15 @@
 .agent-root.dark .agent-scrim { background: rgba(25, 27, 30, .94); }
 .agent-dock.is-gliding { transition: transform .5s cubic-bezier(.2, .8, .2, 1), width .5s cubic-bezier(.2, .8, .2, 1), height .5s cubic-bezier(.2, .8, .2, 1); }
 
-// Once talking starts, the page's own arrow and caption step aside.
-.agent-arrow, .agent-caption { transition: opacity .3s; }
-.agent-active .agent-arrow, .agent-active .agent-caption { opacity: 0; pointer-events: none; }
-
 @media (max-width: 900px) {
-  // No room beside the headline: the slot becomes a block under the hero links.
-  .agent-slot { position: relative; top: auto; right: auto; width: 100%; height: 250px; margin: 8px 0 -4px; }
+  // No room beside the headline: the slot becomes a block under it, with the caption below the Aura.
+  .agent-slot { position: relative; top: auto; left: auto; right: auto; width: 100%; height: 290px; margin: 8px 0 -4px; }
   .agent-arrow { display: none; }
-  .agent-caption { left: 50%; right: auto; bottom: 0; white-space: nowrap; transform: translateX(-50%) rotate(-3deg); }
+  .agent-caption { left: 180px; right: auto; top: 296px; bottom: auto; border-radius: 18px; text-align: center; transform: translateX(-50%); }
+  .agent-caption::before { content: ''; position: absolute; top: -7px; left: 50%; width: 12px; height: 12px; background: var(--a-paper); border-left: 1px solid var(--a-line); border-top: 1px solid var(--a-line); transform: translateX(-50%) rotate(45deg); }
 }
 @media (max-width: 600px) {
+  .agent-hint-dock__card { width: 170px; }
   .agent-card { right: 0; left: 0; bottom: 0; width: auto; max-height: 54vh; border-radius: 22px 22px 0 0; border-bottom: 0; padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px)); }
   .agent-card .agent-log { max-height: 26vh; }
   .agent-chips button { padding: 8px 14px; }
@@ -118,5 +142,5 @@
 @media (prefers-reduced-motion: reduce) {
   .agent-card, .agent-hero-panel, .agent-scrim, .agent-msg { animation: none; }
   .agent-dock.is-gliding { transition: none; }
-  .agent-dot { animation: none !important; }
+  .agent-dot, .agent-typing i { animation: none !important; }
 }

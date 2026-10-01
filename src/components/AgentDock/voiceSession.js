@@ -4,6 +4,7 @@ import { ParticipantKind, Room, RoomEvent, Track } from "livekit-client";
 
 const SLOW_START_MS = 5000; // tell the visitor the agent is waking up
 const GIVE_UP_MS = 45000;
+const SPEECH_MS = 20000; // once the agent has joined it should be talking by now
 
 const NOOP = { end() {}, setMuted() {}, sendText() {}, startAudio() {} };
 const isAgent = p => p && p.kind === ParticipantKind.AGENT;
@@ -38,7 +39,7 @@ function meter(ctx, mediaStreamTrack) {
  *  onMessage(m)  { id, role: 'user' | 'agent', text } (same id again = updated text)
  *  onSlow()      the agent is taking a while to join (cold start)
  *  onNavigate(p) the agent asked to open a same-site path
- *  onEnd(why)    session over: 'ended' | 'dropped' | 'timeout' | 'error' | 'mic-blocked' | 'no-mic'
+ *  onEnd(why)    session over: 'ended' | 'dropped' | 'timeout' | 'unavailable' | 'error' | 'mic-blocked' | 'no-mic'
  *  onAudioBlocked(bool)  the browser is blocking playback until the visitor taps
  *  audioContext  created inside the click handler so Safari lets audio play
  *  onLevel(n)    live audio level 0..1 for the Aura, ~every frame
@@ -83,6 +84,8 @@ export default async function startSession({
   let raf = 0;
   let slowTimer = 0;
   let giveUpTimer = 0;
+  let speechTimer = 0;
+  let agentSpoke = false;
 
   const audioCtx = () => {
     if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -95,6 +98,7 @@ export default async function startSession({
     window.cancelAnimationFrame(raf);
     window.clearTimeout(slowTimer);
     window.clearTimeout(giveUpTimer);
+    window.clearTimeout(speechTimer);
     if (meters.agent) meters.agent.stop();
     if (meters.user) meters.user.stop();
     audioEls.forEach(el => el.remove());
@@ -121,6 +125,15 @@ export default async function startSession({
   const setAgentState = s => {
     if (!s) return;
     agentState = s === "initializing" ? "connecting" : s;
+    if (agentState === "speaking") {
+      agentSpoke = true;
+      window.clearTimeout(speechTimer);
+    } else if (!agentSpoke && agentState !== "connecting" && !speechTimer) {
+      // The agent is in the room but silent: its model or voice may be unavailable.
+      speechTimer = window.setTimeout(() => {
+        if (!finished && !agentSpoke) finish("unavailable");
+      }, SPEECH_MS);
+    }
     onState(agentState);
   };
   room.on(RoomEvent.ParticipantAttributesChanged, (changed, participant) => {
@@ -141,7 +154,7 @@ export default async function startSession({
 
   room.on(RoomEvent.ParticipantDisconnected, participant => {
     // The agent hangs up itself when the time cap is reached.
-    if (isAgent(participant)) finish("ended");
+    if (isAgent(participant)) finish(agentSpoke ? "ended" : "unavailable");
   });
   // A disconnect nobody asked for is a failure, not a goodbye.
   room.on(RoomEvent.Disconnected, () => finish(ending ? "ended" : "dropped"));
@@ -153,6 +166,7 @@ export default async function startSession({
   room.registerTextStreamHandler("lk.transcription", async (reader, info) => {
     const id = (reader.info.attributes && reader.info.attributes["lk.segment_id"]) || reader.info.id;
     const role = info.identity === room.localParticipant.identity ? "user" : "agent";
+    if (role === "agent") agentSpoke = true;
     let text = "";
     // eslint-disable-next-line no-restricted-syntax
     for await (const chunk of reader) {
