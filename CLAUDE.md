@@ -67,6 +67,15 @@ npm run build && npx wrangler pages deploy public --project-name ahmed-ibrahim -
 - `.nvmrc` pins Node 22.
 - DNS: wrangler's OAuth login only gets `zone:read`, and the Cloudflare MCP plugin token can't write DNS or Pages. DNS changes need the dashboard or a user-provided API token with Zone:DNS:Edit.
 
+### Voice assistant on the site (`src/components/AgentDock/`, `functions/api/token.js`)
+
+The hero shows an Aura (audio-reactive shader) with "Click to talk to me"; it travels to a corner dock on scroll and opens a conversation with the agent in `agent/`. `gatsby-browser.js` and `gatsby-ssr.js` mount `AgentDock` at the root (keep them in sync) so a session survives page changes; `AgentSlot` in `src/pages/index.js` marks the hero spot. The realtime client (`voiceSession.js`) loads only on the first click.
+
+- `functions/api/token.js` is a Cloudflare Pages Function. It needs `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` as Pages secrets (`npx wrangler pages secret put NAME --project-name ahmed-ibrahim`, values from `agent/.env.local`; never commit them). It checks the Origin, allows 5 tokens per IP per 10 minutes, and ignores any room or agent the client asks for. Optional hard limits: `TURNSTILE_SECRET` and a Cloudflare rate-limiting rule on `/api/token`. Local test: put the three values in `.dev.vars` (git-ignored) and run `npx wrangler pages dev public`.
+- The agent drives the page through a `navigate` RPC, which `voiceSession.js` handles for same-site paths only.
+- **Never show the realtime platform's name to visitors** (UI text, the agent's speech, shipped comments). If asked how it is built, the answer is that Ahmed builds voice agents and can build one for them. The agent's knowledge is rewritten for this in `agent/scripts/sync_knowledge.py`.
+- Build with Node 22 (`.nvmrc`); the build has also been run on Node 24 without trouble.
+
 ### Voice agent (`agent/`)
 
 LiveKit Agents (Python) site assistant, deployed to LiveKit Cloud separately from the site. Deploy with `cd agent && ./deploy.sh` (rebuilds the agent's knowledge from `content/*.md` first). Everything about it (project, dispatch name, secrets policy, cold starts, deployment log) is in `agent/DEPLOYMENT.md`; update its log table on every deploy. This repo is public: `agent/.env*` and `agent/livekit.toml` are git-ignored, so never commit credentials and keep the agent's instructions limited to facts already public on the site.

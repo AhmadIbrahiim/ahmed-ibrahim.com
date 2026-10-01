@@ -9,6 +9,7 @@ import {
   VoiceSignal,
   VoicePipeline
 } from "../components/Voice";
+import AgentSlot from "../components/AgentDock/AgentSlot";
 import config from "../../data/SiteConfig";
 import projects from "../../data/projects";
 
@@ -43,6 +44,7 @@ export default function IndexPage({ data }) {
           </span>
           .
         </h1>
+        <AgentSlot />
         <p className="hero-description">
           Real-time conversations. Thoughtful engineering.
           <br className="desktop-break" /> The systems that make it all feel
@@ -57,11 +59,6 @@ export default function IndexPage({ data }) {
           </Link>
         </div>
         <VoiceSignal />
-        <span className="hero-aside">
-          Mostly listening.
-          <br />
-          Always building.
-        </span>
         <dl className="experience-strip">
           <div>
             <dt>Software since 2016</dt>

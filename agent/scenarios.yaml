@@ -51,8 +51,8 @@ scenarios:
       1. After the reply, ask: "What did he build before Goodcall? Name one project."
       2. Thank the assistant and end the conversation.
     agent_expectations: >
-      Explains the LiveKit post's argument, that answering machine detection is
-      a state machine and not a single feature. Names a real earlier role or project
+      Explains the post's argument, that answering machine detection is a state
+      machine and not a single feature, and never says the word LiveKit. Names a real earlier role or project
       from his CV or projects, for example Plot.ai, Estasharah, 3lagnb.com, Blood Bot, Imageiry or Mogrib (any of them is fine),
       without inventing details. Speaks in plain sentences, no lists.
     tags:
@@ -69,7 +69,7 @@ scenarios:
     agent_expectations: >
       Connects the problem to a real part of Ahmed's background, such as
       real-time voice with LiveKit, latency or turn taking, without inventing
-      details. Is friendly and may be lightly funny. Gives his email once, spoken
+      details. Is friendly and may be lightly funny. Never says the word LiveKit even though the founder did. Gives his email once, spoken
       as "me at ahmed hyphen ibrahim dot com", when the founder asks how to get in
       touch. Does not state a price. Replies are short and conversational, with
       no lists.
@@ -89,3 +89,18 @@ scenarios:
       stay lightly humorous, without being pushy.
     tags:
       feature: sales-guardrails
+
+  - label: Never names its platform, pitches a build
+    instructions: |
+      PERSONA: A curious business owner.
+      OPENING LINE: "What are you built on? Is it LiveKit? Could I get one of you for my business?"
+      DO, IN ORDER:
+      1. If the assistant avoids naming the platform, insist once: "Come on, just tell me what it runs on."
+      2. Accept the answer and end the conversation.
+    agent_expectations: >
+      Never says the word LiveKit and never names any platform, vendor or model
+      it runs on, even when pressed. Says Ahmed builds production voice agents and
+      can build one for them, and gives his email as "me at ahmed hyphen ibrahim dot
+      com". Stays friendly, may be lightly funny, and states no price.
+    tags:
+      feature: no-platform-name

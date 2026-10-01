@@ -1,0 +1,122 @@
+// Ahmed's AI assistant: the Aura dock, the hero slot and the conversation UI.
+// AgentDock renders outside .theme, so it carries its own copy of the palette.
+.agent-root {
+  --a-paper: #fffefd;
+  --a-ink: #222329;
+  --a-muted: #686974;
+  --a-line: #e3e2df;
+  --a-soft: #f7f6f3;
+  --a-accent: #bc4019;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--a-ink);
+}
+.agent-root.dark {
+  --a-paper: #191b1e;
+  --a-ink: #f1eee8;
+  --a-muted: #acaeb4;
+  --a-line: #383b40;
+  --a-soft: #222529;
+  --a-accent: #ff966d;
+}
+
+// --- the Aura ---------------------------------------------------------------------------
+.aura { position: relative; display: block; width: 100%; height: 100%; }
+.aura canvas { position: absolute; left: -50%; top: -50%; width: 200%; height: 200%; pointer-events: none; }
+.aura.aura-fallback::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffb27a, #bc4019 60%, #5b1a2e); }
+
+.agent-dock { position: fixed; left: 0; top: 0; z-index: 40; width: 56px; height: 56px; pointer-events: none; will-change: transform; }
+.agent-dock__btn { position: absolute; inset: -14%; border: 0; border-radius: 50%; background: transparent; pointer-events: auto; cursor: pointer; }
+.agent-dock__btn:focus-visible { outline: 2px solid var(--a-accent); outline-offset: 2px; }
+
+// --- hero slot (static page content) ----------------------------------------------------
+.agent-slot { position: absolute; top: 32px; right: 0; width: 360px; height: 360px; }
+.agent-arrow { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--orange); stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.agent-caption { position: absolute; right: 0; bottom: 6px; border: 0; background: none; padding: 0 0 8px; color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 500; transform: rotate(-3deg); }
+.agent-caption::after { content: ''; display: block; margin-top: 4px; height: 2px; border-radius: 2px; background: var(--orange); transform: rotate(1deg); }
+.agent-caption:hover { color: var(--accent); }
+
+// --- conversation -----------------------------------------------------------------------
+// Shared by the in-hero panel and the docked card (and the phone bottom sheet).
+.agent-ico { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.agent-head { display: flex; align-items: center; gap: 10px; }
+.agent-head__text { flex: 1; min-width: 0; text-align: left; }
+.agent-head__text strong { display: block; font-size: 15px; line-height: 1.25; letter-spacing: -.01em; }
+.agent-status { min-height: 1.4em; margin: 0; color: var(--a-muted); font: 500 11px/1.4 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; }
+.agent-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--a-accent); box-shadow: 0 0 0 0 transparent; }
+.agent-dot--connecting, .agent-dot--thinking { animation: agent-pulse 1s ease-in-out infinite; }
+.agent-dot--listening { animation: agent-pulse 1.8s ease-in-out infinite; }
+.agent-dot--speaking { box-shadow: 0 0 0 4px rgba(237, 93, 48, .22); }
+.agent-dot--muted, .agent-dot.is-off { background: var(--a-muted); animation: none; }
+@keyframes agent-pulse { 50% { opacity: .35; } }
+.agent-ending { margin: 10px 0 0; color: var(--a-ink); }
+.agent-log { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; max-height: 260px; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: smooth; }
+.agent-msg { max-width: 92%; padding: 9px 13px; border-radius: 16px; text-align: left; animation: agent-rise .25s ease-out; }
+.agent-msg--agent { background: var(--a-soft); border-bottom-left-radius: 5px; justify-self: start; }
+.agent-msg--user { background: var(--a-ink); color: var(--a-paper); border-bottom-right-radius: 5px; justify-self: end; }
+@keyframes agent-rise { from { opacity: 0; transform: translateY(6px); } }
+.agent-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.agent-chips button { border: 1px solid var(--a-line); background: transparent; color: var(--a-ink); border-radius: 999px; padding: 6px 12px; font-size: 13px; transition: border-color .15s, background-color .15s; }
+.agent-chips button:hover { border-color: var(--a-accent); background: var(--a-soft); }
+
+// Control bar: round mic toggle and a pill that ends (or restarts) the conversation.
+.agent-bar { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+.agent-round { display: grid; place-items: center; width: 38px; height: 38px; padding: 0; border: 1px solid var(--a-line); border-radius: 50%; background: var(--a-paper); color: var(--a-ink); transition: border-color .15s, background-color .15s; }
+.agent-round:hover { border-color: var(--a-accent); }
+.agent-round[aria-pressed='true'] { background: var(--a-ink); color: var(--a-paper); border-color: var(--a-ink); }
+.agent-pill { border: 1px solid var(--a-line); background: var(--a-paper); color: var(--a-ink); border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 500; transition: border-color .15s, filter .15s; }
+.agent-pill:hover { border-color: var(--a-accent); }
+.agent-pill--end, .agent-pill--go { background: var(--a-accent); border-color: var(--a-accent); color: #fff; }
+.agent-pill--end:hover, .agent-pill--go:hover { filter: brightness(1.08); }
+.agent-root.dark .agent-pill--end, .agent-root.dark .agent-pill--go { color: #191b1e; }
+.agent-card .agent-pill--end { margin-left: auto; }
+.agent-x { display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 1px solid var(--a-line); border-radius: 50%; background: none; color: var(--a-ink); }
+.agent-x:hover { border-color: var(--a-accent); }
+.agent-note { margin: 12px 0 0; color: var(--a-muted); font-size: 12px; line-height: 1.5; }
+.agent-root :focus-visible { outline: 2px solid var(--a-accent); outline-offset: 2px; }
+
+// In the hero the conversation sits right under the Aura, on a soft glass card so it stays
+// readable if it drifts over page content while the Aura is travelling.
+.agent-hero-panel { position: fixed; z-index: 39; width: min(360px, calc(100vw - 32px)); transform: translateX(-50%); padding: 12px 16px 16px; border: 1px solid var(--a-line); border-radius: 20px; background: rgba(255, 254, 253, .82); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 14px 40px rgba(0, 0, 0, .09); text-align: center; animation: agent-in .25s ease-out; }
+.agent-root.dark .agent-hero-panel { background: rgba(25, 27, 30, .8); box-shadow: 0 14px 40px rgba(0, 0, 0, .35); }
+.agent-hero-panel .agent-head { justify-content: center; }
+.agent-hero-panel .agent-head__text { flex: none; text-align: center; }
+.agent-hero-panel .agent-log { justify-items: center; max-height: 150px; }
+.agent-hero-panel .agent-chips, .agent-hero-panel .agent-bar { justify-content: center; }
+
+// Docked: a card above the corner dock (a bottom sheet on phones).
+.agent-card { position: fixed; z-index: 41; right: 16px; bottom: 96px; width: min(380px, calc(100vw - 32px)); max-height: min(560px, calc(100vh - 128px)); overflow-y: auto; padding: 16px; border: 1px solid var(--a-line); border-radius: 20px; background: var(--a-paper); box-shadow: 0 18px 50px rgba(0, 0, 0, .16); animation: agent-in .25s ease-out; }
+.agent-card .agent-log { max-height: 300px; }
+@keyframes agent-in { from { opacity: 0; transform: translateY(10px); } }
+.agent-hero-panel { --lift: 0; }
+@keyframes agent-fade { from { opacity: 0; } }
+
+// Phones: tapping the Aura opens a full-screen voice mode. The scrim hides the page, the Aura
+// glides to the top half, and the conversation is a sheet at the bottom.
+.agent-scrim { position: fixed; inset: 0; z-index: 38; background: rgba(255, 254, 253, .94); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); animation: agent-fade .3s ease-out; overscroll-behavior: contain; }
+.agent-root.dark .agent-scrim { background: rgba(25, 27, 30, .94); }
+.agent-dock.is-gliding { transition: transform .5s cubic-bezier(.2, .8, .2, 1), width .5s cubic-bezier(.2, .8, .2, 1), height .5s cubic-bezier(.2, .8, .2, 1); }
+
+// Once talking starts, the page's own arrow and caption step aside.
+.agent-arrow, .agent-caption { transition: opacity .3s; }
+.agent-active .agent-arrow, .agent-active .agent-caption { opacity: 0; pointer-events: none; }
+
+@media (max-width: 900px) {
+  // No room beside the headline: the slot becomes a block under the hero links.
+  .agent-slot { position: relative; top: auto; right: auto; width: 100%; height: 250px; margin: 8px 0 -4px; }
+  .agent-arrow { display: none; }
+  .agent-caption { left: 50%; right: auto; bottom: 0; white-space: nowrap; transform: translateX(-50%) rotate(-3deg); }
+}
+@media (max-width: 600px) {
+  .agent-card { right: 0; left: 0; bottom: 0; width: auto; max-height: 54vh; border-radius: 22px 22px 0 0; border-bottom: 0; padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px)); }
+  .agent-card .agent-log { max-height: 26vh; }
+  .agent-chips button { padding: 8px 14px; }
+  .agent-round { width: 44px; height: 44px; }
+  .agent-pill { padding: 11px 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .agent-card, .agent-hero-panel, .agent-scrim, .agent-msg { animation: none; }
+  .agent-dock.is-gliding { transition: none; }
+  .agent-dot { animation: none !important; }
+}

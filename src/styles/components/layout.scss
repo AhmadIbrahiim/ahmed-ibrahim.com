@@ -277,7 +277,7 @@ button { color: inherit; }
 @keyframes underline-in { to { stroke-dashoffset: 0; } }
 @keyframes talk { to { transform: scaleY(.3); } }
 @keyframes enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-.hero > :not(.hero-aside) { animation: enter .65s both; }
+.hero > :not(.hero-aside):not(.agent-slot) { animation: enter .65s both; }
 .hero h1 { animation-delay: .07s; }
 .hero-description { animation-delay: .14s; }
 .hero-links { animation-delay: .21s; }

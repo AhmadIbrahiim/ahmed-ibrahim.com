@@ -38,6 +38,8 @@ The agent is not fine-tuned. `scripts/sync_knowledge.py` turns the site's markdo
 
 ## Prompts
 
+Hard rule: the agent never says the name of the realtime platform it runs on, and never names the platform, vendors or models behind it. Asked how it is built, it pitches that Ahmed builds production voice agents and can build one for the visitor. `scripts/sync_knowledge.py` rewrites the name out of the knowledge, the prompt forbids it, and a scenario checks it.
+
 All in `src/agent.py`: `INSTRUCTIONS` (persona and rules, then the site knowledge, then a short reminder), the greeting passed to `generate_reply`, the goodbye line in `end_after`, and the `expressive` emotion steering. Persona: Ahmed's personal AI assistant, a funny, warm teammate and his biggest fan (an AI that says so, never Ahmed himself; it talks about him, not about the website). It finds out what the visitor is building once, backs it with one real fact from the knowledge, and offers his email once when interest is real.
 
 Rules when editing them:
@@ -122,3 +124,4 @@ Add a row for every `lk agent deploy`.
 | 2026-10-01 | `pnxYzdv5wtng` | us-east | Voice changed to Leo (Cartesia's best-for-emotion male voice). Emotion guidance prefers calm, content and neutral. Four scenarios and the navigate test pass. |
 | 2026-10-01 | `5GYmHdrXwUBi` | us-east | Salesperson persona with light humour, new greeting and goodbye, rules repeated after the knowledge block, deferrals always include the email. Six scenarios (two new: sales, no prices) and the navigate test pass. |
 | 2026-10-01 | `XXn8CePyLDCF` | us-east | Persona is now Ahmed's personal AI assistant (talks about him, not the website). Greeting examples and scenarios updated. |
+| 2026-10-01 | `QLPnW5KemV6D` | us-east | Never names the platform; asked how it is built it pitches a build and gives the email. Knowledge rewritten to drop the name. Seven scenarios pass. |
