@@ -12,7 +12,7 @@ This repo is public. Nothing in it may be a secret. See [What must never be comm
 | Agent id | in `livekit.toml` (git-ignored) |
 | Dispatch name | `ahmed-site` (set in `src/agent.py`; the site's token endpoint must request exactly this) |
 | Region | `us-east` |
-| Models | LiveKit Inference: Gemma 4 (LLM), AssemblyAI (speech to text), Cartesia `sonic-3.6` (voice "Blake", male) with expressive mode on for emotion |
+| Models | LiveKit Inference: Gemma 4 (LLM), AssemblyAI (speech to text), Cartesia `sonic-3.6` (voice "Leo", male) with expressive mode on for emotion |
 | Knowledge | All of `content/pages` and `content/posts`, copied into the prompt (see [Knowledge](#knowledge)) |
 | Session cap | 180 seconds (`MAX_SESSION_SECONDS` in `src/agent.py`) |
 
@@ -38,11 +38,17 @@ The agent is not fine-tuned. `scripts/sync_knowledge.py` turns the site's markdo
 
 ## Voice and emotion
 
-Cartesia `sonic-3.6` through LiveKit Inference, stock male voice "Blake" (`a167e0f3-df7e-4d52-a9c3-f949145efdab`). Emotion comes from expressive mode: the model tags its own replies with emotion, pacing and breaths, LiveKit renders them and strips them from the transcript. Tuning lives in the `expressive` option in `src/agent.py`.
+Cartesia `sonic-3.6` through LiveKit Inference, stock male voice "Leo" (`0834f3df-e650-4766-a20c-5a93a43aa6e3`). Emotion comes from expressive mode: the model tags its own replies with emotion, pacing and breaths, LiveKit renders them and strips them from the transcript. Tuning is the `expressive` option in `src/agent.py`.
 
-Voice must stay on Inference, because expressive mode only works there. A custom Cartesia voice (for example `8a99c589-94d4-48d4-befc-07b097fa1246`) is not served by Inference; using it would need the Cartesia plugin plus a `CARTESIA_API_KEY` secret, and would turn emotion off. To try another stock voice, change `VOICE_ID`.
+What [Cartesia's emotion guide](https://docs.cartesia.ai/build-with-cartesia/capability-guides/volume-speed-emotion) says, and how it shapes the setup:
 
-The current mood is also published to the browser as `lk.expression` (see the `useAgentExpression` hook), so the Aura can change colour with the mood.
+- Emotion is in beta, works in English only, and is guidance rather than a guarantee. Results depend on the voice.
+- The voices with the best emotional response are Leo, Jace, Kyle and Gavin (male), plus Maya, Tessa, Dana and Marian. The agent uses Leo. Jace (`6776173b-fd72-460d-89b3-d85812ee518d`), Kyle (`c961b81c-a935-4c17-bfb3-ba2239de8c2f`) and Gavin (`f4a3a8e4-694c-4c45-9ca0-27caf97901b5`) also work through Inference; change `VOICE_ID` to switch.
+- The most reliable emotions are neutral, calm, content, sad and scared, so the instructions steer the model to calm, content or neutral most of the time, and sad or happy only when they clearly fit.
+
+Voice must stay on Inference, because expressive mode only works there. A custom Cartesia voice (for example `8a99c589-94d4-48d4-befc-07b097fa1246`) is not served by Inference, and the Cartesia plugin route would turn emotion off. LiveKit's [custom voices](https://docs.livekit.io/agents/models/tts/custom-voices/) page covers cloning a voice through LiveKit instead (not tried).
+
+The current mood is also published to the browser as `lk.expression` (the `useAgentExpression` hook), so the Aura can change colour with the mood.
 
 ## Navigation (agent to browser)
 
@@ -102,3 +108,4 @@ Add a row for every `lk agent deploy`.
 | 2026-10-01 | `GnDPPRnTJ8fS` | us-east | First deploy. Site assistant persona, 180 second cap. Three simulation scenarios pass. |
 | 2026-10-01 | `vTwHDrPXSZKi` | us-east | Whole site markdown as knowledge. |
 | 2026-10-01 | `LVYGtH7AU2gm` | us-east | Male stock voice (Blake) on `sonic-3.6` with expressive mode. `navigate` tool plus site map. Four simulation scenarios pass. |
+| 2026-10-01 | `pnxYzdv5wtng` | us-east | Voice changed to Leo (Cartesia's best-for-emotion male voice). Emotion guidance prefers calm, content and neutral. Four scenarios and the navigate test pass. |

@@ -33,11 +33,13 @@ AGENT_NAME = "ahmed-site"
 # A public voice endpoint costs money per minute, so every session ends on its own.
 MAX_SESSION_SECONDS = 180
 
-# Male Cartesia voice ("Blake", energetic American) on the newest Sonic model, served by
-# LiveKit Inference. It has to stay on Inference: expressive mode (emotion) only works there.
-# Custom Cartesia voices are not served by Inference, so the earlier custom voice is unused.
+# Male Cartesia voice "Leo" on the newest Sonic model, served by LiveKit Inference. Cartesia lists
+# Leo, Jace, Kyle and Gavin (male) as the voices with the best emotional response; Jace
+# 6776173b-fd72-460d-89b3-d85812ee518d, Kyle c961b81c-a935-4c17-bfb3-ba2239de8c2f and
+# Gavin f4a3a8e4-694c-4c45-9ca0-27caf97901b5 also work here. Stay on Inference: expressive
+# mode (emotion) only works there, and custom Cartesia voices are not served by it.
 TTS_MODEL = "cartesia/sonic-3.6"
-VOICE_ID = "a167e0f3-df7e-4d52-a9c3-f949145efdab"
+VOICE_ID = "0834f3df-e650-4766-a20c-5a93a43aa6e3"
 
 # Everything on the site, built from content/*.md by scripts/sync_knowledge.py (deploy.sh runs it).
 # ponytail: whole site in the prompt (~10k tokens). Switch to retrieval if content outgrows ~100k.
@@ -175,9 +177,11 @@ async def entrypoint(ctx: JobContext):
         # the tags from the transcript. Steering keeps it natural, not theatrical.
         expressive={
             "tts_instructions_append": (
-                "Be warm and a little dry. Match the visitor's energy: brighten for good "
-                "news or shared enthusiasm, stay calm and steady for technical detail. "
-                "Keep laughter and sighs rare."
+                "Be warm and a little dry. Match the visitor's energy. Cartesia's most "
+                "reliable emotions are neutral, calm, content, sad and scared, so use "
+                "calm, content or neutral for most replies. Use sad for apologies or "
+                "when you cannot help, and happy or excited only for genuinely good "
+                "news. Emotion works in English only. Keep laughter and sighs rare."
             ),
             "speech_steering": {"disfluencies": False},
         },
