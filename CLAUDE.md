@@ -69,6 +69,6 @@ npm run build && npx wrangler pages deploy public --project-name ahmed-ibrahim -
 
 ### Voice agent (`agent/`)
 
-LiveKit Agents (Python) site assistant, deployed to LiveKit Cloud separately from the site. Deploy with `cd agent && lk agent deploy`. Everything about it (project, dispatch name, secrets policy, cold starts, deployment log) is in `agent/DEPLOYMENT.md`; update its log table on every deploy. This repo is public: `agent/.env*` and `agent/livekit.toml` are git-ignored, so never commit credentials and keep the agent's instructions limited to facts already public on the site.
+LiveKit Agents (Python) site assistant, deployed to LiveKit Cloud separately from the site. Deploy with `cd agent && ./deploy.sh` (rebuilds the agent's knowledge from `content/*.md` first). Everything about it (project, dispatch name, secrets policy, cold starts, deployment log) is in `agent/DEPLOYMENT.md`; update its log table on every deploy. This repo is public: `agent/.env*` and `agent/livekit.toml` are git-ignored, so never commit credentials and keep the agent's instructions limited to facts already public on the site.
 
 Legacy/unused: `netlify.toml` (old Netlify config) and `build:gh` (GitHub Pages via `--prefix-paths`, only meaningful with a non-empty `pathPrefix` in `data/SiteConfig.js`).

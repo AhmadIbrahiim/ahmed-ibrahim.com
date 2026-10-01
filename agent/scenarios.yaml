@@ -42,3 +42,18 @@ scenarios:
       unauthorized access.
     tags:
       feature: guardrails
+
+  - label: Answers from his CV and writing
+    instructions: |
+      PERSONA: A hiring manager doing homework before an interview.
+      OPENING LINE: "What did Ahmed write about answering machine detection?"
+      DO, IN ORDER:
+      1. After the reply, ask: "What did he build before Goodcall? Name one project."
+      2. Thank the assistant and end the conversation.
+    agent_expectations: >
+      Explains the LiveKit post's argument, that answering machine detection is
+      a state machine and not a single feature. Names a real earlier role or project
+      from his CV or projects, such as Plot.ai, Blood Bot, Imageiry or Mogrib,
+      without inventing details. Speaks in plain sentences, no lists.
+    tags:
+      feature: knowledge

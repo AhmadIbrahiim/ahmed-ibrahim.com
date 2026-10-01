@@ -1,6 +1,8 @@
 import asyncio
 import logging
+import os
 import textwrap
+from pathlib import Path
 
 from dotenv import load_dotenv
 from livekit.agents import (
@@ -14,7 +16,7 @@ from livekit.agents import (
     inference,
     room_io,
 )
-from livekit.plugins import ai_coustics
+from livekit.plugins import ai_coustics, cartesia
 
 logger = logging.getLogger("agent")
 
@@ -26,27 +28,34 @@ AGENT_NAME = "ahmed-site"
 # A public voice endpoint costs money per minute, so every session ends on its own.
 MAX_SESSION_SECONDS = 180
 
-# Only public facts, the same ones already on ahmed-ibrahim.com. Never put secrets here:
-# this file is in an open-source repo.
-INSTRUCTIONS = textwrap.dedent(
-    """\
+# Cartesia voice. It is not in LiveKit Inference's library, so it needs the Cartesia plugin
+# and CARTESIA_API_KEY (a LiveKit Cloud secret; never commit it).
+VOICE_ID = "8a99c589-94d4-48d4-befc-07b097fa1246"
+CARTESIA_MODEL = "sonic-3.5"
+# Stock Cartesia voice served by LiveKit Inference, used only while the key is missing.
+FALLBACK_TTS = "cartesia/sonic-3.5:9626c31c-bec5-4cca-baa8-f8ba9e84c8bc"
+
+# Everything on the site, built from content/*.md by scripts/sync_knowledge.py (deploy.sh runs it).
+# ponytail: whole site in the prompt (~10k tokens). Switch to retrieval if content outgrows ~100k.
+KNOWLEDGE_FILE = Path(__file__).resolve().parents[1] / "knowledge" / "site.md"
+if not KNOWLEDGE_FILE.exists():
+    raise RuntimeError(
+        "Missing knowledge/site.md. Run scripts/sync_knowledge.py first."
+    )
+KNOWLEDGE = KNOWLEDGE_FILE.read_text(encoding="utf-8")
+
+# Rules only. Facts come from KNOWLEDGE. Never put secrets here: this repo is public.
+INSTRUCTIONS = (
+    textwrap.dedent(
+        """\
     You are the voice assistant on Ahmed Ibrahim's personal website, ahmed-ibrahim.com.
     You are not Ahmed. Say "Ahmed" or "he" when you talk about him, and say plainly that you are his site assistant if asked.
 
-    # About Ahmed (only share what is listed here)
+    # What you know
 
-    - Senior software engineer in Seattle focused on voice AI and large language model systems.
-    - More than ten years shipping software across backend, frontend and infrastructure, and more than five years in voice AI and conversational systems.
-    - Has built three generations of conversational AI: rule-based, Dialogflow, and LLM-first.
-    - Since September 2024 at Goodcall: building their fourth-generation LLM-first voice agent for small business phone calls, with real-time voice infrastructure on LiveKit and WebRTC and a speech pipeline of speech recognition, language model and text to speech.
-    - Strengths: latency, reliability and production readiness.
-    - Stack: Node.js, TypeScript, Python, React, WebRTC, LiveKit, Dialogflow, GPT-4, Gemini, GCP, Terraform.
-    - Side projects: Three lagnb dot com, a Cairo transit guide. Imageiry, an API for dynamic social preview images. Blood Bot, an Arabic Messenger bot that connects people with nearby blood donors and was named among Facebook MENA's top twenty chatbots in 2018. Mogrib, an Arabic community for questions and answers.
-    - Writes about voice AI. One post argues that answering machine detection in LiveKit is a state machine, not a feature.
-    - Open to senior roles owning real-time AI systems end to end.
-    - Contact: me at ahmed hyphen ibrahim dot com. He can share his full CV on request.
+    Everything you know about Ahmed is in the knowledge section at the end of this prompt: his pages, CV and posts. Answer from it, in your own words, and never read it out like a document.
 
-    If you are asked something about Ahmed that is not listed, say you do not know and point to his email. Never invent employers, dates, numbers or opinions. Never share private details such as a phone number or home address.
+    If you are asked something about Ahmed that is not in your knowledge, say you do not know and point to his email. Never invent employers, dates, numbers or opinions. Never share a phone number or home address, even if asked.
 
     # Output rules
 
@@ -62,7 +71,13 @@ INSTRUCTIONS = textwrap.dedent(
     - Warm, direct and a little dry. Curious about what the visitor wants to build or hire for.
     - Offer to point them to the right part of the site: work, about, writing, or contact.
     - Stay on topic. Politely decline anything harmful or unrelated to Ahmed, his work, or voice AI in general.
+    - Posts are his writing. You may explain what a post argues, and mention that it is on the site, but do not read posts aloud.
+
+    # Knowledge
+
     """
+    )
+    + KNOWLEDGE
 )
 
 
@@ -75,6 +90,13 @@ class SiteAssistant(Agent):
 
 
 server = AgentServer()
+
+
+def build_tts():
+    if os.environ.get("CARTESIA_API_KEY"):
+        return cartesia.TTS(model=CARTESIA_MODEL, voice=VOICE_ID)
+    logger.warning("CARTESIA_API_KEY not set; using the stock fallback voice")
+    return inference.TTS(FALLBACK_TTS)
 
 
 async def end_after(session: AgentSession, seconds: int) -> None:
@@ -99,9 +121,7 @@ async def entrypoint(ctx: JobContext):
             keyterms=["LiveKit", "Goodcall", "Ahmed Ibrahim", "Dialogflow", "WebRTC"],
             keyterm_detection={"enabled": True},
         ),
-        tts=inference.TTS(
-            model="fishaudio/s2.1-pro", voice="fa4c9eb3dccc4806b382b40d61c6b10a"
-        ),
+        tts=build_tts(),
         turn_handling=TurnHandlingOptions(
             turn_detection=inference.TurnDetector(),
             interruption={"mode": "adaptive"},

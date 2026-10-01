@@ -72,3 +72,6 @@ agent/__pycache__/
 **/__pycache__/
 .env
 .env.*
+
+# Generated from content/*.md by agent/scripts/sync_knowledge.py
+agent/knowledge/

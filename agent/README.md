@@ -3,6 +3,7 @@
 LiveKit Agents (Python) assistant for ahmed-ibrahim.com. Built from LiveKit's `agent-starter-python` template.
 
 - Code: `src/agent.py`
+- Knowledge: built from the site's markdown by `scripts/sync_knowledge.py`
 - Checks: `scenarios.yaml`
 - Deploying, secrets policy and the deployment log: [DEPLOYMENT.md](DEPLOYMENT.md)
 
