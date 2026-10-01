@@ -29,6 +29,7 @@ const STATUS = {
 const ENDINGS = {
   ended: "That was fun. Tap the Aura to talk again.",
   error: "I couldn't connect just now. Please try again in a moment.",
+  busy: "That's a lot of conversations from one place. Please try again in a few minutes.",
   "mic-blocked":
     "I need your microphone to hear you. Allow it in your browser, then try again."
 };
@@ -182,7 +183,7 @@ export default function AgentDock() {
     if (!el) return;
     const { cx, cy, box } = pose.current;
     el.style.left = `${cx}px`;
-    el.style.top = `${cy + box * 0.6 + 6}px`;
+    el.style.top = `${cy + box * 0.8 + 8}px`;
   }, []);
 
   const place = useCallback(() => {
@@ -311,8 +312,8 @@ export default function AgentDock() {
             return copy;
           })
       });
-    } catch {
-      finish("error");
+    } catch (e) {
+      finish(e && e.status === 429 ? "busy" : "error");
     }
   }, [finish]);
 
@@ -354,7 +355,7 @@ export default function AgentDock() {
 
   let auraState = "idle";
   if (phase === "live") auraState = muted ? "muted" : agentState;
-  else if (phase === "error" || phase === "mic-blocked") auraState = "error";
+  else if (phase !== "off" && phase !== "ended") auraState = "error";
 
   const shared = {
     phase,

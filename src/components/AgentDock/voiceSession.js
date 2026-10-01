@@ -59,7 +59,11 @@ export default async function startSession({
     headers: { "content-type": "application/json" },
     body: "{}"
   });
-  if (!res.ok) throw new Error(`token ${res.status}`);
+  if (!res.ok) {
+    const err = new Error(`token ${res.status}`);
+    err.status = res.status;
+    throw err;
+  }
   const { server_url: url, participant_token: token } = await res.json();
 
   const room = new Room({ adaptiveStream: false, dynacast: false });
