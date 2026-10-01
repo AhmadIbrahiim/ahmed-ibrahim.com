@@ -12,7 +12,7 @@ This repo is public. Nothing in it may be a secret. See [What must never be comm
 | Agent id | in `livekit.toml` (git-ignored) |
 | Dispatch name | `ahmed-site` (set in `src/agent.py`; the site's token endpoint must request exactly this) |
 | Region | `us-east` |
-| Models | LiveKit Inference: Gemma 4 (LLM), AssemblyAI (speech to text). Voice: Cartesia `sonic-3.5` through the Cartesia plugin with voice `8a99c589-94d4-48d4-befc-07b097fa1246` |
+| Models | LiveKit Inference: Gemma 4 (LLM), AssemblyAI (speech to text), Cartesia `sonic-3.6` (voice "Blake", male) with expressive mode on for emotion |
 | Knowledge | All of `content/pages` and `content/posts`, copied into the prompt (see [Knowledge](#knowledge)) |
 | Session cap | 180 seconds (`MAX_SESSION_SECONDS` in `src/agent.py`) |
 
@@ -36,16 +36,39 @@ Deploying uploads the contents of `agent/` to LiveKit's build service, minus eve
 
 The agent is not fine-tuned. `scripts/sync_knowledge.py` turns the site's markdown into `agent/knowledge/site.md` (git-ignored, regenerated on every `./deploy.sh`), and the agent loads that whole file into its prompt at startup. So: write a post or edit a page, run `./deploy.sh`, and it knows. The script redacts phone numbers (the CV page has one). About 42,000 characters today; if the content grows past roughly 100,000 tokens, switch to retrieval.
 
-## Voice
+## Voice and emotion
 
-The Cartesia voice id is a custom or community voice, which LiveKit Inference does not serve (it returned no audio; the stock voices do work). It runs through the Cartesia plugin and needs your own Cartesia key as a LiveKit secret:
+Cartesia `sonic-3.6` through LiveKit Inference, stock male voice "Blake" (`a167e0f3-df7e-4d52-a9c3-f949145efdab`). Emotion comes from expressive mode: the model tags its own replies with emotion, pacing and breaths, LiveKit renders them and strips them from the transcript. Tuning lives in the `expressive` option in `src/agent.py`.
 
-```sh
-# put CARTESIA_API_KEY=... in agent/.env.local (git-ignored), then:
-cd agent && lk agent update-secrets --secrets-file .env.local   # triggers a rolling restart
+Voice must stay on Inference, because expressive mode only works there. A custom Cartesia voice (for example `8a99c589-94d4-48d4-befc-07b097fa1246`) is not served by Inference; using it would need the Cartesia plugin plus a `CARTESIA_API_KEY` secret, and would turn emotion off. To try another stock voice, change `VOICE_ID`.
+
+The current mood is also published to the browser as `lk.expression` (see the `useAgentExpression` hook), so the Aura can change colour with the mood.
+
+## Navigation (agent to browser)
+
+The agent has a `navigate(path)` tool. It only accepts paths from `knowledge/routes.json`, which `scripts/sync_knowledge.py` builds from the markdown plus a few fixed routes (`/`, `/#work`, `/blog/`). It sends an RPC to the visitor's browser:
+
+- method: `navigate`
+- payload: `{"path": "/blog/"}`
+- the browser replies with any string, or throws to report failure (the agent then tells the visitor it could not open the page)
+
+The site must register the handler once the room is connected (not built yet):
+
+```js
+import { navigate } from "gatsby";
+
+room.localParticipant.registerRpcMethod("navigate", async ({ payload }) => {
+  const { path } = JSON.parse(payload);
+  // The agent is not trusted: same-site paths only.
+  if (typeof path !== "string" || !path.startsWith("/") || path.startsWith("//")) {
+    throw new Error("bad path");
+  }
+  navigate(path);
+  return "ok";
+});
 ```
 
-Until that secret exists the agent logs `CARTESIA_API_KEY not set` and speaks with a stock Cartesia voice.
+`tests/test_agent.py` checks that asking for the writing page makes the agent call `navigate` with `/blog/`. Run it with `uv run pytest` (needs `.env.local`; it calls the real model).
 
 ## First time on a new machine
 
@@ -60,7 +83,7 @@ Git-ignored in the root `.gitignore`: `agent/.env*`, `agent/livekit.toml`, `agen
 - `agent/.env.local` holds the project's API key and secret.
 - `agent/livekit.toml` holds the agent id and project subdomain. Not a credential, but it identifies the cloud project.
 - `src/agent.py` holds the assistant's instructions. They contain only facts already public on the site. Keep it that way: no phone number, address, salary, or private notes.
-- `CARTESIA_API_KEY` and any other provider key go in `agent/.env.local` locally and in LiveKit's secret store with `lk agent update-secrets --secrets-file agent/.env.local`. They are never written into source.
+- Any provider key (none are used today) goes in `agent/.env.local` locally and in LiveKit's secret store with `lk agent update-secrets --secrets-file agent/.env.local`. They are never written into source.
 
 Before committing, run `git status` and `git diff --cached --stat` and confirm none of the above appear.
 
@@ -77,4 +100,5 @@ Add a row for every `lk agent deploy`.
 | Date | Version | Region | Change |
 |---|---|---|---|
 | 2026-10-01 | `GnDPPRnTJ8fS` | us-east | First deploy. Site assistant persona, 180 second cap. Three simulation scenarios pass. |
-| 2026-10-01 | `vTwHDrPXSZKi` | us-east | Whole site markdown as knowledge. Cartesia voice wired in; running on a stock Cartesia voice until `CARTESIA_API_KEY` is set. |
+| 2026-10-01 | `vTwHDrPXSZKi` | us-east | Whole site markdown as knowledge. |
+| 2026-10-01 | `LVYGtH7AU2gm` | us-east | Male stock voice (Blake) on `sonic-3.6` with expressive mode. `navigate` tool plus site map. Four simulation scenarios pass. |
