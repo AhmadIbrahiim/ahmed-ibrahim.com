@@ -20,6 +20,7 @@ const CHIPS = [
 
 const STATUS = {
   connecting: "Connecting",
+  reconnecting: "Reconnecting",
   idle: "Ready when you are",
   listening: "Listening",
   thinking: "Thinking",
@@ -30,6 +31,10 @@ const ENDINGS = {
   ended: "That was fun. Tap the Aura to talk again.",
   error: "I couldn't connect just now. Please try again in a moment.",
   busy: "That's a lot of conversations from one place. Please try again in a few minutes.",
+  offline: "You seem to be offline. Check your connection, then try again.",
+  dropped: "The connection dropped. Tap Talk to me to start again.",
+  timeout: "The assistant didn't answer this time. Please try again in a moment.",
+  "no-mic": "I couldn't find a microphone. Plug one in or check your settings, then try again.",
   "mic-blocked":
     "I need your microphone to hear you. Allow it in your browser, then try again."
 };
@@ -92,7 +97,11 @@ function Conversation({ variant, view, onClose }) {
           </button>
         )}
       </header>
-      {!live && ENDINGS[phase] && <p className="agent-ending">{ENDINGS[phase]}</p>}
+      {!live && ENDINGS[phase] && (
+        <p className="agent-ending" role={phase === "ended" ? undefined : "alert"}>
+          {ENDINGS[phase]}
+        </p>
+      )}
       {shown.length > 0 && (
         <ol className="agent-log" aria-label="Conversation captions" ref={logEl}>
           {shown.map(m => (
@@ -313,7 +322,10 @@ export default function AgentDock() {
           })
       });
     } catch (e) {
-      finish(e && e.status === 429 ? "busy" : "error");
+      let why = "error";
+      if (e && e.status === 429) why = "busy";
+      else if ((e && e.network) || !window.navigator.onLine) why = "offline";
+      finish(why);
     }
   }, [finish]);
 
@@ -354,7 +366,10 @@ export default function AgentDock() {
   if (!mounted) return null; // client only: nothing here is server-rendered
 
   let auraState = "idle";
-  if (phase === "live") auraState = muted ? "muted" : agentState;
+  if (phase === "live") {
+    auraState = muted ? "muted" : agentState;
+    if (agentState === "reconnecting") auraState = "connecting";
+  }
   else if (phase !== "off" && phase !== "ended") auraState = "error";
 
   const shared = {

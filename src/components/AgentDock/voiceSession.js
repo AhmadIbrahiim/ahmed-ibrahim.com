@@ -38,7 +38,7 @@ function meter(ctx, mediaStreamTrack) {
  *  onMessage(m)  { id, role: 'user' | 'agent', text } (same id again = updated text)
  *  onSlow()      the agent is taking a while to join (cold start)
  *  onNavigate(p) the agent asked to open a same-site path
- *  onEnd(why)    session over: 'ended' | 'error' | 'mic-blocked'
+ *  onEnd(why)    session over: 'ended' | 'dropped' | 'timeout' | 'error' | 'mic-blocked' | 'no-mic'
  *  onAudioBlocked(bool)  the browser is blocking playback until the visitor taps
  *  audioContext  created inside the click handler so Safari lets audio play
  *  onLevel(n)    live audio level 0..1 for the Aura, ~every frame
@@ -54,11 +54,18 @@ export default async function startSession({
   audioContext,
   onLevel
 }) {
-  const res = await fetch("/api/token", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: "{}"
-  });
+  let res;
+  try {
+    res = await fetch("/api/token", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: "{}"
+    });
+  } catch (e) {
+    const err = new Error("network");
+    err.network = true; // the request never reached the server
+    throw err;
+  }
   if (!res.ok) {
     const err = new Error(`token ${res.status}`);
     err.status = res.status;
@@ -72,6 +79,7 @@ export default async function startSession({
   let ctx = audioContext || null;
   let agentState = "connecting";
   let finished = false;
+  let ending = false; // the visitor pressed End
   let raf = 0;
   let slowTimer = 0;
   let giveUpTimer = 0;
@@ -107,7 +115,7 @@ export default async function startSession({
     if (!finished && agentState === "connecting") onSlow();
   }, SLOW_START_MS);
   giveUpTimer = window.setTimeout(() => {
-    if (!finished && agentState === "connecting") finish("error");
+    if (!finished && agentState === "connecting") finish("timeout");
   }, GIVE_UP_MS);
 
   const setAgentState = s => {
@@ -135,7 +143,10 @@ export default async function startSession({
     // The agent hangs up itself when the time cap is reached.
     if (isAgent(participant)) finish("ended");
   });
-  room.on(RoomEvent.Disconnected, () => finish("ended"));
+  // A disconnect nobody asked for is a failure, not a goodbye.
+  room.on(RoomEvent.Disconnected, () => finish(ending ? "ended" : "dropped"));
+  room.on(RoomEvent.Reconnecting, () => onState("reconnecting"));
+  room.on(RoomEvent.Reconnected, () => onState(agentState));
   room.on(RoomEvent.AudioPlaybackStatusChanged, () => onAudioBlocked(!room.canPlaybackAudio));
 
   // Captions: agent speech streams in chunks; the visitor's arrives as whole updates.
@@ -171,7 +182,7 @@ export default async function startSession({
   try {
     await room.localParticipant.setMicrophoneEnabled(true);
   } catch (e) {
-    finish("mic-blocked");
+    finish(e && (e.name === "NotFoundError" || e.name === "OverconstrainedError") ? "no-mic" : "mic-blocked");
     return NOOP;
   }
   const micPub = room.localParticipant.getTrackPublication(Track.Source.Microphone);
@@ -182,7 +193,10 @@ export default async function startSession({
   onState("connecting");
 
   return {
-    end: () => finish("ended"),
+    end: () => {
+      ending = true;
+      finish("ended");
+    },
     setMuted: muted => room.localParticipant.setMicrophoneEnabled(!muted),
     sendText: text => room.localParticipant.sendText(text, { topic: "lk.chat" }),
     startAudio: () => room.startAudio().catch(() => {})
