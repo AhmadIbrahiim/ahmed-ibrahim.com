@@ -12,7 +12,7 @@ This repo is public. Nothing in it may be a secret. See [What must never be comm
 | Agent id | in `livekit.toml` (git-ignored) |
 | Dispatch name | `ahmed-site` (set in `src/agent.py`; the site's token endpoint must request exactly this) |
 | Region | `us-east` |
-| Models | Language: LiveKit Inference Gemma 4, or Cloudflare Workers AI `@cf/google/gemma-4-26b-a4b-it` when its secrets are set. Speech to text: AssemblyAI. With the owner's key (`ASSEMBLYAI_API_KEY`, set) it is the cheapest streaming model, `universal-streaming-english`; without it, LiveKit Inference's `universal-3-5-pro`. Voice: Rime `coda`, male voice `cupola`, through the Rime plugin with the owner's own key |
+| Models | Language: Cloudflare Workers AI `@cf/google/gemma-4-26b-a4b-it` on the owner's token (secrets set; falls back to LiveKit Inference Gemma 4 without them). Speech to text: AssemblyAI. With the owner's key (`ASSEMBLYAI_API_KEY`, set) it is the cheapest streaming model, `universal-streaming-english`; without it, LiveKit Inference's `universal-3-5-pro`. Voice: Rime `coda`, male voice `cupola`, through the Rime plugin with the owner's own key |
 | Knowledge | All of `content/pages` and `content/posts`, copied into the prompt (see [Knowledge](#knowledge)) |
 | Session cap | 180 seconds (`MAX_SESSION_SECONDS` in `src/agent.py`) |
 
@@ -65,7 +65,12 @@ Rime is not one of the providers LiveKit's emotion-tag mode supports (Fish Audio
 
 ## Language model
 
-`build_llm()` in `src/agent.py` uses LiveKit Inference by default. Setting the agent secrets `CLOUDFLARE_AI_TOKEN` (a token with the Workers AI permission) and `CLOUDFLARE_ACCOUNT_ID` switches it to `@cf/google/gemma-4-26b-a4b-it` on Cloudflare Workers AI through its OpenAI-compatible endpoint, which keeps the model off the inference credit meter. Check tool calling (the `navigate` tool) works with that model before relying on it. Remove the secrets to go back.
+`build_llm()` in `src/agent.py` uses Cloudflare Workers AI, `@cf/google/gemma-4-26b-a4b-it`, through its OpenAI-compatible endpoint when the agent secrets `CLOUDFLARE_AI_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are set (they are), and LiveKit Inference otherwise. The Workers AI account is not the one wrangler is logged into, so use the account id from the token's own dashboard. The token needs the Workers AI permission.
+
+- Tool calling works (the `navigate` tool returns `{"path": "/blog/"}`).
+- Gemma 4 "thinks" before answering; `extra_body={"chat_template_kwargs": {"enable_thinking": False}}` turns that off.
+- Measured latency: about 4 to 5 seconds to the first token, with a 12k-token prompt or a tiny one, so it is the model, not the prompt. A click-to-first-spoken-word on the live site took about 7.6 seconds. The UI covers the wait with a typing bubble. A smaller Workers AI model would answer faster.
+- Workers AI has a free daily allowance; check usage in the Cloudflare dashboard.
 
 ## Speech to text
 
@@ -139,3 +144,4 @@ Add a row for every `lk agent deploy`.
 | 2026-10-01 | `Version
 Xxw5Pkxzh2ST` | us-east | Opt-in own-key AssemblyAI speech to text (`build_stt`), off until `ASSEMBLYAI_API_KEY` exists. Deployed without running the scenarios. |
 | 2026-10-01 | `aXdXLXnsLGkp` | us-east | Speech to text now on the owner's AssemblyAI key, cheapest model `universal-streaming-english`. Deployed without running the scenarios. |
+| 2026-10-01 | `cVgtTsx4MLGz` | us-east | Language model on Cloudflare Workers AI (Gemma 4 26B, thinking off), speech to text on AssemblyAI, voice on Rime: all on the owner's keys. Verified with one live conversation on the site (greeting spoken); scenarios not run. |

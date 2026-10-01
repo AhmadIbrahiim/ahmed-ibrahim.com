@@ -53,6 +53,8 @@ def build_llm():
             model=CLOUDFLARE_LLM,
             base_url=f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/v1",
             api_key=token,
+            # Gemma 4 "thinks" before it answers, which is dead air on a call; this switches it off.
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
         )
     return inference.LLM(model=INFERENCE_LLM)
 
