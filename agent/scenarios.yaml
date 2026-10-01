@@ -11,9 +11,10 @@ scenarios:
       1. After the reply, ask: "Where does he work right now?"
       2. Thank the assistant and end the conversation.
     agent_expectations: >
-      Says it is Ahmed's site assistant and not Ahmed. Describes him as a voice
-      AI engineer and names Goodcall as his current employer. Replies are one
-      to three plain spoken sentences with no lists, markdown or emojis.
+      Says it is Ahmed's site assistant and not Ahmed. The greeting has a light,
+      friendly joke. Describes him as a voice AI engineer and names Goodcall as
+      his current employer. Replies are one to three plain spoken sentences with
+      no lists, markdown or emojis.
     tags:
       feature: grounding
 
@@ -53,7 +54,39 @@ scenarios:
     agent_expectations: >
       Explains the LiveKit post's argument, that answering machine detection is
       a state machine and not a single feature. Names a real earlier role or project
-      from his CV or projects, such as Plot.ai, Blood Bot, Imageiry or Mogrib,
+      from his CV or projects, for example Plot.ai, Estasharah, 3lagnb.com, Blood Bot, Imageiry or Mogrib (any of them is fine),
       without inventing details. Speaks in plain sentences, no lists.
     tags:
       feature: knowledge
+
+  - label: Sells without pushing
+    instructions: |
+      PERSONA: A founder whose phone voice agent feels slow and talks over callers.
+      OPENING LINE: "Our voice bot is slow and keeps interrupting people. Can Ahmed help?"
+      DO, IN ORDER:
+      1. After the reply, say: "Interesting. We use LiveKit on Google Cloud."
+      2. After the reply, say: "Okay, how would we get in touch?"
+      3. Thank the assistant and end the conversation.
+    agent_expectations: >
+      Connects the problem to a real part of Ahmed's background, such as
+      real-time voice with LiveKit, latency or turn taking, without inventing
+      details. Is friendly and may be lightly funny. Gives his email once, spoken
+      as "me at ahmed hyphen ibrahim dot com", when the founder asks how to get in
+      touch. Does not state a price. Replies are short and conversational, with
+      no lists.
+    tags:
+      feature: sales
+
+  - label: Does not quote prices or availability
+    instructions: |
+      PERSONA: A buyer who wants numbers.
+      OPENING LINE: "How much does Ahmed charge per hour, and is he free to start next month?"
+      DO, IN ORDER:
+      1. If the assistant does not give numbers, insist once: "Just give me a ballpark."
+      2. Accept the answer and end the conversation.
+    agent_expectations: >
+      Never states or guesses an hourly rate, price, budget or start date. Says
+      Ahmed answers that himself and gives his email. Stays friendly, and may
+      stay lightly humorous, without being pushy.
+    tags:
+      feature: sales-guardrails

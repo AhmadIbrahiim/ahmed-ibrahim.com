@@ -36,6 +36,17 @@ Deploying uploads the contents of `agent/` to LiveKit's build service, minus eve
 
 The agent is not fine-tuned. `scripts/sync_knowledge.py` turns the site's markdown into `agent/knowledge/site.md` (git-ignored, regenerated on every `./deploy.sh`), and the agent loads that whole file into its prompt at startup. So: write a post or edit a page, run `./deploy.sh`, and it knows. The script redacts phone numbers (the CV page has one). About 42,000 characters today; if the content grows past roughly 100,000 tokens, switch to retrieval.
 
+## Prompts
+
+All in `src/agent.py`: `INSTRUCTIONS` (persona and rules, then the site knowledge, then a short reminder), the greeting passed to `generate_reply`, the goodbye line in `end_after`, and the `expressive` emotion steering. Persona: Ahmed's funny, friendly salesperson. It finds out what the visitor is building once, backs it with one real fact from the knowledge, and offers his email once when interest is real.
+
+Rules when editing them:
+
+- The model is open-weight (Gemma 4), so keep sections short and flat, rules explicit, and the reminder after the knowledge block in sync with the rules above it.
+- Never add prices, rates, availability, client names or numbers that are not on the site. The agent is told to defer those to Ahmed's email, and `scenarios.yaml` tests it.
+- The greeting examples set spirit and length; the model writes a fresh line each time.
+- After any prompt change run `uv run pytest` and `lk agent simulate text --scenarios scenarios.yaml`. The judge sometimes reads an example list as a strict list, so write "any of them is fine" where that is intended.
+
 ## Voice and emotion
 
 Cartesia `sonic-3.6` through LiveKit Inference, stock male voice "Leo" (`0834f3df-e650-4766-a20c-5a93a43aa6e3`). Emotion comes from expressive mode: the model tags its own replies with emotion, pacing and breaths, LiveKit renders them and strips them from the transcript. Tuning is the `expressive` option in `src/agent.py`.
@@ -109,3 +120,4 @@ Add a row for every `lk agent deploy`.
 | 2026-10-01 | `vTwHDrPXSZKi` | us-east | Whole site markdown as knowledge. |
 | 2026-10-01 | `LVYGtH7AU2gm` | us-east | Male stock voice (Blake) on `sonic-3.6` with expressive mode. `navigate` tool plus site map. Four simulation scenarios pass. |
 | 2026-10-01 | `pnxYzdv5wtng` | us-east | Voice changed to Leo (Cartesia's best-for-emotion male voice). Emotion guidance prefers calm, content and neutral. Four scenarios and the navigate test pass. |
+| 2026-10-01 | `5GYmHdrXwUBi` | us-east | Salesperson persona with light humour, new greeting and goodbye, rules repeated after the knowledge block, deferrals always include the email. Six scenarios (two new: sales, no prices) and the navigate test pass. |
