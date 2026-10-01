@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import os
 import textwrap
 from pathlib import Path
 
@@ -21,7 +22,7 @@ from livekit.agents import (
     inference,
     room_io,
 )
-from livekit.plugins import ai_coustics
+from livekit.plugins import ai_coustics, openai, rime
 
 logger = logging.getLogger("agent")
 
@@ -33,13 +34,31 @@ AGENT_NAME = "ahmed-site"
 # A public voice endpoint costs money per minute, so every session ends on its own.
 MAX_SESSION_SECONDS = 180
 
-# Male Cartesia voice "Leo" on the newest Sonic model, served by LiveKit Inference. Cartesia lists
-# Leo, Jace, Kyle and Gavin (male) as the voices with the best emotional response; Jace
-# 6776173b-fd72-460d-89b3-d85812ee518d, Kyle c961b81c-a935-4c17-bfb3-ba2239de8c2f and
-# Gavin f4a3a8e4-694c-4c45-9ca0-27caf97901b5 also work here. Stay on Inference: expressive
-# mode (emotion) only works there, and custom Cartesia voices are not served by it.
-TTS_MODEL = "cartesia/sonic-3.6"
-VOICE_ID = "0834f3df-e650-4766-a20c-5a93a43aa6e3"
+# Rime's newest model ("coda") with the male voice "cupola", through the Rime plugin and the owner's
+# own key (RIME_API_KEY, a LiveKit Cloud secret; never commit it). Rime is not one of the providers
+# LiveKit's emotion-tag mode supports, so there is no `expressive` setting: delivery comes from
+# the voice itself. Other male coda voices: godfrey, beatty, masonry, parapet.
+# Language model. By default LiveKit Inference (billed against the project's credits). If both
+# CLOUDFLARE_AI_TOKEN and CLOUDFLARE_ACCOUNT_ID are set as agent secrets, Workers AI is used
+# instead through its OpenAI-compatible endpoint, which keeps the model off the credit meter.
+INFERENCE_LLM = "google/gemma-4-31b-it"
+CLOUDFLARE_LLM = "@cf/google/gemma-4-26b-a4b-it"
+
+
+def build_llm():
+    token = os.environ.get("CLOUDFLARE_AI_TOKEN")
+    account = os.environ.get("CLOUDFLARE_ACCOUNT_ID")
+    if token and account:
+        return openai.LLM(
+            model=CLOUDFLARE_LLM,
+            base_url=f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/v1",
+            api_key=token,
+        )
+    return inference.LLM(model=INFERENCE_LLM)
+
+
+RIME_MODEL = "coda"
+RIME_VOICE = "cupola"
 
 # Everything on the site, built from content/*.md by scripts/sync_knowledge.py (deploy.sh runs it).
 # ponytail: whole site in the prompt (~10k tokens). Switch to retrieval if content outgrows ~100k.
@@ -136,7 +155,7 @@ INSTRUCTIONS = (
 class SiteAssistant(Agent):
     def __init__(self) -> None:
         super().__init__(
-            llm=inference.LLM(model="google/gemma-4-31b-it"),
+            llm=build_llm(),
             instructions=INSTRUCTIONS,
         )
 
@@ -205,25 +224,12 @@ async def entrypoint(ctx: JobContext):
             keyterms=["LiveKit", "Goodcall", "Ahmed Ibrahim", "Dialogflow", "WebRTC"],
             keyterm_detection={"enabled": True},
         ),
-        tts=inference.TTS(model=TTS_MODEL, voice=VOICE_ID, language="en"),
+        tts=rime.TTS(model=RIME_MODEL, speaker=RIME_VOICE, use_websocket=True),
         turn_handling=TurnHandlingOptions(
             turn_detection=inference.TurnDetector(),
             interruption={"mode": "adaptive"},
             preemptive_generation={"enabled": True},
         ),
-        # The model adds emotion, pacing and breaths inline; LiveKit renders them and strips
-        # the tags from the transcript. Steering keeps it natural, not theatrical.
-        expressive={
-            "tts_instructions_append": (
-                "Sound like a witty, warm teammate who is proud of Ahmed. "
-                "Match the visitor's energy. Cartesia's most "
-                "reliable emotions are neutral, calm, content, sad and scared, so use "
-                "calm, content or neutral for most replies. Use sad for apologies or "
-                "when you cannot help, and happy or excited only for genuinely good "
-                "news. Emotion works in English only. Keep laughter and sighs rare."
-            ),
-            "speech_steering": {"disfluencies": False},
-        },
     )
 
     await session.start(

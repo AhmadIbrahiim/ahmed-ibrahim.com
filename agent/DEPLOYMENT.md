@@ -12,7 +12,7 @@ This repo is public. Nothing in it may be a secret. See [What must never be comm
 | Agent id | in `livekit.toml` (git-ignored) |
 | Dispatch name | `ahmed-site` (set in `src/agent.py`; the site's token endpoint must request exactly this) |
 | Region | `us-east` |
-| Models | LiveKit Inference: Gemma 4 (LLM), AssemblyAI (speech to text), Cartesia `sonic-3.6` (voice "Leo", male) with expressive mode on for emotion |
+| Models | Language: LiveKit Inference Gemma 4, or Cloudflare Workers AI `@cf/google/gemma-4-26b-a4b-it` when its secrets are set. Speech to text: LiveKit Inference (AssemblyAI). Voice: Rime `coda`, male voice `cupola`, through the Rime plugin with the owner's own key |
 | Knowledge | All of `content/pages` and `content/posts`, copied into the prompt (see [Knowledge](#knowledge)) |
 | Session cap | 180 seconds (`MAX_SESSION_SECONDS` in `src/agent.py`) |
 
@@ -57,19 +57,15 @@ Rules when editing them:
 
 The free plan includes only $2.50 of inference credit in total (about 50 minutes of conversation by LiveKit's own estimate; the full-site prompt makes each turn heavier). When it runs out, the model refuses every request with a 429 quota error and the assistant goes silent; the site then shows the "isn't available right now" message with Ahmed's email. Running simulations or `uv run pytest` spends the same credit, so use them sparingly. Fixes: upgrade the plan, or point the agent at another model provider with its own key (the key goes in `.env.local` and `lk agent update-secrets`, never in the repo).
 
-## Voice and emotion
+## Voice
 
-Cartesia `sonic-3.6` through LiveKit Inference, stock male voice "Leo" (`0834f3df-e650-4766-a20c-5a93a43aa6e3`). Emotion comes from expressive mode: the model tags its own replies with emotion, pacing and breaths, LiveKit renders them and strips them from the transcript. Tuning is the `expressive` option in `src/agent.py`.
+Rime's newest model, `coda`, voice `cupola` (a confident, warm male American voice), streamed over WebSocket through the Rime plugin with the owner's own key. The key is the agent secret `RIME_API_KEY`: keep it in `agent/.env.local` (git-ignored) and push it with `lk agent update-secrets --secrets-file .env.local`. Other male coda voices: godfrey, beatty, masonry, parapet; change `RIME_VOICE`.
 
-What [Cartesia's emotion guide](https://docs.cartesia.ai/build-with-cartesia/capability-guides/volume-speed-emotion) says, and how it shapes the setup:
+Rime is not one of the providers LiveKit's emotion-tag mode supports (Fish Audio, Inworld, Cartesia, Gemini), so there is no `expressive` setting any more; the delivery comes from the voice itself. Earlier versions used Cartesia with emotion tags (see the log). The current mood is no longer published to the browser as `lk.expression`.
 
-- Emotion is in beta, works in English only, and is guidance rather than a guarantee. Results depend on the voice.
-- The voices with the best emotional response are Leo, Jace, Kyle and Gavin (male), plus Maya, Tessa, Dana and Marian. The agent uses Leo. Jace (`6776173b-fd72-460d-89b3-d85812ee518d`), Kyle (`c961b81c-a935-4c17-bfb3-ba2239de8c2f`) and Gavin (`f4a3a8e4-694c-4c45-9ca0-27caf97901b5`) also work through Inference; change `VOICE_ID` to switch.
-- The most reliable emotions are neutral, calm, content, sad and scared, so the instructions steer the model to calm, content or neutral most of the time, and sad or happy only when they clearly fit.
+## Language model
 
-Voice must stay on Inference, because expressive mode only works there. A custom Cartesia voice (for example `8a99c589-94d4-48d4-befc-07b097fa1246`) is not served by Inference, and the Cartesia plugin route would turn emotion off. LiveKit's [custom voices](https://docs.livekit.io/agents/models/tts/custom-voices/) page covers cloning a voice through LiveKit instead (not tried).
-
-The current mood is also published to the browser as `lk.expression` (the `useAgentExpression` hook), so the Aura can change colour with the mood.
+`build_llm()` in `src/agent.py` uses LiveKit Inference by default. Setting the agent secrets `CLOUDFLARE_AI_TOKEN` (a token with the Workers AI permission) and `CLOUDFLARE_ACCOUNT_ID` switches it to `@cf/google/gemma-4-26b-a4b-it` on Cloudflare Workers AI through its OpenAI-compatible endpoint, which keeps the model off the inference credit meter. Check tool calling (the `navigate` tool) works with that model before relying on it. Remove the secrets to go back.
 
 ## Navigation (agent to browser)
 
@@ -134,3 +130,5 @@ Add a row for every `lk agent deploy`.
 | 2026-10-01 | `XXn8CePyLDCF` | us-east | Persona is now Ahmed's personal AI assistant (talks about him, not the website). Greeting examples and scenarios updated. |
 | 2026-10-01 | `QLPnW5KemV6D` | us-east | Never names the platform; asked how it is built it pitches a build and gives the email. Knowledge rewritten to drop the name. Seven scenarios pass. |
 | 2026-10-01 | `GMEjqER8Qmhh` | us-east | Knowledge now includes LinkedIn highlights and live GitHub projects; prompt focuses on his work and expertise; natural spoken email ("dash"). Deployed without running the scenarios (inference credit was exhausted). |
+| 2026-10-01 | `3qbFEQZM4SvD` | us-east | Voice switched to Rime `coda` / `cupola` with the owner's key (no emotion tags). Deployed without running the scenarios. |
+| 2026-10-01 | `o3d48M3wjsid` | us-east | Opt-in Cloudflare Workers AI language model (`build_llm`), off until its secrets exist. Deployed without running the scenarios. |
