@@ -1,6 +1,6 @@
 # Voice agent deployment
 
-The site assistant for ahmed-ibrahim.com. A LiveKit Agents (Python) app, deployed to LiveKit Cloud. It is separate from the Gatsby site and from the Cloudflare Pages deploy.
+Ahmed's personal AI assistant, which visitors talk to on ahmed-ibrahim.com. A LiveKit Agents (Python) app, deployed to LiveKit Cloud. It is separate from the Gatsby site and from the Cloudflare Pages deploy.
 
 This repo is public. Nothing in it may be a secret. See [What must never be committed](#what-must-never-be-committed).
 
@@ -38,7 +38,7 @@ The agent is not fine-tuned. `scripts/sync_knowledge.py` turns the site's markdo
 
 ## Prompts
 
-All in `src/agent.py`: `INSTRUCTIONS` (persona and rules, then the site knowledge, then a short reminder), the greeting passed to `generate_reply`, the goodbye line in `end_after`, and the `expressive` emotion steering. Persona: Ahmed's funny, friendly salesperson. It finds out what the visitor is building once, backs it with one real fact from the knowledge, and offers his email once when interest is real.
+All in `src/agent.py`: `INSTRUCTIONS` (persona and rules, then the site knowledge, then a short reminder), the greeting passed to `generate_reply`, the goodbye line in `end_after`, and the `expressive` emotion steering. Persona: Ahmed's personal AI assistant, a funny, warm teammate and his biggest fan (an AI that says so, never Ahmed himself; it talks about him, not about the website). It finds out what the visitor is building once, backs it with one real fact from the knowledge, and offers his email once when interest is real.
 
 Rules when editing them:
 
@@ -121,3 +121,4 @@ Add a row for every `lk agent deploy`.
 | 2026-10-01 | `LVYGtH7AU2gm` | us-east | Male stock voice (Blake) on `sonic-3.6` with expressive mode. `navigate` tool plus site map. Four simulation scenarios pass. |
 | 2026-10-01 | `pnxYzdv5wtng` | us-east | Voice changed to Leo (Cartesia's best-for-emotion male voice). Emotion guidance prefers calm, content and neutral. Four scenarios and the navigate test pass. |
 | 2026-10-01 | `5GYmHdrXwUBi` | us-east | Salesperson persona with light humour, new greeting and goodbye, rules repeated after the knowledge block, deferrals always include the email. Six scenarios (two new: sales, no prices) and the navigate test pass. |
+| 2026-10-01 | `XXn8CePyLDCF` | us-east | Persona is now Ahmed's personal AI assistant (talks about him, not the website). Greeting examples and scenarios updated. |

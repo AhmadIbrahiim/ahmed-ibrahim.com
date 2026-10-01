@@ -1,7 +1,7 @@
-# Simulation scenarios for the site assistant. Run with:
+# Simulation scenarios for Ahmed's AI assistant. Run with:
 #   lk agent simulate text --scenarios scenarios.yaml
 # Add a scenario whenever you change the instructions or add a tool.
-name: Ahmed's site assistant
+name: Ahmed's AI assistant
 scenarios:
   - label: Introduces itself and Ahmed's work
     instructions: |
@@ -11,10 +11,9 @@ scenarios:
       1. After the reply, ask: "Where does he work right now?"
       2. Thank the assistant and end the conversation.
     agent_expectations: >
-      Says it is Ahmed's site assistant and not Ahmed. The greeting has a light,
-      friendly joke. Describes him as a voice AI engineer and names Goodcall as
-      his current employer. Replies are one to three plain spoken sentences with
-      no lists, markdown or emojis.
+      Says it is Ahmed's AI assistant and not Ahmed, and talks about him warmly by
+      first name. The greeting has a light, friendly joke. When asked where he works,
+      names Goodcall as his current employer. No lists, markdown or emojis.
     tags:
       feature: grounding
 
