@@ -12,7 +12,7 @@ This repo is public. Nothing in it may be a secret. See [What must never be comm
 | Agent id | in `livekit.toml` (git-ignored) |
 | Dispatch name | `ahmed-site` (set in `src/agent.py`; the site's token endpoint must request exactly this) |
 | Region | `us-east` |
-| Models | Language: LiveKit Inference Gemma 4, or Cloudflare Workers AI `@cf/google/gemma-4-26b-a4b-it` when its secrets are set. Speech to text: LiveKit Inference (AssemblyAI). Voice: Rime `coda`, male voice `cupola`, through the Rime plugin with the owner's own key |
+| Models | Language: LiveKit Inference Gemma 4, or Cloudflare Workers AI `@cf/google/gemma-4-26b-a4b-it` when its secrets are set. Speech to text: AssemblyAI `universal-3-5-pro`, through LiveKit Inference by default or directly on the owner's key when `ASSEMBLYAI_API_KEY` is set. Voice: Rime `coda`, male voice `cupola`, through the Rime plugin with the owner's own key |
 | Knowledge | All of `content/pages` and `content/posts`, copied into the prompt (see [Knowledge](#knowledge)) |
 | Session cap | 180 seconds (`MAX_SESSION_SECONDS` in `src/agent.py`) |
 
@@ -66,6 +66,10 @@ Rime is not one of the providers LiveKit's emotion-tag mode supports (Fish Audio
 ## Language model
 
 `build_llm()` in `src/agent.py` uses LiveKit Inference by default. Setting the agent secrets `CLOUDFLARE_AI_TOKEN` (a token with the Workers AI permission) and `CLOUDFLARE_ACCOUNT_ID` switches it to `@cf/google/gemma-4-26b-a4b-it` on Cloudflare Workers AI through its OpenAI-compatible endpoint, which keeps the model off the inference credit meter. Check tool calling (the `navigate` tool) works with that model before relying on it. Remove the secrets to go back.
+
+## Speech to text
+
+`build_stt()` in `src/agent.py` uses LiveKit Inference by default. Setting the agent secret `ASSEMBLYAI_API_KEY` switches it to the same AssemblyAI model (`universal-3-5-pro`) through the AssemblyAI plugin on the owner's own key, off the inference credit meter. Remove the secret to go back. Keyterms (names it would misspell) are in `KEYTERMS`.
 
 ## Navigation (agent to browser)
 
@@ -132,3 +136,5 @@ Add a row for every `lk agent deploy`.
 | 2026-10-01 | `GMEjqER8Qmhh` | us-east | Knowledge now includes LinkedIn highlights and live GitHub projects; prompt focuses on his work and expertise; natural spoken email ("dash"). Deployed without running the scenarios (inference credit was exhausted). |
 | 2026-10-01 | `3qbFEQZM4SvD` | us-east | Voice switched to Rime `coda` / `cupola` with the owner's key (no emotion tags). Deployed without running the scenarios. |
 | 2026-10-01 | `o3d48M3wjsid` | us-east | Opt-in Cloudflare Workers AI language model (`build_llm`), off until its secrets exist. Deployed without running the scenarios. |
+| 2026-10-01 | `Version
+Xxw5Pkxzh2ST` | us-east | Opt-in own-key AssemblyAI speech to text (`build_stt`), off until `ASSEMBLYAI_API_KEY` exists. Deployed without running the scenarios. |

@@ -9,7 +9,7 @@ description = "Simple voice AI assistant built with LiveKit Agents for Python"
 requires-python = ">=3.10, <3.15"
 
 dependencies = [
-    "livekit-agents[openai,rime]~=1.8",
+    "livekit-agents[assemblyai,openai,rime]~=1.8",
     "livekit-plugins-ai-coustics~=0.3",
     "python-dotenv",
 ]

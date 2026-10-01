@@ -17,7 +17,7 @@ name = "agent-starter-python"
 version = "1.0.0"
 source = { editable = "." }
 dependencies = [
-    { name = "livekit-agents", extra = ["openai", "rime"] },
+    { name = "livekit-agents", extra = ["assemblyai", "openai", "rime"] },
     { name = "livekit-plugins-ai-coustics" },
     { name = "python-dotenv" },
 ]
@@ -31,7 +31,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "livekit-agents", extras = ["openai", "rime"], specifier = "~=1.8" },
+    { name = "livekit-agents", extras = ["assemblyai", "openai", "rime"], specifier = "~=1.8" },
     { name = "livekit-plugins-ai-coustics", specifier = "~=0.3" },
     { name = "python-dotenv" },
 ]
@@ -1079,6 +1079,9 @@ wheels = [
 ]
 
 [package.optional-dependencies]
+assemblyai = [
+    { name = "livekit-plugins-assemblyai" },
+]
 codecs = [
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
@@ -1194,6 +1197,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/86/f1/0260a8f7669a43254f57dca04ebd67be0141f904b0aadee66f1461e8b37e/livekit_plugins_ai_coustics-0.3.2-cp310-abi3-manylinux_2_28_aarch64.whl", hash = "sha256:3d01daa5afa9d7ef16a1641f2066238674fa3fe9b9e513981a33e1d60c0b0b8b", size = 70256234, upload-time = "2026-09-02T19:08:46.699Z" },
     { url = "https://files.pythonhosted.org/packages/45/7b/de3d1100dc1692e2436746111a283bbc0b75e8668a71db02a776714108b9/livekit_plugins_ai_coustics-0.3.2-cp310-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:c71880c0a6fab84be1718959991734f676bc5ad6a815beae1dd1f727006238c9", size = 70596542, upload-time = "2026-09-02T19:08:52.565Z" },
     { url = "https://files.pythonhosted.org/packages/27/dd/e2adc5b48412b1ed5b090eb3dfc3f4d1e6f8be3e7354961ee6e65d5872ba/livekit_plugins_ai_coustics-0.3.2-cp310-abi3-win_amd64.whl", hash = "sha256:c489a22fbd18dd7d8d807c16859c6354ad44928e8a2f1fdca8a2faffde6feb36", size = 70178766, upload-time = "2026-09-02T19:08:58.436Z" },
+]
+
+[[package]]
+name = "livekit-plugins-assemblyai"
+version = "1.8.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "livekit-agents" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/6f/1f/41fdef8d6303040dcf4035421e3564803b95442bb65927abe288d43f0f62/livekit_plugins_assemblyai-1.8.3.tar.gz", hash = "sha256:76ceec8a4aa261b0f7a619ac281fdde51427d69a5e0514066c27fdfa0718d863", size = 15190, upload-time = "2026-09-23T19:04:13.089Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e6/4e/10a18c6376c7a487d4efae85c03ed203ba8b93a0ce92169c5e45cfd3d5e7/livekit_plugins_assemblyai-1.8.3-py3-none-any.whl", hash = "sha256:8e79f550f8ea5339b6f5fd2e972bccc8b0e0391aa1c0fe4e062c0783cdc78609", size = 15360, upload-time = "2026-09-23T19:04:11.331Z" },
 ]
 
 [[package]]

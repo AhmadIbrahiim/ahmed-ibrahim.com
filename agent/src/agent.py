@@ -22,7 +22,7 @@ from livekit.agents import (
     inference,
     room_io,
 )
-from livekit.plugins import ai_coustics, openai, rime
+from livekit.plugins import ai_coustics, assemblyai, openai, rime
 
 logger = logging.getLogger("agent")
 
@@ -55,6 +55,18 @@ def build_llm():
             api_key=token,
         )
     return inference.LLM(model=INFERENCE_LLM)
+
+
+# Speech to text. By default LiveKit Inference (credit meter). With ASSEMBLYAI_API_KEY set as an
+# agent secret it uses the same model directly through the AssemblyAI plugin on the owner's key.
+# Names it would otherwise misspell:
+KEYTERMS = ["LiveKit", "Goodcall", "Ahmed Ibrahim", "Dialogflow", "WebRTC"]
+
+
+def build_stt():
+    if os.environ.get("ASSEMBLYAI_API_KEY"):
+        return assemblyai.STT(model="universal-3-5-pro", keyterms_prompt=KEYTERMS)
+    return inference.STT(model="assemblyai/universal-3-5-pro", language="en")
 
 
 RIME_MODEL = "coda"
@@ -218,10 +230,10 @@ async def entrypoint(ctx: JobContext):
     ctx.log_context_fields = {"room": ctx.room.name}
 
     session = AgentSession(
-        stt=inference.STT(model="assemblyai/universal-3-5-pro", language="en"),
+        stt=build_stt(),
         # Keyterms bias speech recognition toward names it would otherwise misspell.
         stt_context_options=STTContextOptions(
-            keyterms=["LiveKit", "Goodcall", "Ahmed Ibrahim", "Dialogflow", "WebRTC"],
+            keyterms=KEYTERMS,
             keyterm_detection={"enabled": True},
         ),
         tts=rime.TTS(model=RIME_MODEL, speaker=RIME_VOICE, use_websocket=True),
