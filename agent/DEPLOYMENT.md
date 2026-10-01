@@ -12,7 +12,7 @@ This repo is public. Nothing in it may be a secret. See [What must never be comm
 | Agent id | in `livekit.toml` (git-ignored) |
 | Dispatch name | `ahmed-site` (set in `src/agent.py`; the site's token endpoint must request exactly this) |
 | Region | `us-east` |
-| Models | Language: Cloudflare Workers AI `@cf/google/gemma-4-26b-a4b-it` on the owner's token (secrets set; falls back to LiveKit Inference Gemma 4 without them). Speech to text: AssemblyAI. With the owner's key (`ASSEMBLYAI_API_KEY`, set) it is the cheapest streaming model, `universal-streaming-english`; without it, LiveKit Inference's `universal-3-5-pro`. Voice: Rime `coda`, male voice `cupola`, through the Rime plugin with the owner's own key |
+| Models | Language: Cloudflare Workers AI `@cf/google/gemma-4-26b-a4b-it` (thinking off). Speech to text and turn detection: AssemblyAI `universal-3-5-pro`. Voice: Rime `coda` / `cupola`. All on the owner's own keys; no LiveKit-hosted models |
 | Knowledge | All of `content/pages` and `content/posts`, copied into the prompt (see [Knowledge](#knowledge)) |
 | Session cap | 180 seconds (`MAX_SESSION_SECONDS` in `src/agent.py`) |
 
@@ -63,18 +63,22 @@ Rime's newest model, `coda`, voice `cupola` (a confident, warm male American voi
 
 Rime is not one of the providers LiveKit's emotion-tag mode supports (Fish Audio, Inworld, Cartesia, Gemini), so there is no `expressive` setting any more; the delivery comes from the voice itself. Earlier versions used Cartesia with emotion tags (see the log). The current mood is no longer published to the browser as `lk.expression`.
 
-## Language model
+## What can bill, and what was removed
 
-`build_llm()` in `src/agent.py` uses Cloudflare Workers AI, `@cf/google/gemma-4-26b-a4b-it`, through its OpenAI-compatible endpoint when the agent secrets `CLOUDFLARE_AI_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are set (they are), and LiveKit Inference otherwise. The Workers AI account is not the one wrangler is logged into, so use the account id from the token's own dashboard. The token needs the Workers AI permission.
+Everything the agent calls runs on the owner's own keys: Cloudflare Workers AI (language model), AssemblyAI (speech to text and turn detection), Rime (voice). The agent has no fallback to LiveKit Inference: `build_llm()` and `build_stt()` read their secrets with `os.environ[...]`, so a missing secret fails loudly instead of billing the gateway. What still bills on LiveKit Cloud is only hosting: agent session minutes and WebRTC minutes (both have generous free allowances).
 
-- Tool calling works (the `navigate` tool returns `{"path": "/blog/"}`).
-- Gemma 4 "thinks" before answering; `extra_body={"chat_template_kwargs": {"enable_thinking": False}}` turns that off.
-- Measured latency: about 4 to 5 seconds to the first token, with a 12k-token prompt or a tiny one, so it is the model, not the prompt. A click-to-first-spoken-word on the live site took about 7.6 seconds. The UI covers the wait with a typing bubble. A smaller Workers AI model would answer faster.
-- Workers AI has a free daily allowance; check usage in the Cloudflare dashboard.
+Removed because they bill, or call hosted models, or caused extra model calls:
 
-## Speech to text
+- **Keyterm detection** (and the keyterms list). It made a separate LLM call through the LiveKit gateway during every conversation; its quota errors were the "LLM quota exceeded" lines in the logs.
+- **Hosted turn detector and "adaptive" interruption model.** Turn ends now come from AssemblyAI (`turn_detection="stt"`, `endpointing min_delay 0`), interruptions from plain voice activity detection (`mode: "vad"`).
+- **Preemptive generation.** It fired speculative LLM calls before the visitor finished, each resending the whole prompt.
+- **Voice isolation** (ai-coustics): billed per minute after 100 free minutes. Browsers already suppress noise.
+- **Session recording** (`record=False`).
+- **Prompt size:** older tutorial posts are summarised, cutting the prompt from about 12k to about 7k tokens per turn.
 
-`build_stt()` in `src/agent.py` uses LiveKit Inference by default. Setting the agent secret `ASSEMBLYAI_API_KEY` switches it to the cheapest AssemblyAI streaming model (`universal-streaming-english`, $0.0025/min, a third of `universal-3-5-pro`) through the AssemblyAI plugin on the owner's own key, off the inference credit meter. Remove the secret to go back. Keyterms (names it would misspell) are in `KEYTERMS`.
+## Session cap
+
+`enforce_cap()` starts before the greeting and always ends the job after `MAX_SESSION_SECONDS` (180): it tries to say a short goodbye, waits at most 20 seconds, then calls `ctx.shutdown()` whatever happened. An earlier version only shut down after the goodbye finished, so a stalled goodbye left a session running. If you see a room outliving the cap, check `lk room list`; `lk room delete <name>` ends it.
 
 ## Navigation (agent to browser)
 
@@ -145,3 +149,4 @@ Add a row for every `lk agent deploy`.
 Xxw5Pkxzh2ST` | us-east | Opt-in own-key AssemblyAI speech to text (`build_stt`), off until `ASSEMBLYAI_API_KEY` exists. Deployed without running the scenarios. |
 | 2026-10-01 | `aXdXLXnsLGkp` | us-east | Speech to text now on the owner's AssemblyAI key, cheapest model `universal-streaming-english`. Deployed without running the scenarios. |
 | 2026-10-01 | `cVgtTsx4MLGz` | us-east | Language model on Cloudflare Workers AI (Gemma 4 26B, thinking off), speech to text on AssemblyAI, voice on Rime: all on the owner's keys. Verified with one live conversation on the site (greeting spoken); scenarios not run. |
+| 2026-10-01 | `ma25AD9wp6L2` | us-east | Removed keyterm detection, hosted turn/interruption models, preemptive generation, voice isolation, recording and the hosted fallbacks; latest AssemblyAI model with its own turn detection; hard session cap; prompt trimmed to ~7k tokens. One spoken test passed (clean transcript, reply in ~3.8 s); scenarios not run. |

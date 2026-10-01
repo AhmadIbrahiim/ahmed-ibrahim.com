@@ -15,6 +15,8 @@ OUT = Path(__file__).resolve().parents[1] / "knowledge" / "site.md"
 ROUTES = OUT.with_name("routes.json")
 LINKEDIN = Path(__file__).resolve().parents[1] / "knowledge-src" / "linkedin.md"
 GITHUB_USER = "AhmadIbrahiim"
+OLD_BEFORE = "2025-01-01"  # posts older than this are summarised
+SUMMARY_CHARS = 600
 # Public repos that say little about his expertise (personal alert bots, empty templates, profile
 # repo). The site repo is described by hand below because it contains this assistant.
 SKIP_REPOS = {
@@ -94,7 +96,19 @@ def section(path: Path, kind: str) -> str:
     title = hide(meta.get("title", path.stem))
     slug = meta.get("slug", path.stem)
     date = f", written {meta['date']}" if "date" in meta else ""
-    return f"## {kind}: {title} (site path /{slug}/{date})\n\n{clean(body)}\n"
+    text = clean(body)
+    if (
+        kind == "Post"
+        and meta.get("date", "9999") < OLD_BEFORE
+        and len(text) > SUMMARY_CHARS
+    ):
+        # Old general tutorials: a short summary is enough, and every character costs tokens per turn.
+        cut = text[:SUMMARY_CHARS]
+        text = (
+            cut[: cut.rfind(". ") + 1 or SUMMARY_CHARS]
+            + " (Older tutorial, summarised here.)"
+        )
+    return f"## {kind}: {title} (site path /{slug}/{date})\n\n{text}\n"
 
 
 def github_section() -> str:

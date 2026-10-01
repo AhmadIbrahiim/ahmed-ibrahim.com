@@ -13,16 +13,14 @@ from livekit.agents import (
     AgentSession,
     JobContext,
     RunContext,
-    STTContextOptions,
     ToolError,
     TurnHandlingOptions,
     cli,
     function_tool,
     get_job_context,
     inference,
-    room_io,
 )
-from livekit.plugins import ai_coustics, assemblyai, openai, rime
+from livekit.plugins import assemblyai, openai, rime
 
 logger = logging.getLogger("agent")
 
@@ -38,40 +36,34 @@ MAX_SESSION_SECONDS = 180
 # own key (RIME_API_KEY, a LiveKit Cloud secret; never commit it). Rime is not one of the providers
 # LiveKit's emotion-tag mode supports, so there is no `expressive` setting: delivery comes from
 # the voice itself. Other male coda voices: godfrey, beatty, masonry, parapet.
-# Language model. By default LiveKit Inference (billed against the project's credits). If both
-# CLOUDFLARE_AI_TOKEN and CLOUDFLARE_ACCOUNT_ID are set as agent secrets, Workers AI is used
-# instead through its OpenAI-compatible endpoint, which keeps the model off the credit meter.
-INFERENCE_LLM = "google/gemma-4-31b-it"
+# Language model: Cloudflare Workers AI on the owner's token, through its OpenAI-compatible endpoint.
+# There is deliberately no fallback to LiveKit Inference: a missing secret should fail loudly, not
+# quietly bill the gateway.
 CLOUDFLARE_LLM = "@cf/google/gemma-4-26b-a4b-it"
 
 
 def build_llm():
-    token = os.environ.get("CLOUDFLARE_AI_TOKEN")
-    account = os.environ.get("CLOUDFLARE_ACCOUNT_ID")
-    if token and account:
-        return openai.LLM(
-            model=CLOUDFLARE_LLM,
-            base_url=f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/v1",
-            api_key=token,
-            # Gemma 4 "thinks" before it answers, which is dead air on a call; this switches it off.
-            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
-        )
-    return inference.LLM(model=INFERENCE_LLM)
+    token = os.environ["CLOUDFLARE_AI_TOKEN"]
+    account = os.environ["CLOUDFLARE_ACCOUNT_ID"]
+    return openai.LLM(
+        model=CLOUDFLARE_LLM,
+        base_url=f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/v1",
+        api_key=token,
+        # Gemma 4 "thinks" before it answers, which is dead air on a call; this switches it off.
+        extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+    )
 
 
-# Speech to text. By default LiveKit Inference (credit meter). With ASSEMBLYAI_API_KEY set as an
-# agent secret it uses the same model directly through the AssemblyAI plugin on the owner's key.
-# Names it would otherwise misspell:
-KEYTERMS = ["LiveKit", "Goodcall", "Ahmed Ibrahim", "Dialogflow", "WebRTC"]
-
-
+# Speech to text: AssemblyAI's latest streaming model on the owner's key. It also decides when the
+# visitor has finished speaking (turn_detection="stt" below), so no hosted turn model is used.
+# Settings follow AssemblyAI's guidance for that mode.
 def build_stt():
-    if os.environ.get("ASSEMBLYAI_API_KEY"):
-        # The cheapest streaming model ($0.0025/min against $0.0075 for universal-3-5-pro).
-        return assemblyai.STT(
-            model="universal-streaming-english", keyterms_prompt=KEYTERMS
-        )
-    return inference.STT(model="assemblyai/universal-3-5-pro", language="en")
+    return assemblyai.STT(
+        model="universal-3-5-pro",
+        min_turn_silence=100,
+        max_turn_silence=1000,
+        vad_threshold=0.3,
+    )
 
 
 RIME_MODEL = "coda"
@@ -218,16 +210,27 @@ class SiteAssistant(Agent):
 server = AgentServer()
 
 
-async def end_after(session: AgentSession, seconds: int) -> None:
+GOODBYE = (
+    "Looks like my time is up. No hold music, just goodbye. If anything I said "
+    "sounded useful, email Ahmed at me at ahmed dash ibrahim dot com. "
+    "Thanks for stopping by."
+)
+
+
+async def enforce_cap(ctx: JobContext, session: AgentSession, seconds: int) -> None:
+    """Hard time limit. The goodbye is a courtesy; ending the job never depends on it."""
     await asyncio.sleep(seconds)
-    handle = session.say(
-        "Looks like my time is up. No hold music, just goodbye. If anything I said "
-        "sounded useful, email Ahmed at me at ahmed dash ibrahim dot com. "
-        "Thanks for stopping by.",
-        allow_interruptions=False,
-    )
-    await handle
-    session.shutdown()
+    try:
+        handle = session.say(GOODBYE, allow_interruptions=False)
+
+        async def played() -> None:
+            await handle
+
+        await asyncio.wait_for(played(), timeout=20)
+    except Exception:
+        logger.warning("goodbye did not play; ending the session anyway", exc_info=True)
+    finally:
+        ctx.shutdown(reason="session time cap")
 
 
 @server.rtc_session(agent_name=AGENT_NAME)
@@ -236,55 +239,50 @@ async def entrypoint(ctx: JobContext):
 
     session = AgentSession(
         stt=build_stt(),
-        # Keyterms bias speech recognition toward names it would otherwise misspell.
-        stt_context_options=STTContextOptions(
-            keyterms=KEYTERMS,
-            keyterm_detection={"enabled": True},
-        ),
         tts=rime.TTS(model=RIME_MODEL, speaker=RIME_VOICE, use_websocket=True),
+        # Bundled voice-activity model (runs inside the agent), aligned with AssemblyAI's threshold.
+        vad=inference.VAD(model="silero", activation_threshold=0.3),
         turn_handling=TurnHandlingOptions(
-            turn_detection=inference.TurnDetector(),
-            interruption={"mode": "adaptive"},
-            preemptive_generation={"enabled": True},
+            turn_detection="stt",  # AssemblyAI decides when the visitor is done
+            endpointing={"min_delay": 0},  # its own silence windows already apply
+            interruption={"mode": "vad"},  # not the hosted "adaptive" model
+            # No speculative model calls: each one would resend the whole prompt.
+            preemptive_generation={"enabled": False},
         ),
     )
 
-    await session.start(
-        agent=SiteAssistant(),
-        room=ctx.room,
-        room_options=room_io.RoomOptions(
-            audio_input=room_io.AudioInputOptions(
-                noise_cancellation=ai_coustics.audio_enhancement(
-                    model=ai_coustics.EnhancerModel.QUAIL_VF_S
-                ),
-            ),
-        ),
-    )
+    # record=False: no session recording or report upload to LiveKit Cloud.
+    await session.start(agent=SiteAssistant(), room=ctx.room, record=False)
     await ctx.connect()
 
-    # The visitor just clicked "talk to me", so speak first. The examples set the spirit and
-    # the length; the model should write a fresh line each time, not copy one.
-    await session.generate_reply(
-        instructions=(
-            "Greet the visitor in at most two short sentences. Say you are Ahmed's AI "
-            "assistant, make one light joke about being an AI or about voice AI, and end "
-            "by asking what brings them by or what they are working on. Write a fresh "
-            "line each time, in the spirit of these:\n"
-            "- Hi, I'm Ahmed's AI assistant. Ask me about his voice AI work or his "
-            "open-source projects. What brings you by?\n"
-            "- Hello! I'm Ahmed's AI assistant. No hold music, I promise, just his "
-            "work in voice AI. What are you building?\n"
-            "- Hey there, I'm Ahmed's AI assistant. Fair warning, I never interrupt "
-            "unless you pause for too long. Want to hear what he builds?"
-        )
-    )
-
-    timer = asyncio.create_task(end_after(session, MAX_SESSION_SECONDS))
+    # Start the clock first, so nothing below (a slow or failing greeting) can skip the cap.
+    timer = asyncio.create_task(enforce_cap(ctx, session, MAX_SESSION_SECONDS))
 
     async def stop_timer() -> None:
         timer.cancel()
 
     ctx.add_shutdown_callback(stop_timer)
+
+    # The visitor just clicked "talk to me", so speak first. The examples set the spirit and
+    # the length; the model should write a fresh line each time, not copy one.
+    try:
+        await session.generate_reply(
+            instructions=(
+                "Greet the visitor in at most two short sentences. Say you are Ahmed's AI "
+                "assistant, make one light joke about being an AI or about voice AI, and end "
+                "by asking what brings them by or what they are working on. Write a fresh "
+                "line each time, in the spirit of these:\n"
+                "- Hi, I'm Ahmed's AI assistant. Ask me about his voice AI work or his "
+                "open-source projects. What brings you by?\n"
+                "- Hello! I'm Ahmed's AI assistant. No hold music, I promise, just his "
+                "work in voice AI. What are you building?\n"
+                "- Hey there, I'm Ahmed's AI assistant. Fair warning, I never interrupt "
+                "unless you pause for too long. Want to hear what he builds?"
+            )
+        )
+    except Exception:
+        # The cap above still ends the session if the model is down.
+        logger.warning("greeting failed", exc_info=True)
 
 
 if __name__ == "__main__":
