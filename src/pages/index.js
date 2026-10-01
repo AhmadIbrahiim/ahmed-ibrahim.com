@@ -6,7 +6,6 @@ import PostListing from "../components/PostListing";
 import {
   Avatar,
   PixelPose,
-  VoiceSignal,
   VoicePipeline
 } from "../components/Voice";
 import AgentSlot from "../components/AgentDock/AgentSlot";
@@ -58,7 +57,6 @@ export default function IndexPage({ data }) {
             Read my writing
           </Link>
         </div>
-        <VoiceSignal />
         <dl className="experience-strip">
           <div>
             <dt>Software since 2016</dt>

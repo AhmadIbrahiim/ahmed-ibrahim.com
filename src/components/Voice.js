@@ -32,42 +32,6 @@ export function PixelPose({ pose = "waving" }) {
   );
 }
 
-export function VoiceSignal() {
-  const [playing, setPlaying] = useState(false);
-  return (
-    <button
-      className={`voice-signal${playing ? " is-playing" : ""}`}
-      type="button"
-      aria-label={playing ? "Pause waveform animation" : "Animate waveform"}
-      aria-pressed={playing}
-      onClick={() => setPlaying(!playing)}
-    >
-      <span className="signal-bars" aria-hidden="true">
-        {Array.from({ length: 57 }, (_, i) => (
-          <i
-            key={i}
-            style={{
-              "--height": `${4 +
-                Math.abs(Math.sin(i * 1.7)) *
-                  Math.sin((i / 56) * Math.PI) *
-                  32}px`,
-              "--delay": `${i * -0.07}s`
-            }}
-          />
-        ))}
-      </span>
-      <span className="signal-control" aria-hidden="true">
-        {playing ? "Ⅱ" : "▷"}
-      </span>
-      <span className="signal-caption">
-        {playing
-          ? "A little motion. No sound."
-          : "A little signal. Give it a nudge."}
-      </span>
-    </button>
-  );
-}
-
 const stages = [
   {
     name: "Listen",

@@ -91,13 +91,6 @@ button { color: inherit; }
 .speech i { width: 2px; height: 9px; background: var(--orange); }
 .speech i:nth-child(2), .speech i:nth-child(4) { height: 15px; }
 .speech i:nth-child(3) { height: 21px; }
-.voice-signal { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; border: 0; background: transparent; padding: 8px 0; margin-top: 44px; text-align: left; }
-.signal-bars { height: 40px; width: 280px; display: flex; align-items: center; justify-content: space-between; gap: 2px; }
-.signal-bars i { height: var(--height); width: 2px; background: var(--muted); transform-origin: center; transition: background .2s; }
-.signal-control { display: grid; place-items: center; color: var(--accent); border: 1px solid var(--line); width: 30px; height: 30px; border-radius: 50%; font-size: 15px; }
-.signal-caption { color: var(--muted); font-size: 11px; }
-.voice-signal:hover .signal-bars i { background: var(--accent); }
-.is-playing .signal-bars i { background: var(--orange); animation: talk .8s var(--delay) ease-in-out infinite alternate; }
 .home-section { padding: 66px 0; scroll-margin-top: 20px; }
 .section-heading, .cell-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 36px; }
 .current-work { padding: 40px 40px 48px; background: var(--soft); margin: 0 -40px; }
@@ -281,7 +274,6 @@ button { color: inherit; }
 .hero h1 { animation-delay: .07s; }
 .hero-description { animation-delay: .14s; }
 .hero-links { animation-delay: .21s; }
-.hero .voice-signal { animation-delay: .28s; }
 @media (max-width: 1000px) {
   .hero-aside { display: none; }
   .current-work { margin: 0 -24px; padding: 32px 24px; }
@@ -307,9 +299,6 @@ button { color: inherit; }
   .hero .speech i:nth-child(2), .hero .speech i:nth-child(4) { height: 11px; }
   .hero .speech i:nth-child(3) { height: 15px; }
   .voice-word svg { bottom: -6px; height: 9px; }
-  .signal-bars { width: 240px; max-width: calc(100vw - 108px); }
-  .signal-caption { flex-basis: 100%; }
-  .voice-signal { margin-top: 30px; gap: 8px 16px; }
   .home-section { padding: 44px 0; }
   .current-work { padding: 28px 24px 32px; }
   .section-heading { gap: 16px; margin-bottom: 28px; }

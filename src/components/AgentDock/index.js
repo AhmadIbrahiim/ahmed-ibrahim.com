@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { navigate } from "gatsby";
 import { useTheme } from "../../context/ThemeContext";
-import Aura from "./Aura";
+import PixelOrb from "./PixelOrb";
 
 // Where the Aura travels. On the home page it starts in #agent-slot and glides to the corner
 // dock over the first TRAVEL pixels of scroll; everywhere else it is just the dock. On phones,
@@ -12,11 +12,11 @@ const DOCK_BOX = 56;
 const DOCK_INSET = 52; // distance from the viewport edge to the dock's centre
 const PHONE = 600;
 
+// Short labels that fit on one row; the full question is what gets sent.
 const CHIPS = [
-  "What does Ahmed build?",
-  "Show me his open-source work",
-  "How does he approach voice agents?",
-  "How do I reach him?"
+  { label: "What he builds", text: "What does Ahmed build?" },
+  { label: "Open source", text: "Show me his open-source work" },
+  { label: "Get in touch", text: "How do I reach him?" }
 ];
 
 const STATUS = {
@@ -84,6 +84,23 @@ function Conversation({ variant, view, onClose }) {
   }
   const shown = variant === "hero" ? messages.slice(-2) : messages;
   const showChips = live && messages.length <= 2 && agentState !== "connecting";
+  const logList =
+    shown.length > 0 || typing || (variant === "hero" && live) ? (
+      <ol className="agent-log" aria-label="Conversation captions" ref={logEl}>
+        {shown.map(m => (
+          <li key={m.id} className={`agent-msg agent-msg--${m.role}`}>
+            {m.text}
+          </li>
+        ))}
+        {(typing || (variant === "hero" && live && shown.length === 0)) && (
+          <li className="agent-msg agent-msg--agent agent-typing" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </li>
+        )}
+      </ol>
+    ) : null;
 
   return (
     <>
@@ -95,8 +112,8 @@ function Conversation({ variant, view, onClose }) {
             {status}
           </p>
         </div>
-        {variant === "card" && (
-          <button type="button" className="agent-x" onClick={onClose} aria-label="Close conversation">
+        {(variant === "card" || !live) && (
+          <button type="button" className="agent-x" onClick={onClose} aria-label="Close">
             <svg className="agent-ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
               <path d="M6 6l12 12M18 6L6 18" />
             </svg>
@@ -114,27 +131,22 @@ function Conversation({ variant, view, onClose }) {
           <a href="mailto:me@ahmed-ibrahim.com">me@ahmed-ibrahim.com</a>
         </p>
       )}
-      {(shown.length > 0 || typing) && (
-        <ol className="agent-log" aria-label="Conversation captions" ref={logEl}>
-          {shown.map(m => (
-            <li key={m.id} className={`agent-msg agent-msg--${m.role}`}>
-              {m.text}
-            </li>
-          ))}
-          {typing && (
-            <li className="agent-msg agent-msg--agent agent-typing" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-            </li>
-          )}
-        </ol>
+      {variant === "hero" && live ? (
+        <div className="agent-bubble">{logList}</div>
+      ) : (
+        logList
       )}
-      {showChips && (
-        <div className="agent-chips">
+      {live && (
+        // Always present while live (hidden once the conversation starts), so nothing shifts.
+        <div className={`agent-chips${showChips ? "" : " is-gone"}`}>
           {CHIPS.map(c => (
-            <button type="button" key={c} onClick={() => onChip(c)}>
-              {c}
+            <button
+              type="button"
+              key={c.label}
+              onClick={() => onChip(c.text)}
+              tabIndex={showChips ? 0 : -1}
+            >
+              {c.label}
             </button>
           ))}
         </div>
@@ -193,7 +205,6 @@ export default function AgentDock() {
   const levelRef = useRef(0);
   const session = useRef(null);
   const dockEl = useRef(null);
-  const heroEl = useRef(null);
   const hintEl = useRef(null);
   const dockHintEl = useRef(null);
   const pose = useRef({ cx: 0, cy: 0, box: DOCK_BOX });
@@ -218,15 +229,7 @@ export default function AgentDock() {
     }
   };
 
-  // --- placement: hero slot -> corner dock, driven by scroll -------------------------------
-  const applyHeroPanel = useCallback(() => {
-    const el = heroEl.current;
-    if (!el) return;
-    const { cx, cy, box } = pose.current;
-    el.style.left = `${cx}px`;
-    el.style.top = `${cy + box * 0.8 + 8}px`;
-  }, []);
-
+  // --- placement: hero slot -> corner dock, driven by scroll ------------------------------
   const place = useCallback(() => {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
@@ -273,11 +276,13 @@ export default function AgentDock() {
       el.style.height = `${next.box}px`;
       el.style.transform = `translate3d(${next.cx - next.box / 2}px, ${next.cy - next.box / 2}px, 0)`;
     }
-    applyHeroPanel();
     setPhone(vw <= PHONE);
-    const m = slot && e < 0.5 && vw > PHONE ? "hero" : "dock";
+    // The inline panel hangs 113% of the orb below its top and is 262px tall: use the docked card
+    // instead when that would run off the bottom of a short window.
+    const panelBottom = next.cy - next.box / 2 + next.box * 1.13 + 2 + 262;
+    const m = slot && e < 0.5 && vw > PHONE && panelBottom <= vh - 8 ? "hero" : "dock";
     setMode(prev => (prev === m ? prev : m));
-  }, [applyHeroPanel]);
+  }, []);
 
   useEffect(() => {
     if (!mounted) return undefined;
@@ -324,15 +329,17 @@ export default function AgentDock() {
     };
   }, [voiceMode]);
 
-  // The hero panel mounts after a mode change; give it its position straight away.
-  useEffect(applyHeroPanel, [mode, open, phase, applyHeroPanel]);
+  // A hint that mounts again after a call needs its size and fade applied straight away.
+  useEffect(() => {
+    place();
+  }, [phase, open, hintOff, place]);
 
-  // --- session ------------------------------------------------------------------------------
+    // --- session ------------------------------------------------------------------------------
   const finish = useCallback(why => {
     session.current = null;
     levelRef.current = 0;
     setPhase(why);
-    setOpen(true);
+    setOpen(why !== "ended"); // a normal end needs no panel: the hint is the way back in
     setSlow(false);
     setAudioBlocked(false);
   }, []);
@@ -432,27 +439,25 @@ export default function AgentDock() {
     <div className={`agent-root${dark ? " dark" : ""}`}>
       {voiceMode && <div className="agent-scrim" />}
       <div className="agent-dock" ref={dockEl}>
-        <Aura state={auraState} levelRef={levelRef} dark={dark} />
-        {phase === "off" && (
+        <PixelOrb state={auraState} levelRef={levelRef} dark={dark} />
+        {phase !== "live" && !(open && phase !== "off") && (
           <div className="agent-hint" ref={hintEl}>
             <svg className="agent-arrow" viewBox="0 0 360 360" aria-hidden="true">
-              <path d="M296 290 C 326 266, 312 244, 268 232 M268 232 l10.2 9.6 M268 232 l13.6 -3" />
+              <path d="M296 306 C 326 270, 312 244, 268 232 M268 232 l10.2 9.6 M268 232 l13.6 -3" />
             </svg>
             <button type="button" className="agent-caption" onClick={activate}>
-              <strong>Ask me about Ahmed&rsquo;s voice AI work</strong>
-              <small>Click to talk to me</small>
+              Click to talk to me
             </button>
           </div>
         )}
-        {phase === "off" && !hintOff && (
+        {phase !== "live" && !hintOff && (
           <div className="agent-hint-dock" ref={dockHintEl}>
             <svg className="agent-hint-dock__arrow" viewBox="0 0 72 72" aria-hidden="true">
               <path d="M6 18 C 26 8, 50 18, 63 40 M63 40 l-0.5 -11 M63 40 l-9.4 -5.8" />
             </svg>
             <div className="agent-hint-dock__card">
               <button type="button" className="agent-caption" onClick={activate}>
-                <strong>Ask me about Ahmed&rsquo;s voice AI work</strong>
-                <small>Click to talk to me</small>
+                Click to talk to me
               </button>
               <button
                 type="button"
@@ -467,6 +472,11 @@ export default function AgentDock() {
             </div>
           </div>
         )}
+        {showPanel && mode === "hero" && (
+          <div className={`agent-hero-panel${phase === "live" ? "" : " is-compact"}`}>
+            <Conversation variant="hero" view={shared} onClose={() => setOpen(false)} />
+          </div>
+        )}
         <button
           type="button"
           className="agent-dock__btn"
@@ -476,13 +486,8 @@ export default function AgentDock() {
           aria-expanded={phase === "live" ? open : undefined}
         />
       </div>
-      {showPanel && mode === "hero" && (
-        <div className="agent-hero-panel" ref={heroEl}>
-          <Conversation variant="hero" view={shared} />
-        </div>
-      )}
       {showPanel && mode === "dock" && (
-        <aside className="agent-card" aria-label="Conversation with Ahmed’s AI assistant">
+        <aside className={`agent-card${phase === "live" ? "" : " is-compact"}`} aria-label="Conversation with Ahmed’s AI assistant">
           <Conversation variant="card" view={shared} onClose={() => setOpen(false)} />
         </aside>
       )}
