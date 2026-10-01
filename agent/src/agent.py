@@ -65,7 +65,10 @@ KEYTERMS = ["LiveKit", "Goodcall", "Ahmed Ibrahim", "Dialogflow", "WebRTC"]
 
 def build_stt():
     if os.environ.get("ASSEMBLYAI_API_KEY"):
-        return assemblyai.STT(model="universal-3-5-pro", keyterms_prompt=KEYTERMS)
+        # The cheapest streaming model ($0.0025/min against $0.0075 for universal-3-5-pro).
+        return assemblyai.STT(
+            model="universal-streaming-english", keyterms_prompt=KEYTERMS
+        )
     return inference.STT(model="assemblyai/universal-3-5-pro", language="en")
 
 
