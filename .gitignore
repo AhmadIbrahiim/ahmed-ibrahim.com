@@ -62,3 +62,13 @@ public/
 bundle-stats.json
 # Codex skill local session
 .context/
+
+# Voice agent (agent/): never commit credentials or deployment identity
+agent/.env
+agent/.env.*
+agent/livekit.toml
+agent/.venv/
+agent/__pycache__/
+**/__pycache__/
+.env
+.env.*

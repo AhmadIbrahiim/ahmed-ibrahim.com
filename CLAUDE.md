@@ -67,4 +67,8 @@ npm run build && npx wrangler pages deploy public --project-name ahmed-ibrahim -
 - `.nvmrc` pins Node 22.
 - DNS: wrangler's OAuth login only gets `zone:read`, and the Cloudflare MCP plugin token can't write DNS or Pages. DNS changes need the dashboard or a user-provided API token with Zone:DNS:Edit.
 
+### Voice agent (`agent/`)
+
+LiveKit Agents (Python) site assistant, deployed to LiveKit Cloud separately from the site. Deploy with `cd agent && lk agent deploy`. Everything about it (project, dispatch name, secrets policy, cold starts, deployment log) is in `agent/DEPLOYMENT.md`; update its log table on every deploy. This repo is public: `agent/.env*` and `agent/livekit.toml` are git-ignored, so never commit credentials and keep the agent's instructions limited to facts already public on the site.
+
 Legacy/unused: `netlify.toml` (old Netlify config) and `build:gh` (GitHub Pages via `--prefix-paths`, only meaningful with a non-empty `pathPrefix` in `data/SiteConfig.js`).
