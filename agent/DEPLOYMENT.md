@@ -73,8 +73,11 @@ Removed because they bill, or call hosted models, or caused extra model calls:
 - **Hosted turn detector and "adaptive" interruption model.** Turn ends now come from AssemblyAI (`turn_detection="stt"`, `endpointing min_delay 0`), interruptions from plain voice activity detection (`mode: "vad"`).
 - **Preemptive generation.** It fired speculative LLM calls before the visitor finished, each resending the whole prompt.
 - **Voice isolation** (ai-coustics): billed per minute after 100 free minutes. Browsers already suppress noise.
-- **Session recording** (`record=False`).
 - **Prompt size:** older tutorial posts are summarised, cutting the prompt from about 12k to about 7k tokens per turn.
+
+## Observability (on)
+
+`session.start(..., record=True)` sends each session's audio, transcripts, traces and logs to the project's Agent insights (LiveKit Cloud dashboard, Sessions tab). On the Build plan 1,000 recording minutes and 100,000 events are included, and each session is capped at 180 s, so a session records at most 3 minutes. It records visitors' voices: keep the site's privacy wording in step, and consider the project-level PII redaction setting. Turn it off with `record=False`.
 
 ## Session cap
 
@@ -127,7 +130,7 @@ Before committing, run `git status` and `git diff --cached --stat` and confirm n
 
 - On LiveKit's free Build plan an idle agent scales to zero. The first visitor waits about 10 to 20 seconds for the agent to join. Paid plans stay warm.
 - Every session costs inference and transport minutes. The 180 second cap bounds each one. The site's token endpoint should also require a Turnstile pass and rate-limit per IP (not built yet).
-- LiveKit Cloud keeps session reports for agents it hosts. Check the project's observability and recording settings before telling visitors nothing is stored.
+- Observability is on (see above): conversations are stored in the LiveKit project, so do not tell visitors nothing is stored.
 
 ## Deployment log
 
@@ -150,3 +153,4 @@ Xxw5Pkxzh2ST` | us-east | Opt-in own-key AssemblyAI speech to text (`build_stt`)
 | 2026-10-01 | `aXdXLXnsLGkp` | us-east | Speech to text now on the owner's AssemblyAI key, cheapest model `universal-streaming-english`. Deployed without running the scenarios. |
 | 2026-10-01 | `cVgtTsx4MLGz` | us-east | Language model on Cloudflare Workers AI (Gemma 4 26B, thinking off), speech to text on AssemblyAI, voice on Rime: all on the owner's keys. Verified with one live conversation on the site (greeting spoken); scenarios not run. |
 | 2026-10-01 | `ma25AD9wp6L2` | us-east | Removed keyterm detection, hosted turn/interruption models, preemptive generation, voice isolation, recording and the hosted fallbacks; latest AssemblyAI model with its own turn detection; hard session cap; prompt trimmed to ~7k tokens. One spoken test passed (clean transcript, reply in ~3.8 s); scenarios not run. |
+| 2026-10-02 | `VSWaoEVqNW3Q` | us-east | Observability on: `record=True` (audio, transcripts, traces, logs in Agent insights). Nothing else changed; scenarios not run. |

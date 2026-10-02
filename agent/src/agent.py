@@ -251,8 +251,9 @@ async def entrypoint(ctx: JobContext):
         ),
     )
 
-    # record=False: no session recording or report upload to LiveKit Cloud.
-    await session.start(agent=SiteAssistant(), room=ctx.room, record=False)
+    # record=True: audio, transcripts, traces and logs go to the project's Agent insights.
+    # Included in the Build plan (1,000 recording minutes, 100k events); see DEPLOYMENT.md.
+    await session.start(agent=SiteAssistant(), room=ctx.room, record=True)
     await ctx.connect()
 
     # Start the clock first, so nothing below (a slow or failing greeting) can skip the cap.
