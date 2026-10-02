@@ -115,7 +115,14 @@ button { color: inherit; }
 .project-row { display: grid; grid-template-columns: 40px 1fr 1.6fr 24px; gap: 24px; align-items: center; padding: 25px 0; border-top: 1px solid var(--line); transition: padding .25s, background .25s; }
 .project-row:last-child { border-bottom: 1px solid var(--line); }
 .project-row h3 { font-size: 23px; }
-.project-stars { color: var(--accent); font-size: 12px; font-weight: 500; }
+// GitHub rating: a filled star, the count, and a bar scaled to it.
+.project-rating { display: flex; align-items: center; gap: 9px; margin-top: 12px; }
+.project-rating svg { width: 15px; height: 15px; fill: var(--orange); flex: none; }
+.project-rating b { font: 500 17px/1 'IBM Plex Mono', monospace; color: var(--accent); letter-spacing: -.02em; }
+.project-rating__bar { position: relative; width: 96px; height: 4px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.project-rating__bar i { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: linear-gradient(90deg, var(--orange), var(--accent)); transform-origin: left; animation: rating-grow 1.1s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes rating-grow { from { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { .project-rating__bar i { animation: none; } }
 .project-kind { display: block; color: var(--muted); margin-top: 7px; font-size: 10px; line-height: 1.5; }
 .project-row p { font-size: 14px; }
 .project-number { color: var(--muted); }

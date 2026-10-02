@@ -13,10 +13,18 @@ import config from "../../data/SiteConfig";
 import projects from "../../data/projects";
 import github from "../../data/github.json";
 
-// GitHub stars, shown from 5 up. data/github.json is refreshed before every build.
-const stars = project => {
+// GitHub stars, shown from 5 up. data/github.json is refreshed before every build. The bar is on a
+// log scale against the most-starred project, so a 5-star repo still shows next to a 6,000-star one.
+const MAX_STARS = Math.max(
+  ...projects.map(p => (p.repo && github[p.repo] ? github[p.repo].stars : 0))
+);
+const rating = project => {
   const repo = project.repo && github[project.repo];
-  return repo && repo.stars >= 5 ? repo.stars.toLocaleString("en-US") : null;
+  if (!repo || repo.stars < 5) return null;
+  const pct = Math.round(
+    (100 * Math.log10(repo.stars + 1)) / Math.log10(MAX_STARS + 1)
+  );
+  return { label: repo.stars.toLocaleString("en-US"), pct: Math.max(8, pct) };
 };
 
 export default function IndexPage({ data }) {
@@ -160,12 +168,21 @@ export default function IndexPage({ data }) {
               </span>
               <div className="project-title">
                 <h3>{project.title.replace(".com", "")}</h3>
-                <span className="project-kind mono">
-                  {project.kind}
-                  {stars(project) && (
-                    <span className="project-stars"> · ★ {stars(project)}</span>
-                  )}
-                </span>
+                <span className="project-kind mono">{project.kind}</span>
+                {rating(project) && (
+                  <span
+                    className="project-rating"
+                    title={`${rating(project).label} stars on GitHub`}
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 2l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 18l-6.4 3.6 1.4-7.1-5.3-5 7.2-.9z" />
+                    </svg>
+                    <b>{rating(project).label}</b>
+                    <span className="project-rating__bar" aria-hidden="true">
+                      <i style={{ width: `${rating(project).pct}%` }} />
+                    </span>
+                  </span>
+                )}
               </div>
               <p>{project.description}</p>
               <span className="row-arrow" aria-hidden="true">

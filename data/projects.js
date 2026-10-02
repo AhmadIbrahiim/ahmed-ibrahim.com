@@ -13,7 +13,7 @@ export default [
     icon: "🎙️",
     title: "Speakeasy",
     kind: "Open source · Voice AI · TypeScript",
-    path: "https://github.com/AhmadIbrahiim/speakeasy",
+    path: "https://voicemail.ahmed-ibrahim.com/",
     source: "https://github.com/AhmadIbrahiim/speakeasy",
     repo: "speakeasy",
     description:
@@ -75,15 +75,5 @@ export default [
     repo: "presto",
     description:
       "A native macOS menu bar app for GitHub pull request reviews, built with SwiftUI. It tells you when a PR needs your review."
-  },
-  {
-    icon: "🧑‍💻",
-    title: "This website",
-    kind: "Open source · Gatsby, React, Python",
-    path: "https://github.com/AhmadIbrahiim/ahmed-ibrahim.com",
-    source: "https://github.com/AhmadIbrahiim/ahmed-ibrahim.com",
-    repo: "ahmed-ibrahim.com",
-    description:
-      "The site you're on, including the AI assistant you can talk to. The code is public, so you can see how it is built."
   }
 ];

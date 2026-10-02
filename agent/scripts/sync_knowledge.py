@@ -17,6 +17,8 @@ LINKEDIN = Path(__file__).resolve().parents[1] / "knowledge-src" / "linkedin.md"
 GITHUB_USER = "AhmadIbrahiim"
 OLD_BEFORE = "2025-01-01"  # posts older than this are summarised
 SUMMARY_CHARS = 600
+# Projects that are also live on the web, so the assistant can point people to them.
+LIVE_URLS = {"speakeasy": "voicemail.ahmed-ibrahim.com"}
 # Public repos that say little about his expertise (personal alert bots, empty templates, profile
 # repo). The site repo is described by hand below because it contains this assistant.
 SKIP_REPOS = {
@@ -161,6 +163,9 @@ def github_section() -> str:
             desc = desc[
                 len(r["name"]) + 1 :
             ].strip()  # the name is already in front of it
+        live = LIVE_URLS.get(r["name"].lower())
+        if live:
+            desc += f" You can try it live at {live}."
         lines.append(f"- {r['name']} ({meta}): {desc}")
     return "\n".join(lines) + "\n"
 
