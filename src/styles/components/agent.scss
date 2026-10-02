@@ -45,13 +45,18 @@
 .agent-caption::after { content: ''; display: block; margin-top: 4px; height: 2px; border-radius: 2px; background: var(--a-orange); transform: rotate(1deg); }
 .agent-caption:hover { color: var(--a-accent); }
 
-// The same hint once the Aura is docked: bubble to its left, arrow curving down onto it.
+
+// The hint once the orb is docked: just "Talk to me", level with the orb, with a short arrow that
+// nudges toward it.
 .agent-hint-dock { position: absolute; left: 0; top: 0; width: 56px; height: 56px; opacity: 0; visibility: hidden; pointer-events: none; }
-.agent-hint-dock__arrow { position: absolute; left: -72px; top: -8px; width: 72px; height: 72px; fill: none; stroke: var(--a-orange); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.agent-hint-dock__card { position: absolute; right: calc(100% + 70px); top: 6px; width: 190px; pointer-events: none; }
-.agent-hint-dock .agent-caption { position: relative; inset: auto; left: auto; right: auto; top: auto; bottom: auto; width: auto; display: block; margin-left: auto; font-size: 14px; text-shadow: 0 0 8px var(--a-paper), 0 0 8px var(--a-paper), 0 0 8px var(--a-paper); }
-.agent-hint-dock__x { position: absolute; top: -9px; left: -9px; display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 1px solid var(--a-line); border-radius: 50%; background: var(--a-paper); color: var(--a-muted); pointer-events: auto; }
-.agent-hint-dock__x:hover { border-color: var(--a-accent); color: var(--a-ink); }
+.agent-hint-dock__row { position: absolute; right: calc(100% + 4px); top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+.agent-hint-dock__say { position: relative; border: 0; background: none; padding: 0 0 5px; color: var(--a-ink); font: 500 15px/1 'IBM Plex Mono', monospace; text-shadow: 0 0 8px var(--a-paper), 0 0 8px var(--a-paper), 0 0 8px var(--a-paper); pointer-events: auto; }
+.agent-hint-dock__say::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px; background: var(--a-orange); transform: rotate(-1deg); }
+.agent-hint-dock__say:hover { color: var(--a-accent); }
+.agent-hint-dock__arrow { flex: none; width: 34px; height: 18px; margin-top: 3px; fill: none; stroke: var(--a-orange); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; animation: agent-nudge 1.8s ease-in-out infinite; }
+@keyframes agent-nudge { 50% { transform: translateX(5px); } }
+.agent-hint-dock__x { display: grid; place-items: center; width: 18px; height: 18px; padding: 0; border: 1px solid var(--a-line); border-radius: 50%; background: var(--a-paper); color: var(--a-muted); opacity: .55; pointer-events: auto; transition: opacity .15s; }
+.agent-hint-dock__x:hover { opacity: 1; color: var(--a-ink); }
 
 // --- conversation -----------------------------------------------------------------------
 // Shared by the in-hero panel and the docked card (and the phone bottom sheet).
@@ -135,8 +140,7 @@
   .agent-caption { left: 180px; right: auto; top: 300px; bottom: auto; transform: translateX(-50%) rotate(-3deg); }
 }
 @media (max-width: 600px) {
-  .agent-hint-dock__card { width: 170px; }
-  .agent-card { right: 0; left: 0; bottom: 0; width: auto; height: 54vh; border-radius: 22px 22px 0 0; border-bottom: 0; padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px)); }
+    .agent-card { right: 0; left: 0; bottom: 0; width: auto; height: 54vh; border-radius: 22px 22px 0 0; border-bottom: 0; padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px)); }
   .agent-chips button { padding: 8px 14px; }
   .agent-round { width: 44px; height: 44px; }
   .agent-pill { padding: 11px 20px; }
@@ -144,7 +148,7 @@
 @media (prefers-reduced-motion: reduce) {
   .agent-card, .agent-hero-panel, .agent-scrim, .agent-msg { animation: none; }
   .agent-dock.is-gliding { transition: none; }
-  .agent-dot, .agent-typing i { animation: none !important; }
+  .agent-dot, .agent-typing i, .agent-hint-dock__arrow { animation: none !important; }
 }
 
 // The speech bubble under the orb: one fixed-size bubble with a tail pointing up at the orb.

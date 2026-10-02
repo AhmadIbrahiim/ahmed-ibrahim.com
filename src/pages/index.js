@@ -11,6 +11,13 @@ import {
 import AgentSlot from "../components/AgentDock/AgentSlot";
 import config from "../../data/SiteConfig";
 import projects from "../../data/projects";
+import github from "../../data/github.json";
+
+// GitHub stars, shown from 5 up. data/github.json is refreshed before every build.
+const stars = project => {
+  const repo = project.repo && github[project.repo];
+  return repo && repo.stars >= 5 ? repo.stars.toLocaleString("en-US") : null;
+};
 
 export default function IndexPage({ data }) {
   const [featured, ...rest] = data.latest.edges;
@@ -148,10 +155,17 @@ export default function IndexPage({ data }) {
         <div className="project-list">
           {projects.map((project, index) => (
             <a className="project-row" key={project.title} href={project.path}>
-              <span className="project-number mono">0{index + 1}</span>
+              <span className="project-number mono">
+                {String(index + 1).padStart(2, "0")}
+              </span>
               <div className="project-title">
                 <h3>{project.title.replace(".com", "")}</h3>
-                <span className="project-kind mono">{project.kind}</span>
+                <span className="project-kind mono">
+                  {project.kind}
+                  {stars(project) && (
+                    <span className="project-stars"> · ★ {stars(project)}</span>
+                  )}
+                </span>
               </div>
               <p>{project.description}</p>
               <span className="row-arrow" aria-hidden="true">

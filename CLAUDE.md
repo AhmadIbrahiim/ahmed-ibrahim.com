@@ -35,7 +35,7 @@ This is the core piece of the build to understand:
 - `content/pages/*.md` — standalone pages (e.g. `me.md`, `learn.md`) with `template: page`.
 - `content/thumbnails/` and `content/images/` — referenced by relative paths from markdown frontmatter/body.
 - `data/SiteConfig.js` — site metadata, menu links, theme color, Google tag ID. Edit this rather than hardcoding in components.
-- `data/{projects,publications,quotes,speaking}.js` — curated lists imported directly by page components.
+- `data/{projects,publications,quotes,speaking}.js` — curated lists imported directly by page components. A project with a `repo` field shows its GitHub star count (from 5 up) on the home page; `data/github.json` holds the counts and `scripts/sync-github.js` refreshes it before every `npm run build` (npm `prebuild`), keeping the old file if GitHub is unreachable.
 
 ### Runtime structure
 

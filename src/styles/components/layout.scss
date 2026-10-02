@@ -115,6 +115,7 @@ button { color: inherit; }
 .project-row { display: grid; grid-template-columns: 40px 1fr 1.6fr 24px; gap: 24px; align-items: center; padding: 25px 0; border-top: 1px solid var(--line); transition: padding .25s, background .25s; }
 .project-row:last-child { border-bottom: 1px solid var(--line); }
 .project-row h3 { font-size: 23px; }
+.project-stars { color: var(--accent); font-size: 12px; font-weight: 500; }
 .project-kind { display: block; color: var(--muted); margin-top: 7px; font-size: 10px; line-height: 1.5; }
 .project-row p { font-size: 14px; }
 .project-number { color: var(--muted); }

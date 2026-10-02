@@ -452,23 +452,23 @@ export default function AgentDock() {
         )}
         {phase !== "live" && !hintOff && (
           <div className="agent-hint-dock" ref={dockHintEl}>
-            <svg className="agent-hint-dock__arrow" viewBox="0 0 72 72" aria-hidden="true">
-              <path d="M6 18 C 26 8, 50 18, 63 40 M63 40 l-0.5 -11 M63 40 l-9.4 -5.8" />
-            </svg>
-            <div className="agent-hint-dock__card">
-              <button type="button" className="agent-caption" onClick={activate}>
-                Click to talk to me
-              </button>
+            <div className="agent-hint-dock__row">
               <button
                 type="button"
                 className="agent-hint-dock__x"
                 onClick={dismissHint}
                 aria-label="Dismiss this hint"
               >
-                <svg className="agent-ico" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
+                <svg className="agent-ico" viewBox="0 0 24 24" width="10" height="10" aria-hidden="true">
                   <path d="M6 6l12 12M18 6L6 18" />
                 </svg>
               </button>
+              <button type="button" className="agent-hint-dock__say" onClick={activate}>
+                Talk to me
+              </button>
+              <svg className="agent-hint-dock__arrow" viewBox="0 0 34 18" aria-hidden="true">
+                <path d="M2 12 C 10 4, 20 4, 30 9 M30 9 l-7 -1.2 M30 9 l-3.2 6" />
+              </svg>
             </div>
           </div>
         )}
