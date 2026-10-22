@@ -377,3 +377,13 @@ button { color: inherit; }
   .page-heading .pixel-pose { --pose-size: 96px; }
   .footer-invitation .pixel-pose { --pose-size: 96px; }
 }
+
+html, body { overflow-x: clip; }
+.nav-links, .hero-links { flex-wrap: wrap; }
+.nav-links a, .hero-links a, .footer-links a { white-space: nowrap; }
+@media (max-width: 700px) {
+  .nav-links { gap: 4px 16px; }
+}
+@media (max-width: 360px) {
+  .nav-links { gap: 4px 8px; }
+}

@@ -112,9 +112,9 @@ export default function MePage() {
               thing works, then making it useful.
             </p>
             <div className="profile-links">
-              <a className="text-link" href={`mailto:${config.userEmail}`}>
-                Let’s talk <span aria-hidden="true">↗</span>
-              </a>
+              <Link className="text-link" to="/voice-ai-engineer/">
+                Work with me <span aria-hidden="true">↗</span>
+              </Link>
               <a
                 className="quiet-link"
                 href="https://www.linkedin.com/in/ahmedibrahhim/"

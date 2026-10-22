@@ -3,11 +3,7 @@ import { graphql, Link } from "gatsby";
 import Layout from "../layout";
 import SEO from "../components/SEO";
 import PostListing from "../components/PostListing";
-import {
-  Avatar,
-  PixelPose,
-  VoicePipeline
-} from "../components/Voice";
+import { Avatar, PixelPose, VoicePipeline } from "../components/Voice";
 import AgentSlot from "../components/AgentDock/AgentSlot";
 import config from "../../data/SiteConfig";
 import projects from "../../data/projects";
@@ -65,12 +61,12 @@ export default function IndexPage({ data }) {
           human.
         </p>
         <div className="hero-links">
-          <a className="text-link" href="#work">
-            Explore my work <span aria-hidden="true">↗</span>
-          </a>
-          <Link className="quiet-link" to="/blog/">
-            Read my writing
+          <Link className="voice-cta" to="/voice-ai-engineer/">
+            Build a voice agent <span aria-hidden="true">↗</span>
           </Link>
+          <a className="quiet-link" href="#work">
+            Explore my work
+          </a>
         </div>
         <dl className="experience-strip">
           <div>
@@ -266,7 +262,7 @@ export default function IndexPage({ data }) {
 }
 
 export function Head() {
-  return <SEO title={`${config.siteTitle} – Voice AI & real-time systems`} />;
+  return <SEO title={`${config.siteTitle} | Voice AI Engineer & Consultant`} />;
 }
 
 export const pageQuery = graphql`

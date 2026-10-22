@@ -1,0 +1,22 @@
+# Ahmed Ibrahim
+
+> Ahmed Ibrahim is a senior software engineer working on voice AI at Goodcall since 2021. He offers hands-on voice agent engineering and technical consulting as an individual contributor.
+
+Ahmed works with LiveKit, WebRTC, Python, TypeScript, speech recognition, LLM orchestration, and text-to-speech. Contact him to discuss implementation, architecture reviews, or problems in an existing agent. Scope, pricing, and availability need to be agreed directly.
+
+## Work with Ahmed
+
+- [Voice AI engineer and consultant](https://www.ahmed-ibrahim.com/voice-ai-engineer/): Services, experience, how a project starts, and answers to hiring questions.
+- [About Ahmed](https://www.ahmed-ibrahim.com/me/): Career history and technical background.
+- [Contact](https://www.ahmed-ibrahim.com/contact/): Email Ahmed at me@ahmed-ibrahim.com.
+
+## Engineering writing and examples
+
+- [Answering machine detection and call state machines](https://www.ahmed-ibrahim.com/livekit-amd-state-machine/): Ahmed's article on outbound voice agent behavior, voicemail, and IVR handling.
+- [Writing](https://www.ahmed-ibrahim.com/blog/): Engineering articles.
+- [Homepage](https://www.ahmed-ibrahim.com/): Work, projects, and an interactive voice assistant.
+
+## Profiles
+
+- [LinkedIn](https://www.linkedin.com/in/ahmedibrahhim/)
+- [GitHub](https://github.com/AhmadIbrahiim)

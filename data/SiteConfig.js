@@ -9,7 +9,7 @@ const config = {
   dateFromFormat: "YYYY-MM-DD",
   dateFormat: "MMMM Do, YYYY",
   siteDescription:
-    "Ahmed Ibrahim is a software engineer building voice AI and real-time systems. Work, projects, and notes from production.",
+    "Ahmed Ibrahim is a voice AI engineer and consultant. Hands-on voice agent development, LiveKit, LLM orchestration, and production systems.",
   siteRss: "/rss.xml",
   googleTagId: "UA-42068444-1",
   postDefaultCategoryID: "Tech",
@@ -18,8 +18,8 @@ const config = {
   userTwitter: "ahmed_ibrahhim",
   menuLinks: [
     {
-      name: "Work",
-      link: "/#work"
+      name: "Work with me",
+      link: "/voice-ai-engineer/"
     },
     {
       name: "About",

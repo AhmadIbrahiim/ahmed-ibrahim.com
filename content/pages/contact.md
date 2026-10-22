@@ -8,6 +8,8 @@ Have a voice AI problem, a project in mind, or something you want to compare not
 
 The best way to reach me is [me@ahmed-ibrahim.com](mailto:me@ahmed-ibrahim.com).
 
+Want to build a voice agent or improve one you already have? Read about [working with me as a voice AI engineer](/voice-ai-engineer/). I help with architecture, implementation, and production troubleshooting. Include your use case, current stack, and timeline in your email so we have a useful starting point.
+
 ### Elsewhere
 
 - [LinkedIn ↗](https://www.linkedin.com/in/ahmedibrahhim/)

@@ -30,7 +30,8 @@ export default function SEO({
   postNode,
   postPath = "/",
   postSEO = false,
-  title: providedTitle
+  title: providedTitle,
+  structuredData = []
 }) {
   const siteURL = joinUrl(config.siteUrl, config.pathPrefix);
   const pageURL = joinUrl(config.siteUrl, replacePath(postPath));
@@ -54,18 +55,43 @@ export default function SEO({
     : joinUrl(config.siteUrl, image);
   const schemaOrgJSONLD = [
     {
-      "@context": "http://schema.org",
+      "@context": "https://schema.org",
       "@type": "WebSite",
       alternateName: config.siteTitleAlt || "",
       name: config.siteTitle,
-      url: siteURL
+      url: siteURL,
+      publisher: { "@id": `${config.siteUrl}/#person` }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "@id": `${config.siteUrl}/#person`,
+      name: config.siteTitle,
+      url: `${config.siteUrl}/me`,
+      jobTitle: "Senior Software Engineer",
+      description:
+        "Ahmed Ibrahim is a hands-on software engineer working on voice AI at Goodcall since 2021. He offers voice agent engineering and technical consulting.",
+      email: config.userEmail,
+      knowsAbout: [
+        "Voice AI",
+        "Voice agent development",
+        "LiveKit",
+        "WebRTC",
+        "Speech recognition",
+        "LLM orchestration",
+        "Text-to-speech"
+      ],
+      sameAs: [
+        "https://www.linkedin.com/in/ahmedibrahhim/",
+        "https://github.com/AhmadIbrahiim"
+      ]
     }
   ];
 
   if (postSEO) {
     schemaOrgJSONLD.push(
       {
-        "@context": "http://schema.org",
+        "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         itemListElement: [
           {
@@ -80,8 +106,9 @@ export default function SEO({
         ]
       },
       {
-        "@context": "http://schema.org",
+        "@context": "https://schema.org",
         "@type": "BlogPosting",
+        author: { "@id": `${config.siteUrl}/#person` },
         alternateName: config.siteTitleAlt || "",
         description,
         headline: pageTitle,
@@ -114,7 +141,7 @@ export default function SEO({
       <meta name="description" content={description} />
       <meta name="image" content={absoluteImage} />
       <meta property="og:url" content={pageURL} />
-      {postSEO && <meta property="og:type" content="article" />}
+      <meta property="og:type" content={postSEO ? "article" : "website"} />
       <meta property="og:title" content={pageTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={absoluteImage} />
@@ -124,7 +151,10 @@ export default function SEO({
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={absoluteImage} />
       <script type="application/ld+json">
-        {JSON.stringify(schemaOrgJSONLD)}
+        {JSON.stringify([...schemaOrgJSONLD, ...structuredData]).replace(
+          /</g,
+          "\\u003c"
+        )}
       </script>
     </>
   );
