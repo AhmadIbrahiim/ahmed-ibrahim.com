@@ -2,8 +2,6 @@
 date: 2026-11-10
 title: "Building Lowqta: when a discount needs evidence"
 template: post
-thumbnail: "../images/posts/lowqta-home.webp"
-seoImage: "../images/posts/lowqta-home.webp"
 slug: building-lowqta
 categories: [Engineering]
 tags: [lowqta, "price tracking", postgres]
@@ -12,10 +10,6 @@ tags: [lowqta, "price tracking", postgres]
 [Lowqta](https://www.lowqta.com/en) is my Egyptian shopping project. It brings products from different stores into one place, in Arabic and English, with recorded prices and links to the retailers.
 
 The part that needs care is the discount. A store can put a large number above a smaller one and call the difference a saving. That tells us what the store is advertising. It doesn't tell us whether we have ever seen the product sell at that higher price.
-
-![Lowqta's English homepage with product listings and store filters](../images/posts/lowqta-home.webp)
-
-*A screenshot taken on 10 November 2026. The products and prices on the live page will change.*
 
 ## Keep the claim and the observation separate
 

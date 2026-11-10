@@ -1,14 +1,5 @@
 export default [
   {
-    icon: "🏷️",
-    title: "Lowqta / لقطة",
-    kind: "Shopping in Egypt",
-    path: "https://www.lowqta.com/en",
-    source: "https://www.ahmed-ibrahim.com/building-lowqta/",
-    description:
-      "Products and recorded prices from stores in Egypt, in Arabic and English. Check the price history before following an offer to the retailer."
-  },
-  {
     icon: "⬇️",
     title: "Website-downloader",
     kind: "Open source · Node.js",
@@ -84,5 +75,14 @@ export default [
     repo: "presto",
     description:
       "A native macOS menu bar app for GitHub pull request reviews, built with SwiftUI. It tells you when a PR needs your review."
+  },
+  {
+    icon: "🏷️",
+    title: "Lowqta / لقطة",
+    kind: "Shopping in Egypt",
+    path: "https://www.lowqta.com/en",
+    source: "https://www.ahmed-ibrahim.com/building-lowqta/",
+    description:
+      "Products and recorded prices from stores in Egypt, in Arabic and English. Check the price history before following an offer to the retailer."
   }
 ];
