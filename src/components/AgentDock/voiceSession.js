@@ -171,7 +171,11 @@ export default async function startSession({
     // eslint-disable-next-line no-restricted-syntax
     for await (const chunk of reader) {
       text += chunk;
-      onMessage({ id, role, text });
+      const caption =
+        role === "agent"
+          ? text.replace(/^\s*\[(?:(?:playful|curious|excited|warmly)\]\s*|[a-z]*$)/i, "")
+          : text;
+      if (caption) onMessage({ id, role, text: caption });
     }
   });
 

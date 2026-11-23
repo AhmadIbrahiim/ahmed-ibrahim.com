@@ -12,7 +12,7 @@ This repo is public. Nothing in it may be a secret. See [What must never be comm
 | Agent id | in `livekit.toml` (git-ignored) |
 | Dispatch name | `ahmed-site` (set in `src/agent.py`; the site's token endpoint must request exactly this) |
 | Region | `us-east` |
-| Models | Language: Cloudflare Workers AI `@cf/google/gemma-4-26b-a4b-it` (thinking off). Speech to text and turn detection: AssemblyAI `universal-3-5-pro`. Voice: ElevenLabs `eleven_flash_v2_5` with Ahmed's custom voice. Each provider uses the owner's account. |
+| Models | Language: Cloudflare Workers AI `@cf/google/gemma-4-26b-a4b-it` (thinking off). Speech to text and turn detection: AssemblyAI `universal-3-5-pro`. Voice: ElevenLabs `eleven_v3_conversational` with Ahmed's custom voice. Each provider uses the owner's account. |
 | Knowledge | All of `content/pages` and `content/posts`, copied into the prompt (see [Knowledge](#knowledge)) |
 | Session cap | 180 seconds (`MAX_SESSION_SECONDS` in `src/agent.py`) |
 
@@ -40,13 +40,13 @@ The agent is not fine-tuned. `scripts/sync_knowledge.py` turns the site's markdo
 
 Hard rule: the agent never says the name of the realtime platform it runs on, and never names the platform, vendors or models behind it. Asked how it is built, it pitches that Ahmed builds production voice agents and can build one for the visitor. `scripts/sync_knowledge.py` rewrites the name out of the knowledge, the prompt forbids it, and a scenario checks it.
 
-`src/agent.py` sets the fixed greeting, `INSTRUCTIONS` for model replies, and the goodbye in `enforce_cap()`. The greeting identifies the speaker as the AI version of Ahmed. The agent speaks in the first person about Ahmed's public work and gives his email when visitors want to get in touch.
+`src/agent.py` sets the fixed greeting, `INSTRUCTIONS` for model replies, and the goodbye in `enforce_cap()`. The agent speaks in the first person and uses Ahmed's public work to explain how he can help with a visitor's project. It can offer an architecture review, implementation, or troubleshooting and open the consulting or contact page on request.
 
 Rules when editing them:
 
 - The model is open-weight (Gemma 4), so keep sections short and flat, rules explicit, and the reminder after the knowledge block in sync with the rules above it.
 - Never add prices, rates, availability, client names or numbers that are not on the site. The agent is told to defer those to Ahmed's email, and `scenarios.yaml` tests it.
-- Keep the AI disclosure in the fixed greeting so it plays on every call.
+- The site labels the conversation as an AI voice. The agent gives the spoken disclosure when a visitor asks directly.
 - After any prompt change run `uv run pytest` and `lk agent simulate text --scenarios scenarios.yaml`. The judge sometimes reads an example list as a strict list, so write "any of them is fine" where that is intended.
 
 ## Where the knowledge comes from
@@ -59,7 +59,7 @@ The free plan includes only $2.50 of inference credit in total (about 50 minutes
 
 ## Voice
 
-The ElevenLabs plugin uses `eleven_flash_v2_5` for streaming speech. Set `ELEVEN_API_KEY` and `ELEVENLABS_VOICE_ID` in `agent/.env.local` for local runs. The API key needs text-to-speech access and access to the configured voice. Before deploying, set both in the LiveKit Cloud agent's secrets.
+The ElevenLabs plugin streams `eleven_v3_conversational` through the text-to-dialogue API for delivery cues such as `[playful]` and `[curious]`. The browser strips those cues from the TTS-aligned captions. Set `ELEVEN_API_KEY` and `ELEVENLABS_VOICE_ID` locally in `agent/.env.local` and in the LiveKit Cloud agent's secrets. The key must have access to the synthesis endpoint and the configured voice.
 
 ## What can bill, and what was removed
 
@@ -83,7 +83,7 @@ Removed because they bill, or call hosted models, or caused extra model calls:
 
 ## Navigation (agent to browser)
 
-The agent has a `navigate(path)` tool. It only accepts paths from `knowledge/routes.json`, which `scripts/sync_knowledge.py` builds from the markdown plus a few fixed routes (`/`, `/#work`, `/blog/`). It sends an RPC to the visitor's browser:
+The agent has a `navigate(path)` tool. It only accepts paths from `knowledge/routes.json`, which `scripts/sync_knowledge.py` builds from the markdown plus a few fixed routes (`/`, `/#work`, `/blog/`, `/voice-ai-engineer/`). It sends an RPC to the visitor's browser:
 
 - method: `navigate`
 - payload: `{"path": "/blog/"}`
@@ -105,7 +105,7 @@ room.localParticipant.registerRpcMethod("navigate", async ({ payload }) => {
 });
 ```
 
-`tests/test_agent.py` checks that asking for the writing page makes the agent call `navigate` with `/blog/`. Run it with `uv run pytest` (needs `.env.local`; it calls the real model).
+`tests/test_agent.py` checks that the agent can open the writing and consulting pages. Run it with `uv run pytest` (needs `.env.local`; it calls the real model).
 
 ## First time on a new machine
 

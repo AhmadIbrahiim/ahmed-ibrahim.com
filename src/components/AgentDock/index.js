@@ -432,7 +432,7 @@ export default function AgentDock() {
     onSound: () => session.current && session.current.startAudio()
   };
   const label =
-    phase === "live" ? "Open or close the conversation" : "Talk to the AI version of Ahmed";
+    phase === "live" ? "Open or close the conversation" : "Talk with Ahmed’s AI voice";
   const showPanel = open && phase !== "off";
 
   return (
@@ -489,7 +489,7 @@ export default function AgentDock() {
       {showPanel && mode === "dock" && (
         <aside
           className={`agent-card${phase === "live" ? "" : " is-compact"}`}
-          aria-label="Conversation with the AI version of Ahmed"
+          aria-label="Conversation with Ahmed’s AI voice"
         >
           <Conversation variant="card" view={shared} onClose={() => setOpen(false)} />
         </aside>

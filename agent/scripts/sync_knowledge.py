@@ -37,6 +37,7 @@ FIXED_ROUTES = [
     ("/", "Home"),
     ("/#work", "Work: the projects section on the home page"),
     ("/blog/", "All writing"),
+    ("/voice-ai-engineer/", "Work with me: voice AI consulting and project inquiries"),
 ]
 
 # The agent must never say the name of the platform it runs on. Specific phrasings first, so the

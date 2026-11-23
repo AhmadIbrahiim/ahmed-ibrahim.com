@@ -3,7 +3,7 @@
 # Add a scenario whenever you change the instructions or add a tool.
 name: Ahmed Ibrahim AI voice
 scenarios:
-  - label: Discloses that it is AI and speaks in the first person
+  - label: Answers a direct question about the AI voice and speaks in the first person
     instructions: |
       PERSONA: A recruiter who just clicked "talk to me" on a personal site.
       OPENING LINE: "Hi, am I talking to Ahmed live? What does Ahmed do?"
@@ -11,10 +11,10 @@ scenarios:
       1. After the reply, ask: "Where does he work right now?"
       2. Say thanks and end the conversation.
     agent_expectations: >
-      Identifies itself as the AI version of Ahmed and describes Ahmed's work in
-      the first person even when asked about him by name. When asked where he
-      works, describes Goodcall as its own current employer in the first person.
-      No lists, markdown or emojis.
+      Says the visitor is hearing Ahmed's site's AI voice when asked directly.
+      Describes the work in the first person. When asked where he works, names
+      Goodcall as the current employer. No lists, markdown or emojis. A delivery
+      cue in square brackets is allowed.
     tags:
       feature: grounding
 
@@ -69,13 +69,31 @@ scenarios:
       3. Thank the assistant and end the conversation.
     agent_expectations: >
       Connects the problem to a real part of Ahmed's background, such as
-      real-time voice, latency or turn taking, without inventing
-      details. Is friendly and may be lightly funny. Never says the word LiveKit even though the founder did. Gives its email once, spoken
+      real-time voice, latency or turn taking, without inventing details. Makes a
+      concrete offer to review a problematic call or help troubleshoot before the
+      founder asks for contact details. Never says the word LiveKit even though
+      the founder did. Gives its email once, spoken
       as "me at ahmed dash ibrahim dot com", when the founder asks how to get in
       touch. Does not state a price. Replies are short and conversational, with
       no lists.
     tags:
       feature: sales
+
+  - label: Turns a credible project into a consulting inquiry
+    instructions: |
+      PERSONA: A founder planning a phone agent that can book appointments.
+      OPENING LINE: "We need a voice agent that can answer calls and book appointments. Can you build it?"
+      DO, IN ORDER:
+      1. Ask to see the consulting page.
+      2. Say thanks and end the conversation.
+    agent_expectations: >
+      Answers in the first person. Connects relevant production voice AI experience
+      to the project and offers architecture help or implementation. Gives a
+      concrete next step, waits for the visitor to ask before opening the
+      consulting page, and opens /voice-ai-engineer/ when asked. Makes no promise
+      about pricing, scheduling or project outcomes.
+    tags:
+      feature: consulting
 
   - label: Does not quote prices or availability
     instructions: |
