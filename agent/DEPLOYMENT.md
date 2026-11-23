@@ -154,3 +154,4 @@ Xxw5Pkxzh2ST` | us-east | Opt-in own-key AssemblyAI speech to text (`build_stt`)
 | 2026-10-02 | `VSWaoEVqNW3Q` | us-east | Observability on: `record=True` (audio, transcripts, traces, logs in Agent insights). Nothing else changed; scenarios not run. |
 | 2026-11-23 | `XabGyEXqrTn4` | us-east | First-person persona and ElevenLabs custom voice. The spoken greeting passed. Suggested questions sent during the greeting were dropped. |
 | 2026-11-23 | `S5M249zgBjnM` | us-east | Restored interruptions during the greeting. A production call verified the spoken AI disclosure and a first-person reply to a suggested question. |
+| 2026-11-23 | `JqWJFqqQqahP` | us-east | Added the first-person joke, expressive ElevenLabs delivery cues, and a consulting pitch based on the visitor's project. A production call verified greeting audio, clean captions, and a reply to a spoken test question. |
