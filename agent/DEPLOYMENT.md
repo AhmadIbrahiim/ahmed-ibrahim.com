@@ -1,6 +1,6 @@
 # Voice agent deployment
 
-Ahmed's personal AI assistant, which visitors talk to on ahmed-ibrahim.com. A LiveKit Agents (Python) app, deployed to LiveKit Cloud. It is separate from the Gatsby site and from the Cloudflare Pages deploy.
+Visitors talk with the AI version of Ahmed on ahmed-ibrahim.com. The LiveKit Agents (Python) app deploys to LiveKit Cloud separately from the Gatsby site.
 
 This repo is public. Nothing in it may be a secret. See [What must never be committed](#what-must-never-be-committed).
 
@@ -12,7 +12,7 @@ This repo is public. Nothing in it may be a secret. See [What must never be comm
 | Agent id | in `livekit.toml` (git-ignored) |
 | Dispatch name | `ahmed-site` (set in `src/agent.py`; the site's token endpoint must request exactly this) |
 | Region | `us-east` |
-| Models | Language: Cloudflare Workers AI `@cf/google/gemma-4-26b-a4b-it` (thinking off). Speech to text and turn detection: AssemblyAI `universal-3-5-pro`. Voice: Rime `coda` / `cupola`. All on the owner's own keys; no LiveKit-hosted models |
+| Models | Language: Cloudflare Workers AI `@cf/google/gemma-4-26b-a4b-it` (thinking off). Speech to text and turn detection: AssemblyAI `universal-3-5-pro`. Voice: ElevenLabs `eleven_flash_v2_5` with Ahmed's custom voice. Each provider uses the owner's account. |
 | Knowledge | All of `content/pages` and `content/posts`, copied into the prompt (see [Knowledge](#knowledge)) |
 | Session cap | 180 seconds (`MAX_SESSION_SECONDS` in `src/agent.py`) |
 
@@ -40,13 +40,13 @@ The agent is not fine-tuned. `scripts/sync_knowledge.py` turns the site's markdo
 
 Hard rule: the agent never says the name of the realtime platform it runs on, and never names the platform, vendors or models behind it. Asked how it is built, it pitches that Ahmed builds production voice agents and can build one for the visitor. `scripts/sync_knowledge.py` rewrites the name out of the knowledge, the prompt forbids it, and a scenario checks it.
 
-All in `src/agent.py`: `INSTRUCTIONS` (persona and rules, then the site knowledge, then a short reminder), the greeting passed to `generate_reply`, the goodbye line in `end_after`, and the `expressive` emotion steering. Persona: Ahmed's personal AI assistant, a funny, warm teammate and his biggest fan (an AI that says so, never Ahmed himself; it talks about him, not about the website). It finds out what the visitor is building once, backs it with one real fact from the knowledge, and offers his email once when interest is real.
+`src/agent.py` sets the fixed greeting, `INSTRUCTIONS` for model replies, and the goodbye in `enforce_cap()`. The greeting identifies the speaker as the AI version of Ahmed. The agent speaks in the first person about Ahmed's public work and gives his email when visitors want to get in touch.
 
 Rules when editing them:
 
 - The model is open-weight (Gemma 4), so keep sections short and flat, rules explicit, and the reminder after the knowledge block in sync with the rules above it.
 - Never add prices, rates, availability, client names or numbers that are not on the site. The agent is told to defer those to Ahmed's email, and `scenarios.yaml` tests it.
-- The greeting examples set spirit and length; the model writes a fresh line each time.
+- Keep the AI disclosure in the fixed greeting so it plays on every call.
 - After any prompt change run `uv run pytest` and `lk agent simulate text --scenarios scenarios.yaml`. The judge sometimes reads an example list as a strict list, so write "any of them is fine" where that is intended.
 
 ## Where the knowledge comes from
@@ -59,13 +59,11 @@ The free plan includes only $2.50 of inference credit in total (about 50 minutes
 
 ## Voice
 
-Rime's newest model, `coda`, voice `cupola` (a confident, warm male American voice), streamed over WebSocket through the Rime plugin with the owner's own key. The key is the agent secret `RIME_API_KEY`: keep it in `agent/.env.local` (git-ignored) and push it with `lk agent update-secrets --secrets-file .env.local`. Other male coda voices: godfrey, beatty, masonry, parapet; change `RIME_VOICE`.
-
-Rime is not one of the providers LiveKit's emotion-tag mode supports (Fish Audio, Inworld, Cartesia, Gemini), so there is no `expressive` setting any more; the delivery comes from the voice itself. Earlier versions used Cartesia with emotion tags (see the log). The current mood is no longer published to the browser as `lk.expression`.
+The ElevenLabs plugin uses `eleven_flash_v2_5` for streaming speech. Set `ELEVEN_API_KEY` and `ELEVENLABS_VOICE_ID` in `agent/.env.local` for local runs. The API key needs text-to-speech access and access to the configured voice. Before deploying, set both in the LiveKit Cloud agent's secrets.
 
 ## What can bill, and what was removed
 
-Everything the agent calls runs on the owner's own keys: Cloudflare Workers AI (language model), AssemblyAI (speech to text and turn detection), Rime (voice). The agent has no fallback to LiveKit Inference: `build_llm()` and `build_stt()` read their secrets with `os.environ[...]`, so a missing secret fails loudly instead of billing the gateway. What still bills on LiveKit Cloud is only hosting: agent session minutes and WebRTC minutes (both have generous free allowances).
+Cloudflare Workers AI, AssemblyAI and ElevenLabs bill model usage to the owner's accounts. LiveKit Cloud bills agent session minutes and WebRTC minutes under its hosting plan.
 
 Removed because they bill, or call hosted models, or caused extra model calls:
 
@@ -113,7 +111,7 @@ room.localParticipant.registerRpcMethod("navigate", async ({ payload }) => {
 
 1. `lk cloud auth`, then `lk project set-default "ahmed-ibrahim-com"`.
 2. `cd agent && lk agent config` and pick the existing agent. It regenerates `livekit.toml`.
-3. For local runs only: create `agent/.env.local` with `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` (`lk app env -w` can write it). LiveKit injects these into the deployed agent by itself.
+3. For local runs, copy `agent/.env.example` to `agent/.env.local` and fill in the provider settings. `lk app env -w` can supply the LiveKit connection settings. LiveKit injects its own connection settings into the deployed agent.
 
 ## What must never be committed
 
@@ -122,7 +120,7 @@ Git-ignored in the root `.gitignore`: `agent/.env*`, `agent/livekit.toml`, `agen
 - `agent/.env.local` holds the project's API key and secret.
 - `agent/livekit.toml` holds the agent id and project subdomain. Not a credential, but it identifies the cloud project.
 - `src/agent.py` holds the assistant's instructions. They contain only facts already public on the site. Keep it that way: no phone number, address, salary, or private notes.
-- Any provider key (none are used today) goes in `agent/.env.local` locally and in LiveKit's secret store with `lk agent update-secrets --secrets-file agent/.env.local`. They are never written into source.
+- Store provider keys in `agent/.env.local` for local runs and in the LiveKit Cloud agent's secret store for deployment.
 
 Before committing, run `git status` and `git diff --cached --stat` and confirm none of the above appear.
 

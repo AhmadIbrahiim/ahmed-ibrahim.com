@@ -5,11 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "agent-starter-python"
 version = "1.0.0"
-description = "Simple voice AI assistant built with LiveKit Agents for Python"
+description = "Ahmed Ibrahim's website voice agent built with LiveKit Agents for Python"
 requires-python = ">=3.10, <3.15"
 
 dependencies = [
-    "livekit-agents[assemblyai,openai,rime]~=1.8",
+    "livekit-agents[assemblyai,elevenlabs,openai]~=1.8",
     "python-dotenv",
 ]
 

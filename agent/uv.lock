@@ -17,7 +17,7 @@ name = "agent-starter-python"
 version = "1.0.0"
 source = { editable = "." }
 dependencies = [
-    { name = "livekit-agents", extra = ["assemblyai", "openai", "rime"] },
+    { name = "livekit-agents", extra = ["assemblyai", "elevenlabs", "openai"] },
     { name = "python-dotenv" },
 ]
 
@@ -30,7 +30,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "livekit-agents", extras = ["assemblyai", "openai", "rime"], specifier = "~=1.8" },
+    { name = "livekit-agents", extras = ["assemblyai", "elevenlabs", "openai"], specifier = "~=1.8" },
     { name = "python-dotenv" },
 ]
 
@@ -1085,14 +1085,14 @@ codecs = [
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
     { name = "numpy", version = "2.5.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
 ]
+elevenlabs = [
+    { name = "livekit-plugins-elevenlabs" },
+]
 images = [
     { name = "pillow" },
 ]
 openai = [
     { name = "livekit-plugins-openai" },
-]
-rime = [
-    { name = "livekit-plugins-rime" },
 ]
 
 [[package]]
@@ -1193,6 +1193,18 @@ wheels = [
 ]
 
 [[package]]
+name = "livekit-plugins-elevenlabs"
+version = "1.8.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "livekit-agents", extra = ["codecs"] },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8b/d4/47f4687634e1220c893b8cb08888e21532f04f644cc51812dfbb9ffe0571/livekit_plugins_elevenlabs-1.8.3.tar.gz", hash = "sha256:abb747f1127b29cc1624c3c4d2448c715d83957460e3a2729376ebb2f17912b1", size = 23872, upload-time = "2026-09-23T19:04:52.264Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/07/08/fd966a30d2bac815091509b6bb60bcaec33ae6a555e519a94f87d8baca6e/livekit_plugins_elevenlabs-1.8.3-py3-none-any.whl", hash = "sha256:e3b58c206e843449d093cbfb1f3f32b1c04b8f36960eef84d8ae8b8baaccb20a", size = 25653, upload-time = "2026-09-23T19:04:50.964Z" },
+]
+
+[[package]]
 name = "livekit-plugins-openai"
 version = "1.8.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1203,20 +1215,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/2c/dd/70dd5d752545f973036171666265ab1e40b8c1f16ef28156f40198843fdf/livekit_plugins_openai-1.8.3.tar.gz", hash = "sha256:84146d4b7646387be467572a91da4991ac1f6cae6c31e48b614e83c0fc94515d", size = 49060, upload-time = "2026-09-23T19:05:47.587Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0d/16/ac808bf94211dce93ee6cbdd8dcd15b2f5f66816d5508fd480bfa113f742/livekit_plugins_openai-1.8.3-py3-none-any.whl", hash = "sha256:1ab62123fbce74f1ad09e3c8062faa78c957f5a51f14b36d308a870421c537a3", size = 56033, upload-time = "2026-09-23T19:05:46.309Z" },
-]
-
-[[package]]
-name = "livekit-plugins-rime"
-version = "1.8.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "livekit-agents", extra = ["codecs"] },
-    { name = "protobuf" },
-    { name = "rime-api" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/2c/0d/6f47d5bc3723cd6c2226cf6fc694970b92c13ea0b95bc015cb302474f1ef/livekit_plugins_rime-1.8.3.tar.gz", hash = "sha256:40130f7739fae3e3426391ddf78233218eeb1d55f0a30b48d3d51819ceb95620", size = 21139, upload-time = "2026-09-23T19:06:01.274Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ff/3d/d4a7146b305d5a031c7ab81f8fabc4f97d88e51d2434e05b88c428cb0a79/livekit_plugins_rime-1.8.3-py3-none-any.whl", hash = "sha256:19a31d579a0635bdf9868b2fbd18ff1fb4f2993289b1668ef3479bd9055cc4e8", size = 26978, upload-time = "2026-09-23T19:06:00.043Z" },
 ]
 
 [[package]]
@@ -2280,19 +2278,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c0/8f/0722ca900cc807c13a6a0c696dacf35430f72e0ec571c4275d2371fca3e9/rich-15.0.0.tar.gz", hash = "sha256:edd07a4824c6b40189fb7ac9bc4c52536e9780fbbfbddf6f1e2502c31b068c36", size = 230680, upload-time = "2026-04-12T08:24:00.75Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/82/3b/64d4899d73f91ba49a8c18a8ff3f0ea8f1c1d75481760df8c68ef5235bf5/rich-15.0.0-py3-none-any.whl", hash = "sha256:33bd4ef74232fb73fe9279a257718407f169c09b78a87ad3d296f548e27de0bb", size = 310654, upload-time = "2026-04-12T08:24:02.83Z" },
-]
-
-[[package]]
-name = "rime-api"
-version = "0.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "googleapis-common-protos" },
-    { name = "protobuf" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ac/75/bc560353cdd2088d97e8cc0c214525a2ebcb7de5c9dd842c0fb876f8f46e/rime_api-0.1.0.tar.gz", hash = "sha256:0fa3f726bae07ccb2ca7ffcdfbdec189e2da176187f387fd90e29c378b5372d4", size = 23956, upload-time = "2026-09-29T06:19:46.556Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d6/80/f8034ce8b5cb06931b663ceb46ca0e45fdedb430d9fd2384b43c506de908/rime_api-0.1.0-py3-none-any.whl", hash = "sha256:7a90ac2d4a7dad2d71e90409c8e9dc7335b60a68e971e26643fc4a526654fa7b", size = 29926, upload-time = "2026-09-29T06:19:45.487Z" },
 ]
 
 [[package]]

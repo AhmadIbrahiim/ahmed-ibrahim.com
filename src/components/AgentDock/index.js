@@ -14,9 +14,9 @@ const PHONE = 600;
 
 // Short labels that fit on one row; the full question is what gets sent.
 const CHIPS = [
-  { label: "What he builds", text: "What does Ahmed build?" },
-  { label: "Open source", text: "Show me his open-source work" },
-  { label: "Get in touch", text: "How do I reach him?" }
+  { label: "Your work", text: "What do you build?" },
+  { label: "Open source", text: "Show me your open-source work" },
+  { label: "Get in touch", text: "How do I reach you?" }
 ];
 
 const STATUS = {
@@ -28,7 +28,7 @@ const STATUS = {
   speaking: "Speaking"
 };
 
-// Failures where the visitor should also get a way to reach Ahmed without the assistant.
+// Failures where the visitor should also get a way to reach Ahmed directly.
 const FAILURES = ["error", "busy", "timeout", "unavailable", "dropped"];
 
 const ENDINGS = {
@@ -37,8 +37,8 @@ const ENDINGS = {
   busy: "That's a lot of conversations from one place. Please try again in a few minutes.",
   offline: "You seem to be offline. Check your connection, then try again.",
   dropped: "The connection dropped. Tap Talk to me to start again.",
-  timeout: "The assistant didn't answer this time. Please try again in a moment.",
-  unavailable: "The assistant isn't available right now.",
+  timeout: "The voice chat didn't respond. Please try again in a moment.",
+  unavailable: "The voice chat isn't available right now.",
   "no-mic": "I couldn't find a microphone. Plug one in or check your settings, then try again.",
   "mic-blocked":
     "I need your microphone to hear you. Allow it in your browser, then try again."
@@ -107,7 +107,7 @@ function Conversation({ variant, view, onClose }) {
       <header className="agent-head">
         <span className={`agent-dot agent-dot--${muted ? "muted" : agentState}${live ? "" : " is-off"}`} />
         <div className="agent-head__text">
-          {variant === "card" && <strong>Ahmed&rsquo;s AI assistant</strong>}
+          {variant === "card" && <strong>Ahmed Ibrahim · AI voice</strong>}
           <p className="agent-status" role="status" aria-live="polite">
             {status}
           </p>
@@ -432,7 +432,7 @@ export default function AgentDock() {
     onSound: () => session.current && session.current.startAudio()
   };
   const label =
-    phase === "live" ? "Open or close the conversation" : "Talk to Ahmed’s AI assistant";
+    phase === "live" ? "Open or close the conversation" : "Talk to the AI version of Ahmed";
   const showPanel = open && phase !== "off";
 
   return (
@@ -487,7 +487,10 @@ export default function AgentDock() {
         />
       </div>
       {showPanel && mode === "dock" && (
-        <aside className={`agent-card${phase === "live" ? "" : " is-compact"}`} aria-label="Conversation with Ahmed’s AI assistant">
+        <aside
+          className={`agent-card${phase === "live" ? "" : " is-compact"}`}
+          aria-label="Conversation with the AI version of Ahmed"
+        >
           <Conversation variant="card" view={shared} onClose={() => setOpen(false)} />
         </aside>
       )}

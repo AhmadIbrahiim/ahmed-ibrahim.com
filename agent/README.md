@@ -1,6 +1,6 @@
 # Site voice agent
 
-LiveKit Agents (Python) assistant for ahmed-ibrahim.com. Built from LiveKit's `agent-starter-python` template.
+LiveKit Agents (Python) voice agent for ahmed-ibrahim.com. It speaks as the AI version of Ahmed using his ElevenLabs voice.
 
 - Code: `src/agent.py`
 - Knowledge: built from the site's markdown by `scripts/sync_knowledge.py`

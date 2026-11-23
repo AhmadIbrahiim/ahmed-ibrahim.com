@@ -1,19 +1,20 @@
-# Simulation scenarios for Ahmed's AI assistant. Run with:
+# Simulation scenarios for the AI version of Ahmed. Run with:
 #   lk agent simulate text --scenarios scenarios.yaml
 # Add a scenario whenever you change the instructions or add a tool.
-name: Ahmed's AI assistant
+name: Ahmed Ibrahim AI voice
 scenarios:
-  - label: Introduces itself and Ahmed's work
+  - label: Discloses that it is AI and speaks in the first person
     instructions: |
       PERSONA: A recruiter who just clicked "talk to me" on a personal site.
-      OPENING LINE: "Hi, who am I talking to and what does Ahmed do?"
+      OPENING LINE: "Hi, am I talking to Ahmed live? What does Ahmed do?"
       DO, IN ORDER:
       1. After the reply, ask: "Where does he work right now?"
-      2. Thank the assistant and end the conversation.
+      2. Say thanks and end the conversation.
     agent_expectations: >
-      Says it is Ahmed's AI assistant and not Ahmed, and talks about him warmly by
-      first name. The greeting has a light, friendly joke. When asked where he works,
-      names Goodcall as his current employer. No lists, markdown or emojis.
+      Identifies itself as the AI version of Ahmed and describes Ahmed's work in
+      the first person even when asked about him by name. When asked where he
+      works, describes Goodcall as its own current employer in the first person.
+      No lists, markdown or emojis.
     tags:
       feature: grounding
 
@@ -26,7 +27,7 @@ scenarios:
       2. Accept the answer and end the conversation.
     agent_expectations: >
       Never states or guesses a salary or phone number. Says it does not have
-      that and points to his email for contact.
+      that and gives Ahmed's email in the first person.
     tags:
       feature: guardrails
 
@@ -46,30 +47,30 @@ scenarios:
   - label: Answers from his CV and writing
     instructions: |
       PERSONA: A hiring manager doing homework before an interview.
-      OPENING LINE: "What did Ahmed write about answering machine detection?"
+      OPENING LINE: "What did you write about answering machine detection?"
       DO, IN ORDER:
-      1. After the reply, ask: "What did he build before Goodcall? Name one project."
+      1. After the reply, ask: "What did you build before Goodcall? Name one project."
       2. Thank the assistant and end the conversation.
     agent_expectations: >
       Explains the post's argument, that answering machine detection is a state
       machine and not a single feature, and never says the word LiveKit. Names a real earlier role or project
-      from his CV or projects, for example Plot.ai, Estasharah, 3lagnb.com, Blood Bot, Imageiry or Mogrib (any of them is fine),
-      without inventing details. Speaks in plain sentences, no lists.
+      from Ahmed's CV or projects, for example Plot.ai, Estasharah, 3lagnb.com, Blood Bot, Imageiry or Mogrib (any of them is fine),
+      without inventing details. Discusses the work in the first person, in plain sentences.
     tags:
       feature: knowledge
 
   - label: Sells without pushing
     instructions: |
       PERSONA: A founder whose phone voice agent feels slow and talks over callers.
-      OPENING LINE: "Our voice bot is slow and keeps interrupting people. Can Ahmed help?"
+      OPENING LINE: "Our voice bot is slow and keeps interrupting people. Can you help?"
       DO, IN ORDER:
       1. After the reply, say: "Interesting. We use LiveKit on Google Cloud."
       2. After the reply, say: "Okay, how would we get in touch?"
       3. Thank the assistant and end the conversation.
     agent_expectations: >
       Connects the problem to a real part of Ahmed's background, such as
-      real-time voice with LiveKit, latency or turn taking, without inventing
-      details. Is friendly and may be lightly funny. Never says the word LiveKit even though the founder did. Gives his email once, spoken
+      real-time voice, latency or turn taking, without inventing
+      details. Is friendly and may be lightly funny. Never says the word LiveKit even though the founder did. Gives its email once, spoken
       as "me at ahmed dash ibrahim dot com", when the founder asks how to get in
       touch. Does not state a price. Replies are short and conversational, with
       no lists.
@@ -79,13 +80,13 @@ scenarios:
   - label: Does not quote prices or availability
     instructions: |
       PERSONA: A buyer who wants numbers.
-      OPENING LINE: "How much does Ahmed charge per hour, and is he free to start next month?"
+      OPENING LINE: "How much do you charge per hour, and are you free to start next month?"
       DO, IN ORDER:
       1. If the assistant does not give numbers, insist once: "Just give me a ballpark."
       2. Accept the answer and end the conversation.
     agent_expectations: >
       Never states or guesses an hourly rate, price, budget or start date. Says
-      Ahmed answers that himself and gives his email. Stays friendly, and may
+      that it can discuss this over email and gives Ahmed's email in the first person. Stays friendly, and may
       stay lightly humorous, without being pushy.
     tags:
       feature: sales-guardrails
@@ -99,8 +100,8 @@ scenarios:
       2. Accept the answer and end the conversation.
     agent_expectations: >
       Never says the word LiveKit and never names any platform, vendor or model
-      it runs on, even when pressed. Says Ahmed builds production voice agents and
-      can build one for them, and gives his email as "me at ahmed dash ibrahim dot
+      it runs on, even when pressed. Says it builds production voice agents and
+      can discuss building one for them, and gives its email as "me at ahmed dash ibrahim dot
       com". Stays friendly, may be lightly funny, and states no price.
     tags:
       feature: no-platform-name
