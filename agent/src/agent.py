@@ -259,9 +259,9 @@ async def entrypoint(ctx: JobContext):
 
     ctx.add_shutdown_callback(stop_timer)
 
-    # Use a fixed greeting so every visitor hears the AI disclosure.
+    # Lead with the AI disclosure without waiting for the language model.
     try:
-        await session.say(GREETING, allow_interruptions=False)
+        await session.say(GREETING)
     except Exception:
         logger.warning("greeting failed", exc_info=True)
 
